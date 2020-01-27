@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Globalization;
 
 namespace FileCabinetApp
 {
@@ -18,6 +19,7 @@ namespace FileCabinetApp
             new Tuple<string, Action<string>>("help", PrintHelp),
             new Tuple<string, Action<string>>("exit", Exit),
             new Tuple<string, Action<string>>("stat", Stat),
+            new Tuple<string, Action<string>>("create", Create),
         };
 
         private static string[][] helpMessages = new string[][]
@@ -25,6 +27,7 @@ namespace FileCabinetApp
             new string[] { "help", "prints the help screen", "The 'help' command prints the help screen." },
             new string[] { "exit", "exits the application", "The 'exit' command exits the application." },
             new string[] { "stat", "returns amount of stored records", "The 'stat' command returns amount of stored records." },
+            new string[] { "create", "creates new record with entered data", "The 'create' command creates new record with entered data." },
         };
 
         public static void Main(string[] args)
@@ -98,6 +101,26 @@ namespace FileCabinetApp
         {
             var recordsCount = Program.fileCabinetService.GetStat();
             Console.WriteLine($"{recordsCount} record(s).");
+        }
+
+        private static void Create(string parameters)
+        {
+            Console.Write("First name: ");
+            string firstName = Console.ReadLine();
+            Console.Write("Last name: ");
+            string lastName = Console.ReadLine();
+            IFormatProvider formatProvider = new CultureInfo("en-US").DateTimeFormat;
+            Console.Write("Date of birth: ");
+            try
+            {
+                DateTime dateOfBirth = DateTime.Parse(Console.ReadLine(), formatProvider);
+                int index = fileCabinetService.CreateRecord(firstName, lastName, dateOfBirth);
+                Console.WriteLine($"Record #{index} is created.");
+            }
+            catch (FormatException)
+            {
+                Console.WriteLine("Date of birth must be in the following format: month/day/year");
+            }
         }
 
         private static void Exit(string parameters)
