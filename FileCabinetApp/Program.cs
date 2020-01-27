@@ -20,6 +20,7 @@ namespace FileCabinetApp
             new Tuple<string, Action<string>>("exit", Exit),
             new Tuple<string, Action<string>>("stat", Stat),
             new Tuple<string, Action<string>>("create", Create),
+            new Tuple<string, Action<string>>("list", List),
         };
 
         private static string[][] helpMessages = new string[][]
@@ -28,6 +29,7 @@ namespace FileCabinetApp
             new string[] { "exit", "exits the application", "The 'exit' command exits the application." },
             new string[] { "stat", "returns amount of stored records", "The 'stat' command returns amount of stored records." },
             new string[] { "create", "creates new record with entered data", "The 'create' command creates new record with entered data." },
+            new string[] { "list", "returns all stored records", "The 'list' command returns all stored records." },
         };
 
         public static void Main(string[] args)
@@ -109,17 +111,32 @@ namespace FileCabinetApp
             string firstName = Console.ReadLine();
             Console.Write("Last name: ");
             string lastName = Console.ReadLine();
-            IFormatProvider formatProvider = new CultureInfo("en-US").DateTimeFormat;
             Console.Write("Date of birth: ");
             try
             {
-                DateTime dateOfBirth = DateTime.Parse(Console.ReadLine(), formatProvider);
+                DateTime dateOfBirth = DateTime.ParseExact(Console.ReadLine(), "MM/dd/yyyy", CultureInfo.InvariantCulture);
                 int index = fileCabinetService.CreateRecord(firstName, lastName, dateOfBirth);
                 Console.WriteLine($"Record #{index} is created.");
             }
             catch (FormatException)
             {
                 Console.WriteLine("Date of birth must be in the following format: month/day/year");
+            }
+        }
+
+        private static void List(string parameters)
+        {
+            FileCabinetRecord[] records = fileCabinetService.GetRecords();
+            if (records.Length is 0)
+            {
+                Console.WriteLine("There is no stored records.");
+            }
+            else
+            {
+                for (int i = 0; i < records.Length; i++)
+                {
+                    Console.WriteLine("#{0}, {1}, {2}, {3}", records[i].Id, records[i].FirstName, records[i].LastName, records[i].DateOfBirth.ToString("yyyy-MMM-dd", CultureInfo.InvariantCulture));
+                }
             }
         }
 
