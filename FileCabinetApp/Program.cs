@@ -21,6 +21,7 @@ namespace FileCabinetApp
             new Tuple<string, Action<string>>("stat", Stat),
             new Tuple<string, Action<string>>("create", Create),
             new Tuple<string, Action<string>>("list", List),
+            new Tuple<string, Action<string>>("edit", Edit),
         };
 
         private static string[][] helpMessages = new string[][]
@@ -30,6 +31,7 @@ namespace FileCabinetApp
             new string[] { "stat", "returns amount of stored records", "The 'stat' command returns amount of stored records." },
             new string[] { "create", "creates new record with entered data", "The 'create' command creates new record with entered data." },
             new string[] { "list", "returns all stored records", "The 'list' command returns all stored records." },
+            new string[] { "edit", "edits existing record", "The 'edit' command edits existing record." },
         };
 
         public static void Main(string[] args)
@@ -122,16 +124,16 @@ namespace FileCabinetApp
                 catch (FormatException)
                 {
                     Console.WriteLine("Date of birth must be in the following format: month/day/year");
-                    break;
+                    continue;
                 }
 
                 Console.Write("Height: ");
                 string heightStr = Console.ReadLine();
                 short height;
-                if (!short.TryParse(heightStr, out height) || height < 0)
+                if (!short.TryParse(heightStr, out height))
                 {
-                    Console.WriteLine("Heigh must be in range of 0 and 32767");
-                    break;
+                    Console.WriteLine("Heigh must be in range of System.Int16 (from -32768 to 32767)");
+                    continue;
                 }
 
                 Console.Write("Income: ");
@@ -139,22 +141,30 @@ namespace FileCabinetApp
                 decimal income;
                 if (!decimal.TryParse(incomeStr, out income))
                 {
-                    Console.WriteLine("Income must be a decimal number.");
-                    break;
+                    Console.WriteLine("Income must be a decimal number from (+/-)1.0*10^(-28) to (+/-)7.9228*10^28");
+                    continue;
                 }
 
-                Console.Write("Favourite symbol: ");
-                string favouriteSymbolStr = Console.ReadLine();
-                char favouriteSymbol;
-                if (!char.TryParse(favouriteSymbolStr, out favouriteSymbol))
+                Console.Write("Patronymic letter: ");
+                string patronymicLetterStr = Console.ReadLine();
+                char patronymicLetter;
+                if (!char.TryParse(patronymicLetterStr, out patronymicLetter))
                 {
                     Console.WriteLine("Enter only one symbol.");
-                    break;
+                    continue;
                 }
 
-                int index = fileCabinetService.CreateRecord(firstName, lastName, dateOfBirth, height, income, favouriteSymbol);
-                Console.WriteLine($"Record #{index} is created.");
-                break;
+                try
+                {
+                    int index = fileCabinetService.CreateRecord(firstName, lastName, dateOfBirth, height, income, patronymicLetter);
+                    Console.WriteLine($"Record #{index} is created.");
+                    break;
+                }
+                catch (ArgumentException ex)
+                {
+                    Console.WriteLine(ex.Message);
+                    continue;
+                }
             }
         }
 
@@ -170,15 +180,84 @@ namespace FileCabinetApp
                 for (int i = 0; i < records.Length; i++)
                 {
                     Console.WriteLine(
-                        "#{0}, {1}, {2}, {3}, {4} cm, {5}$, {6}",
+                        "#{0}, {1}, {2}., {3}, {4}, {5} cm, {6}$",
                         records[i].Id,
                         records[i].FirstName,
+                        records[i].PatronymicLetter,
                         records[i].LastName,
                         records[i].DateOfBirth.ToString("yyyy-MMM-dd", CultureInfo.InvariantCulture),
                         records[i].Height,
-                        records[i].Income,
-                        records[i].FavouriteSymbol);
+                        records[i].Income);
                 }
+            }
+        }
+
+        private static void Edit(string parameters)
+        {
+            if (!string.IsNullOrEmpty(parameters))
+            {
+                foreach (FileCabinetRecord record in fileCabinetService.GetRecords())
+                {
+                    if (record.Id.ToString(CultureInfo.InvariantCulture) == parameters)
+                    {
+                        while (true)
+                        {
+                            Console.Write("First name: ");
+                            string firstName = Console.ReadLine();
+                            Console.Write("Last name: ");
+                            string lastName = Console.ReadLine();
+                            Console.Write("Date of birth: ");
+                            DateTime dateOfBirth = DateTime.MinValue;
+                            try
+                            {
+                                dateOfBirth = DateTime.ParseExact(Console.ReadLine(), "MM/dd/yyyy", CultureInfo.InvariantCulture);
+                            }
+                            catch (FormatException)
+                            {
+                                Console.WriteLine("Date of birth must be in the following format: month/day/year");
+                                continue;
+                            }
+
+                            Console.Write("Height: ");
+                            string heightStr = Console.ReadLine();
+                            short height;
+                            if (!short.TryParse(heightStr, out height))
+                            {
+                                Console.WriteLine("Heigh must be in range of System.Int16 (from -32768 to 32767)");
+                                continue;
+                            }
+
+                            Console.Write("Income: ");
+                            string incomeStr = Console.ReadLine();
+                            decimal income;
+                            if (!decimal.TryParse(incomeStr, out income))
+                            {
+                                Console.WriteLine("Income must be a decimal number from (+/-)1.0*10^(-28) to (+/-)7.9228*10^28");
+                                continue;
+                            }
+
+                            Console.Write("Patronymic letter: ");
+                            string patronymicLetterStr = Console.ReadLine();
+                            char patronymicLetter;
+                            if (!char.TryParse(patronymicLetterStr, out patronymicLetter))
+                            {
+                                Console.WriteLine("Enter only one symbol.");
+                                continue;
+                            }
+
+                            fileCabinetService.EditRecord(Convert.ToInt32(parameters, CultureInfo.InvariantCulture), firstName, lastName, dateOfBirth, height, income, patronymicLetter);
+                            break;
+                        }
+                    }
+                    else
+                    {
+                        Console.WriteLine($"#{parameters} record is not found.");
+                    }
+                }
+            }
+            else
+            {
+                Console.WriteLine("Input record ID to edit.");
             }
         }
 
