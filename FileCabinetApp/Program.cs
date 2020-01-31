@@ -122,16 +122,16 @@ namespace FileCabinetApp
                 catch (FormatException)
                 {
                     Console.WriteLine("Date of birth must be in the following format: month/day/year");
-                    break;
+                    continue;
                 }
 
                 Console.Write("Height: ");
                 string heightStr = Console.ReadLine();
                 short height;
-                if (!short.TryParse(heightStr, out height) || height < 0)
+                if (!short.TryParse(heightStr, out height))
                 {
-                    Console.WriteLine("Heigh must be in range of 0 and 32767");
-                    break;
+                    Console.WriteLine("Heigh must be in range of System.Int16 (from -32768 to 32767)");
+                    continue;
                 }
 
                 Console.Write("Income: ");
@@ -139,8 +139,8 @@ namespace FileCabinetApp
                 decimal income;
                 if (!decimal.TryParse(incomeStr, out income))
                 {
-                    Console.WriteLine("Income must be a decimal number.");
-                    break;
+                    Console.WriteLine("Income must be a decimal number from (+/-)1.0*10^(-28) to (+/-)7.9228*10^28");
+                    continue;
                 }
 
                 Console.Write("Patronymic letter: ");
@@ -149,12 +149,20 @@ namespace FileCabinetApp
                 if (!char.TryParse(patronymicLetterStr, out patronymicLetter))
                 {
                     Console.WriteLine("Enter only one symbol.");
-                    break;
+                    continue;
                 }
 
-                int index = fileCabinetService.CreateRecord(firstName, lastName, dateOfBirth, height, income, patronymicLetter);
-                Console.WriteLine($"Record #{index} is created.");
-                break;
+                try
+                {
+                    int index = fileCabinetService.CreateRecord(firstName, lastName, dateOfBirth, height, income, patronymicLetter);
+                    Console.WriteLine($"Record #{index} is created.");
+                    break;
+                }
+                catch (ArgumentException ex)
+                {
+                    Console.WriteLine(ex.Message);
+                    continue;
+                }
             }
         }
 

@@ -55,6 +55,11 @@ namespace FileCabinetApp
                 throw new ArgumentException("Income must be not negative number.", nameof(income));
             }
 
+            if (patronymicLetter < 'A' || patronymicLetter > 'Z')
+            {
+                throw new ArgumentException("Patronymic letter must be a latin letter in uppercase.");
+            }
+
             var record = new FileCabinetRecord
             {
                 Id = this.list.Count + 1,
