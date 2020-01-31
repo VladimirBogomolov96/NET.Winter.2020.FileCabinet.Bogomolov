@@ -143,16 +143,16 @@ namespace FileCabinetApp
                     break;
                 }
 
-                Console.Write("Favourite symbol: ");
-                string favouriteSymbolStr = Console.ReadLine();
-                char favouriteSymbol;
-                if (!char.TryParse(favouriteSymbolStr, out favouriteSymbol))
+                Console.Write("Patronymic letter: ");
+                string patronymicLetterStr = Console.ReadLine();
+                char patronymicLetter;
+                if (!char.TryParse(patronymicLetterStr, out patronymicLetter))
                 {
                     Console.WriteLine("Enter only one symbol.");
                     break;
                 }
 
-                int index = fileCabinetService.CreateRecord(firstName, lastName, dateOfBirth, height, income, favouriteSymbol);
+                int index = fileCabinetService.CreateRecord(firstName, lastName, dateOfBirth, height, income, patronymicLetter);
                 Console.WriteLine($"Record #{index} is created.");
                 break;
             }
@@ -170,14 +170,14 @@ namespace FileCabinetApp
                 for (int i = 0; i < records.Length; i++)
                 {
                     Console.WriteLine(
-                        "#{0}, {1}, {2}, {3}, {4} cm, {5}$, {6}",
+                        "#{0}, {1}, {2}., {3}, {4}, {5} cm, {6}$",
                         records[i].Id,
                         records[i].FirstName,
+                        records[i].PatronymicLetter,
                         records[i].LastName,
                         records[i].DateOfBirth.ToString("yyyy-MMM-dd", CultureInfo.InvariantCulture),
                         records[i].Height,
-                        records[i].Income,
-                        records[i].FavouriteSymbol);
+                        records[i].Income);
                 }
             }
         }

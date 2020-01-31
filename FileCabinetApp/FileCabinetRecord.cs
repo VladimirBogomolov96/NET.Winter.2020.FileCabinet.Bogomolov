@@ -18,6 +18,6 @@ namespace FileCabinetApp
 
         public decimal Income { get; set; }
 
-        public char FavouriteSymbol { get; set; }
+        public char PatronymicLetter { get; set; }
     }
 }
