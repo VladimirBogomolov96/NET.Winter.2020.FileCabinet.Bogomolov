@@ -22,6 +22,7 @@ namespace FileCabinetApp
             new Tuple<string, Action<string>>("create", Create),
             new Tuple<string, Action<string>>("list", List),
             new Tuple<string, Action<string>>("edit", Edit),
+            new Tuple<string, Action<string>>("find", Find),
         };
 
         private static string[][] helpMessages = new string[][]
@@ -32,6 +33,7 @@ namespace FileCabinetApp
             new string[] { "create", "creates new record with entered data", "The 'create' command creates new record with entered data." },
             new string[] { "list", "returns all stored records", "The 'list' command returns all stored records." },
             new string[] { "edit", "edits existing record", "The 'edit' command edits existing record." },
+            new string[] { "find", "finds records by the given condition", "The 'find' command finds records by the given condition." },
         };
 
         public static void Main(string[] args)
@@ -196,10 +198,12 @@ namespace FileCabinetApp
         {
             if (!string.IsNullOrEmpty(parameters))
             {
-                foreach (FileCabinetRecord record in fileCabinetService.GetRecords())
+                bool wasFound = false;
+                for (int i = 0; i < fileCabinetService.GetRecords().Length; i++)
                 {
-                    if (record.Id.ToString(CultureInfo.InvariantCulture) == parameters)
+                    if (fileCabinetService.GetRecords()[i].Id.ToString(CultureInfo.InvariantCulture) == parameters)
                     {
+                        wasFound = true;
                         while (true)
                         {
                             Console.Write("First name: ");
@@ -249,10 +253,11 @@ namespace FileCabinetApp
                             break;
                         }
                     }
-                    else
-                    {
-                        Console.WriteLine($"#{parameters} record is not found.");
-                    }
+                }
+
+                if (!wasFound)
+                {
+                    Console.WriteLine($"#{parameters} record is not found.");
                 }
             }
             else
@@ -265,6 +270,108 @@ namespace FileCabinetApp
         {
             Console.WriteLine("Exiting an application...");
             isRunning = false;
+        }
+
+        private static void Find(string parameters)
+        {
+            while (true)
+            {
+                string[] parametersArr = parameters.Split(' ', 2);
+                if (parametersArr.Length < 2)
+                {
+                    Console.WriteLine("Enter property parameter and value to search.");
+                    break;
+                }
+
+                const int propertyIndex = 0;
+                const int searchValueIndex = 1;
+                parametersArr[propertyIndex] = parametersArr[propertyIndex].ToUpperInvariant();
+                switch (parametersArr[propertyIndex])
+                {
+                    case "FIRSTNAME":
+                        FileCabinetRecord[] recordsFirstName = fileCabinetService.FindByFirstName(parametersArr[searchValueIndex]);
+                        if (recordsFirstName.Length == 0)
+                        {
+                            Console.WriteLine("Such records don't exist.");
+                            break;
+                        }
+
+                        foreach (FileCabinetRecord record in recordsFirstName)
+                        {
+                            Console.WriteLine(
+                            "#{0}, {1}, {2}., {3}, {4}, {5} cm, {6}$",
+                            record.Id,
+                            record.FirstName,
+                            record.PatronymicLetter,
+                            record.LastName,
+                            record.DateOfBirth.ToString("yyyy-MMM-dd", CultureInfo.InvariantCulture),
+                            record.Height,
+                            record.Income);
+                        }
+
+                        break;
+                    case "LASTNAME":
+                        FileCabinetRecord[] recordsLastName = fileCabinetService.FindByLastName(parametersArr[searchValueIndex]);
+                        if (recordsLastName.Length == 0)
+                        {
+                            Console.WriteLine("Such records don't exist.");
+                            break;
+                        }
+
+                        foreach (FileCabinetRecord record in recordsLastName)
+                        {
+                            Console.WriteLine(
+                            "#{0}, {1}, {2}., {3}, {4}, {5} cm, {6}$",
+                            record.Id,
+                            record.FirstName,
+                            record.PatronymicLetter,
+                            record.LastName,
+                            record.DateOfBirth.ToString("yyyy-MMM-dd", CultureInfo.InvariantCulture),
+                            record.Height,
+                            record.Income);
+                        }
+
+                        break;
+                    case "DATEOFBIRTH":
+                        DateTime dateOfBirth;
+                        try
+                        {
+                            dateOfBirth = DateTime.ParseExact(parametersArr[searchValueIndex], "MM/dd/yyyy", CultureInfo.InvariantCulture);
+                        }
+                        catch (FormatException)
+                        {
+                            Console.WriteLine("Date of birth must be in the following format: month/day/year");
+                            break;
+                        }
+
+                        FileCabinetRecord[] recordsDateOfBirth = fileCabinetService.FindByDateOfbirth(dateOfBirth);
+                        if (recordsDateOfBirth.Length == 0)
+                        {
+                            Console.WriteLine("Such records don't exist.");
+                            break;
+                        }
+
+                        foreach (FileCabinetRecord record in recordsDateOfBirth)
+                        {
+                            Console.WriteLine(
+                            "#{0}, {1}, {2}., {3}, {4}, {5} cm, {6}$",
+                            record.Id,
+                            record.FirstName,
+                            record.PatronymicLetter,
+                            record.LastName,
+                            record.DateOfBirth.ToString("yyyy-MMM-dd", CultureInfo.InvariantCulture),
+                            record.Height,
+                            record.Income);
+                        }
+
+                        break;
+                    default:
+                        Console.WriteLine("Wrong property parameter.");
+                        break;
+                }
+
+                break;
+            }
         }
     }
 }
