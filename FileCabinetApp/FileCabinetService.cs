@@ -9,6 +9,7 @@ namespace FileCabinetApp
     {
         private readonly List<FileCabinetRecord> list = new List<FileCabinetRecord>();
         private readonly Dictionary<string, List<FileCabinetRecord>> firstNameDictionary = new Dictionary<string, List<FileCabinetRecord>>();
+        private readonly Dictionary<string, List<FileCabinetRecord>> lastNameDictionary = new Dictionary<string, List<FileCabinetRecord>>();
 
         public int CreateRecord(string firstName, string lastName, DateTime dateOfBirth, short height, decimal income, char patronymicLetter)
         {
@@ -84,6 +85,16 @@ namespace FileCabinetApp
                 this.firstNameDictionary[firstName].Add(record);
             }
 
+            if (this.lastNameDictionary.ContainsKey(lastName))
+            {
+                this.lastNameDictionary[lastName].Add(record);
+            }
+            else
+            {
+                this.lastNameDictionary.Add(lastName, new List<FileCabinetRecord>());
+                this.lastNameDictionary[lastName].Add(record);
+            }
+
             return record.Id;
         }
 
@@ -104,6 +115,7 @@ namespace FileCabinetApp
                 if (this.list[i].Id == id)
                 {
                     this.firstNameDictionary[this.list[i].FirstName].Remove(this.list[i]);
+                    this.lastNameDictionary[this.list[i].LastName].Remove(this.list[i]);
                     this.list[i] = editedRecord;
                     break;
                 }
@@ -116,19 +128,22 @@ namespace FileCabinetApp
 
             if (this.firstNameDictionary.ContainsKey(firstName))
             {
-                for (int j = 0; j < this.firstNameDictionary[firstName].Count; j++)
-                {
-                    if (this.firstNameDictionary[firstName][j].Id == id)
-                    {
-                        this.firstNameDictionary[firstName][j] = editedRecord;
-                        break;
-                    }
-                }
+                this.firstNameDictionary[firstName].Add(editedRecord);
             }
             else
             {
                 this.firstNameDictionary.Add(firstName, new List<FileCabinetRecord>());
                 this.firstNameDictionary[firstName].Add(editedRecord);
+            }
+
+            if (this.lastNameDictionary.ContainsKey(lastName))
+            {
+                this.lastNameDictionary[lastName].Add(editedRecord);
+            }
+            else
+            {
+                this.lastNameDictionary.Add(lastName, new List<FileCabinetRecord>());
+                this.lastNameDictionary[lastName].Add(editedRecord);
             }
 
             Console.WriteLine($"Record #{id} is updated.");
@@ -158,13 +173,10 @@ namespace FileCabinetApp
 
         public FileCabinetRecord[] FindByLastName(string lastName)
         {
-            List<FileCabinetRecord> records = new List<FileCabinetRecord>();
-            foreach (FileCabinetRecord record in this.list)
+            List<FileCabinetRecord> records;
+            if (!this.lastNameDictionary.TryGetValue(lastName, out records))
             {
-                if (record.LastName.Equals(lastName, StringComparison.OrdinalIgnoreCase))
-                {
-                    records.Add(record);
-                }
+                return Array.Empty<FileCabinetRecord>();
             }
 
             return records.ToArray();
