@@ -198,10 +198,12 @@ namespace FileCabinetApp
         {
             if (!string.IsNullOrEmpty(parameters))
             {
-                foreach (FileCabinetRecord record in fileCabinetService.GetRecords())
+                bool wasFound = false;
+                for (int i = 0; i < fileCabinetService.GetRecords().Length; i++)
                 {
-                    if (record.Id.ToString(CultureInfo.InvariantCulture) == parameters)
+                    if (fileCabinetService.GetRecords()[i].Id.ToString(CultureInfo.InvariantCulture) == parameters)
                     {
+                        wasFound = true;
                         while (true)
                         {
                             Console.Write("First name: ");
@@ -251,10 +253,11 @@ namespace FileCabinetApp
                             break;
                         }
                     }
-                    else
-                    {
-                        Console.WriteLine($"#{parameters} record is not found.");
-                    }
+                }
+
+                if (!wasFound)
+                {
+                    Console.WriteLine($"#{parameters} record is not found.");
                 }
             }
             else
@@ -273,7 +276,7 @@ namespace FileCabinetApp
         {
             while (true)
             {
-                string[] parametersArr = parameters.ToUpperInvariant().Split(' ', 2);
+                string[] parametersArr = parameters.Split(' ', 2);
                 if (parametersArr.Length < 2)
                 {
                     Console.WriteLine("Enter property parameter and value to search.");
@@ -282,6 +285,7 @@ namespace FileCabinetApp
 
                 const int propertyIndex = 0;
                 const int searchValueIndex = 1;
+                parametersArr[propertyIndex] = parametersArr[propertyIndex].ToUpperInvariant();
                 switch (parametersArr[propertyIndex])
                 {
                     case "FIRSTNAME":
