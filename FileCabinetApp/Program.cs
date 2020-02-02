@@ -333,10 +333,21 @@ namespace FileCabinetApp
 
                         break;
                     case "DATEOFBIRTH":
-                        FileCabinetRecord[] recordsDateOfBirth = fileCabinetService.FindByDateOfbirth(parametersArr[searchValueIndex]);
+                        DateTime dateOfBirth;
+                        try
+                        {
+                            dateOfBirth = DateTime.ParseExact(parametersArr[searchValueIndex], "MM/dd/yyyy", CultureInfo.InvariantCulture);
+                        }
+                        catch (FormatException)
+                        {
+                            Console.WriteLine("Date of birth must be in the following format: month/day/year");
+                            break;
+                        }
+
+                        FileCabinetRecord[] recordsDateOfBirth = fileCabinetService.FindByDateOfbirth(dateOfBirth);
                         if (recordsDateOfBirth.Length == 0)
                         {
-                            Console.WriteLine("Such records don't exist. Try print in yyyy-MMM-dd format.");
+                            Console.WriteLine("Such records don't exist.");
                             break;
                         }
 
