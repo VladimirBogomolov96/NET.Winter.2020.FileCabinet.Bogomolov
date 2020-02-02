@@ -328,6 +328,28 @@ namespace FileCabinetApp
                         }
 
                         break;
+                    case "DATEOFBIRTH":
+                        FileCabinetRecord[] recordsDateOfBirth = fileCabinetService.FindByDateOfbirth(parametersArr[searchValueIndex]);
+                        if (recordsDateOfBirth.Length == 0)
+                        {
+                            Console.WriteLine("Such records don't exist. Try print in yyyy-MMM-dd format.");
+                            break;
+                        }
+
+                        foreach (FileCabinetRecord record in recordsDateOfBirth)
+                        {
+                            Console.WriteLine(
+                            "#{0}, {1}, {2}., {3}, {4}, {5} cm, {6}$",
+                            record.Id,
+                            record.FirstName,
+                            record.PatronymicLetter,
+                            record.LastName,
+                            record.DateOfBirth.ToString("yyyy-MMM-dd", CultureInfo.InvariantCulture),
+                            record.Height,
+                            record.Income);
+                        }
+
+                        break;
                     default:
                         Console.WriteLine("Wrong property parameter.");
                         break;

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Text;
 
 namespace FileCabinetApp
@@ -127,6 +128,20 @@ namespace FileCabinetApp
             foreach (FileCabinetRecord record in this.list)
             {
                 if (record.LastName.Equals(lastName, StringComparison.OrdinalIgnoreCase))
+                {
+                    records.Add(record);
+                }
+            }
+
+            return records.ToArray();
+        }
+
+        public FileCabinetRecord[] FindByDateOfbirth(string dateOfBirth)
+        {
+            List<FileCabinetRecord> records = new List<FileCabinetRecord>();
+            foreach (FileCabinetRecord record in this.list)
+            {
+                if (record.DateOfBirth.ToString("yyyy-MMM-dd", CultureInfo.InvariantCulture).Equals(dateOfBirth, StringComparison.OrdinalIgnoreCase))
                 {
                     records.Add(record);
                 }
