@@ -274,49 +274,66 @@ namespace FileCabinetApp
             while (true)
             {
                 string[] parametersArr = parameters.ToUpperInvariant().Split(' ', 2);
+                if (parametersArr.Length < 2)
+                {
+                    Console.WriteLine("Enter property parameter and value to search.");
+                    break;
+                }
+
                 const int propertyIndex = 0;
                 const int searchValueIndex = 1;
-                if (string.IsNullOrEmpty(parametersArr[propertyIndex]))
+                switch (parametersArr[propertyIndex])
                 {
-                    Console.WriteLine("Property parameter must be not a null and not an empty string.");
-                    break;
-                }
+                    case "FIRSTNAME":
+                        FileCabinetRecord[] recordsFirstName = fileCabinetService.FindByFirstName(parametersArr[searchValueIndex]);
+                        if (recordsFirstName.Length == 0)
+                        {
+                            Console.WriteLine("Such records don't exist.");
+                            break;
+                        }
 
-                if (string.IsNullOrEmpty(parametersArr[searchValueIndex]))
-                {
-                    Console.WriteLine("Search value parameter must be not a null and not an empty string.");
-                    break;
-                }
+                        foreach (FileCabinetRecord record in recordsFirstName)
+                        {
+                            Console.WriteLine(
+                            "#{0}, {1}, {2}., {3}, {4}, {5} cm, {6}$",
+                            record.Id,
+                            record.FirstName,
+                            record.PatronymicLetter,
+                            record.LastName,
+                            record.DateOfBirth.ToString("yyyy-MMM-dd", CultureInfo.InvariantCulture),
+                            record.Height,
+                            record.Income);
+                        }
 
-                if (parametersArr[propertyIndex] == "FIRSTNAME")
-                {
-                    FileCabinetRecord[] records = fileCabinetService.FindByFirstName(parametersArr[searchValueIndex]);
-                    if (records.Length == 0)
-                    {
-                        Console.WriteLine("Such records don't exist.");
                         break;
-                    }
+                    case "LASTNAME":
+                        FileCabinetRecord[] recordsLastName = fileCabinetService.FindByLastName(parametersArr[searchValueIndex]);
+                        if (recordsLastName.Length == 0)
+                        {
+                            Console.WriteLine("Such records don't exist.");
+                            break;
+                        }
 
-                    foreach (FileCabinetRecord record in records)
-                    {
-                        Console.WriteLine(
-                        "#{0}, {1}, {2}., {3}, {4}, {5} cm, {6}$",
-                        record.Id,
-                        record.FirstName,
-                        record.PatronymicLetter,
-                        record.LastName,
-                        record.DateOfBirth.ToString("yyyy-MMM-dd", CultureInfo.InvariantCulture),
-                        record.Height,
-                        record.Income);
-                    }
+                        foreach (FileCabinetRecord record in recordsLastName)
+                        {
+                            Console.WriteLine(
+                            "#{0}, {1}, {2}., {3}, {4}, {5} cm, {6}$",
+                            record.Id,
+                            record.FirstName,
+                            record.PatronymicLetter,
+                            record.LastName,
+                            record.DateOfBirth.ToString("yyyy-MMM-dd", CultureInfo.InvariantCulture),
+                            record.Height,
+                            record.Income);
+                        }
 
-                    break;
+                        break;
+                    default:
+                        Console.WriteLine("Wrong property parameter.");
+                        break;
                 }
-                else
-                {
-                    Console.WriteLine("Wrong property parameter.");
-                    break;
-                }
+
+                break;
             }
         }
     }
