@@ -106,5 +106,19 @@ namespace FileCabinetApp
         {
             return this.list.Count;
         }
+
+        public FileCabinetRecord[] FindByFirstName(string firstName)
+        {
+            List<FileCabinetRecord> records = new List<FileCabinetRecord>();
+            foreach (FileCabinetRecord record in this.list)
+            {
+                if (record.FirstName.Equals(firstName, StringComparison.OrdinalIgnoreCase))
+                {
+                    records.Add(record);
+                }
+            }
+
+            return records.ToArray();
+        }
     }
 }

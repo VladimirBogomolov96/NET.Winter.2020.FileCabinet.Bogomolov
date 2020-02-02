@@ -22,6 +22,7 @@ namespace FileCabinetApp
             new Tuple<string, Action<string>>("create", Create),
             new Tuple<string, Action<string>>("list", List),
             new Tuple<string, Action<string>>("edit", Edit),
+            new Tuple<string, Action<string>>("find", Find),
         };
 
         private static string[][] helpMessages = new string[][]
@@ -32,6 +33,7 @@ namespace FileCabinetApp
             new string[] { "create", "creates new record with entered data", "The 'create' command creates new record with entered data." },
             new string[] { "list", "returns all stored records", "The 'list' command returns all stored records." },
             new string[] { "edit", "edits existing record", "The 'edit' command edits existing record." },
+            new string[] { "find", "finds records by the given condition", "The 'find' command finds records by the given condition." },
         };
 
         public static void Main(string[] args)
@@ -265,6 +267,57 @@ namespace FileCabinetApp
         {
             Console.WriteLine("Exiting an application...");
             isRunning = false;
+        }
+
+        private static void Find(string parameters)
+        {
+            while (true)
+            {
+                string[] parametersArr = parameters.ToUpperInvariant().Split(' ', 2);
+                const int propertyIndex = 0;
+                const int searchValueIndex = 1;
+                if (string.IsNullOrEmpty(parametersArr[propertyIndex]))
+                {
+                    Console.WriteLine("Property parameter must be not a null and not an empty string.");
+                    break;
+                }
+
+                if (string.IsNullOrEmpty(parametersArr[searchValueIndex]))
+                {
+                    Console.WriteLine("Search value parameter must be not a null and not an empty string.");
+                    break;
+                }
+
+                if (parametersArr[propertyIndex] == "FIRSTNAME")
+                {
+                    FileCabinetRecord[] records = fileCabinetService.FindByFirstName(parametersArr[searchValueIndex]);
+                    if (records.Length == 0)
+                    {
+                        Console.WriteLine("Such records don't exist.");
+                        break;
+                    }
+
+                    foreach (FileCabinetRecord record in records)
+                    {
+                        Console.WriteLine(
+                        "#{0}, {1}, {2}., {3}, {4}, {5} cm, {6}$",
+                        record.Id,
+                        record.FirstName,
+                        record.PatronymicLetter,
+                        record.LastName,
+                        record.DateOfBirth.ToString("yyyy-MMM-dd", CultureInfo.InvariantCulture),
+                        record.Height,
+                        record.Income);
+                    }
+
+                    break;
+                }
+                else
+                {
+                    Console.WriteLine("Wrong property parameter.");
+                    break;
+                }
+            }
         }
     }
 }
