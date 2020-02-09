@@ -160,9 +160,10 @@ namespace FileCabinetApp
                     continue;
                 }
 
+                RecordParametersTransfer transfer = new RecordParametersTransfer(firstName, lastName, dateOfBirth, height, income, patronymicLetter);
                 try
                 {
-                    int index = fileCabinetService.CreateRecord(firstName, lastName, dateOfBirth, height, income, patronymicLetter);
+                    int index = fileCabinetService.CreateRecord(transfer);
                     Console.WriteLine($"Record #{index} is created.");
                     break;
                 }
@@ -250,7 +251,8 @@ namespace FileCabinetApp
                                 continue;
                             }
 
-                            fileCabinetService.EditRecord(Convert.ToInt32(parameters, CultureInfo.InvariantCulture), firstName, lastName, dateOfBirth, height, income, patronymicLetter);
+                            RecordParametersTransfer transfer = new RecordParametersTransfer(firstName, lastName, dateOfBirth, height, income, patronymicLetter);
+                            fileCabinetService.EditRecord(Convert.ToInt32(parameters, CultureInfo.InvariantCulture), transfer);
                             break;
                         }
                     }

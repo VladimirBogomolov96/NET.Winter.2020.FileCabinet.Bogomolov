@@ -18,33 +18,26 @@ namespace FileCabinetApp
         /// <summary>
         /// Creates new records with given parameters.
         /// </summary>
-        /// <param name="firstName">First name to set to new record.</param>
-        /// <param name="lastName">Last name to set to new record.</param>
-        /// <param name="dateOfBirth">Date of birth to set to new record.</param>
-        /// <param name="height">Height to set to new record.</param>
-        /// <param name="income">Income to set to new record.</param>
-        /// <param name="patronymicLetter">Patronymic letter to set to new record.</param>
+        /// <param name="transfer">Object to transfer parameters of new record.</param>
         /// <returns>ID of created record.</returns>
-        /// <exception cref="ArgumentNullException">Throw when first name or last name is null.</exception>
+        /// <exception cref="ArgumentNullException">Throw when first name or last name is null, when transfer object is null.</exception>
         /// <exception cref="ArgumentException">Thrown when firs name or last name length is out of 2 and 60 chars or contains only whitespaces, when date of birth out of 01-Jan-1950 and current date, when height is out of 1 and 300 cm, when income is negative, when patronymic letter is not a latin uppercase letter.</exception>
-        public int CreateRecord(string firstName, string lastName, DateTime dateOfBirth, short height, decimal income, char patronymicLetter)
+        public int CreateRecord(RecordParametersTransfer transfer)
         {
-            ValidateParameters(firstName, lastName, dateOfBirth, height, income, patronymicLetter);
-
+            ValidateParameters(transfer);
             var record = new FileCabinetRecord
             {
                 Id = this.list.Count + 1,
-                FirstName = firstName,
-                LastName = lastName,
-                DateOfBirth = dateOfBirth,
-                Height = height,
-                Income = income,
-                PatronymicLetter = patronymicLetter,
+                FirstName = transfer.FirstName,
+                LastName = transfer.LastName,
+                DateOfBirth = transfer.DateOfBirth,
+                Height = transfer.Height,
+                Income = transfer.Income,
+                PatronymicLetter = transfer.PatronymicLetter,
             };
 
             this.list.Add(record);
-            this.FillDictionaries(firstName, lastName, dateOfBirth, record);
-
+            this.FillDictionaries(transfer, record);
             return record.Id;
         }
 
@@ -52,26 +45,21 @@ namespace FileCabinetApp
         /// Edits existing record.
         /// </summary>
         /// <param name="id">ID of a record to edit.</param>
-        /// <param name="firstName">New first name to set to editing record.</param>
-        /// <param name="lastName">New last name to set to editing record.</param>
-        /// <param name="dateOfBirth">New date of birth to set to editing record.</param>
-        /// <param name="height">New height to set to editing record.</param>
-        /// <param name="income">New income to set to editing record.</param>
-        /// <param name="patronymicLetter">New patronymic letter to set to editing record.</param>
-        /// <exception cref="ArgumentNullException">Throw when first name or last name is null.</exception>
+        /// <param name="transfer">Object to transfer new parameters to existing record.</param>
+        /// <exception cref="ArgumentNullException">Throw when first name or last name is null, when transfer object is null.</exception>
         /// <exception cref="ArgumentException">Thrown when firs name or last name length is out of 2 and 60 chars or contains only whitespaces, when date of birth out of 01-Jan-1950 and current date, when height is out of 1 and 300 cm, when income is negative, when patronymic letter is not a latin uppercase letter.</exception>
-        public void EditRecord(int id, string firstName, string lastName, DateTime dateOfBirth, short height, decimal income, char patronymicLetter)
+        public void EditRecord(int id, RecordParametersTransfer transfer)
         {
-            ValidateParameters(firstName, lastName, dateOfBirth, height, income, patronymicLetter);
+            ValidateParameters(transfer);
             FileCabinetRecord editedRecord = new FileCabinetRecord()
             {
                 Id = id,
-                FirstName = firstName,
-                LastName = lastName,
-                DateOfBirth = dateOfBirth,
-                Height = height,
-                Income = income,
-                PatronymicLetter = patronymicLetter,
+                FirstName = transfer.FirstName,
+                LastName = transfer.LastName,
+                DateOfBirth = transfer.DateOfBirth,
+                Height = transfer.Height,
+                Income = transfer.Income,
+                PatronymicLetter = transfer.PatronymicLetter,
             };
             for (int i = 0; i < this.list.Count; i++)
             {
@@ -90,7 +78,7 @@ namespace FileCabinetApp
                 }
             }
 
-            this.FillDictionaries(firstName, lastName, dateOfBirth, editedRecord);
+            this.FillDictionaries(transfer, editedRecord);
             Console.WriteLine($"Record #{id} is updated.");
         }
 
@@ -158,89 +146,94 @@ namespace FileCabinetApp
             return records.ToArray();
         }
 
-        private static void ValidateParameters(string firstName, string lastName, DateTime dateOfBirth, short height, decimal income, char patronymicLetter)
+        private static void ValidateParameters(RecordParametersTransfer transfer)
         {
-            if (firstName is null)
+            if (transfer is null)
             {
-                throw new ArgumentNullException(nameof(firstName), "First name can not be null.");
+                throw new ArgumentNullException(nameof(transfer), "Transfer object must be not null.");
             }
 
-            if (firstName.Length < 2 || firstName.Length > 60)
+            if (transfer.FirstName is null)
             {
-                throw new ArgumentException("First name length must be from 2 to 60 chars.", nameof(firstName));
+                throw new ArgumentNullException(nameof(transfer), "First name can not be null.");
             }
 
-            if (firstName.Trim().Length == 0)
+            if (transfer.FirstName.Length < 2 || transfer.FirstName.Length > 60)
             {
-                throw new ArgumentException("First name can not contain only whitespaces.", nameof(firstName));
+                throw new ArgumentException("First name length must be from 2 to 60 chars.", nameof(transfer));
             }
 
-            if (lastName is null)
+            if (transfer.FirstName.Trim().Length == 0)
             {
-                throw new ArgumentNullException(nameof(lastName), "Last name can not be null.");
+                throw new ArgumentException("First name can not contain only whitespaces.", nameof(transfer));
             }
 
-            if (lastName.Length < 2 || lastName.Length > 60)
+            if (transfer.LastName is null)
             {
-                throw new ArgumentException("Last name length must be from 2 to 60 chars.", nameof(lastName));
+                throw new ArgumentNullException(nameof(transfer), "Last name can not be null.");
             }
 
-            if (lastName.Trim().Length == 0)
+            if (transfer.LastName.Length < 2 || transfer.LastName.Length > 60)
             {
-                throw new ArgumentException("Last name can not contain only whitespaces.", nameof(lastName));
+                throw new ArgumentException("Last name length must be from 2 to 60 chars.", nameof(transfer));
             }
 
-            if (dateOfBirth < new DateTime(1950, 1, 1) || dateOfBirth > DateTime.Today)
+            if (transfer.LastName.Trim().Length == 0)
             {
-                throw new ArgumentException("Date of birth must be from 01-Jan-1950 to today.", nameof(dateOfBirth));
+                throw new ArgumentException("Last name can not contain only whitespaces.", nameof(transfer));
             }
 
-            if (height <= 0 || height > 300)
+            if (transfer.DateOfBirth < new DateTime(1950, 1, 1) || transfer.DateOfBirth > DateTime.Today)
             {
-                throw new ArgumentException("Height must be from 1 to 300 cm.", nameof(height));
+                throw new ArgumentException("Date of birth must be from 01-Jan-1950 to today.", nameof(transfer));
             }
 
-            if (income < 0)
+            if (transfer.Height <= 0 || transfer.Height > 300)
             {
-                throw new ArgumentException("Income must be not negative number.", nameof(income));
+                throw new ArgumentException("Height must be from 1 to 300 cm.", nameof(transfer));
             }
 
-            if (patronymicLetter < 'A' || patronymicLetter > 'Z')
+            if (transfer.Income < 0)
             {
-                throw new ArgumentException("Patronymic letter must be a latin letter in uppercase.");
+                throw new ArgumentException("Income must be not negative number.", nameof(transfer));
+            }
+
+            if (transfer.PatronymicLetter < 'A' || transfer.PatronymicLetter > 'Z')
+            {
+                throw new ArgumentException("Patronymic letter must be a latin letter in uppercase.", nameof(transfer));
             }
         }
 
-        private void FillDictionaries(string firstName, string lastName, DateTime dateOfBirth, FileCabinetRecord record)
+        private void FillDictionaries(RecordParametersTransfer transfer, FileCabinetRecord record)
         {
-            if (this.firstNameDictionary.ContainsKey(firstName))
+            if (this.firstNameDictionary.ContainsKey(transfer.FirstName))
             {
-                this.firstNameDictionary[firstName].Add(record);
+                this.firstNameDictionary[transfer.FirstName].Add(record);
             }
             else
             {
-                this.firstNameDictionary.Add(firstName, new List<FileCabinetRecord>());
-                this.firstNameDictionary[firstName].Add(record);
+                this.firstNameDictionary.Add(transfer.FirstName, new List<FileCabinetRecord>());
+                this.firstNameDictionary[transfer.FirstName].Add(record);
             }
 
-            if (this.lastNameDictionary.ContainsKey(lastName))
+            if (this.lastNameDictionary.ContainsKey(transfer.LastName))
             {
-                this.lastNameDictionary[lastName].Add(record);
+                this.lastNameDictionary[transfer.LastName].Add(record);
             }
             else
             {
-                this.lastNameDictionary.Add(lastName, new List<FileCabinetRecord>());
-                this.lastNameDictionary[lastName].Add(record);
+                this.lastNameDictionary.Add(transfer.LastName, new List<FileCabinetRecord>());
+                this.lastNameDictionary[transfer.LastName].Add(record);
             }
 
-            if (this.dateOfBirthDictionary.ContainsKey(dateOfBirth))
+            if (this.dateOfBirthDictionary.ContainsKey(transfer.DateOfBirth))
             {
-                this.dateOfBirthDictionary[dateOfBirth].Add(record);
+                this.dateOfBirthDictionary[transfer.DateOfBirth].Add(record);
             }
             else
             {
-                this.dateOfBirthDictionary.Add(dateOfBirth, new List<FileCabinetRecord>());
-                this.dateOfBirthDictionary[dateOfBirth].Add(record);
+                this.dateOfBirthDictionary.Add(transfer.DateOfBirth, new List<FileCabinetRecord>());
+                this.dateOfBirthDictionary[transfer.DateOfBirth].Add(record);
             }
         }
     }

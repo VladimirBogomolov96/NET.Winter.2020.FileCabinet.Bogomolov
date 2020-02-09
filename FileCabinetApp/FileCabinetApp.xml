@@ -56,32 +56,22 @@
             Provides methods to interact with records.
             </summary>
         </member>
-        <member name="M:FileCabinetApp.FileCabinetService.CreateRecord(System.String,System.String,System.DateTime,System.Int16,System.Decimal,System.Char)">
+        <member name="M:FileCabinetApp.FileCabinetService.CreateRecord(FileCabinetApp.RecordParametersTransfer)">
             <summary>
             Creates new records with given parameters.
             </summary>
-            <param name="firstName">First name to set to new record.</param>
-            <param name="lastName">Last name to set to new record.</param>
-            <param name="dateOfBirth">Date of birth to set to new record.</param>
-            <param name="height">Height to set to new record.</param>
-            <param name="income">Income to set to new record.</param>
-            <param name="patronymicLetter">Patronymic letter to set to new record.</param>
+            <param name="transfer">Object to transfer parameters of new record.</param>
             <returns>ID of created record.</returns>
-            <exception cref="T:System.ArgumentNullException">Throw when first name or last name is null.</exception>
+            <exception cref="T:System.ArgumentNullException">Throw when first name or last name is null, when transfer object is null.</exception>
             <exception cref="T:System.ArgumentException">Thrown when firs name or last name length is out of 2 and 60 chars or contains only whitespaces, when date of birth out of 01-Jan-1950 and current date, when height is out of 1 and 300 cm, when income is negative, when patronymic letter is not a latin uppercase letter.</exception>
         </member>
-        <member name="M:FileCabinetApp.FileCabinetService.EditRecord(System.Int32,System.String,System.String,System.DateTime,System.Int16,System.Decimal,System.Char)">
+        <member name="M:FileCabinetApp.FileCabinetService.EditRecord(System.Int32,FileCabinetApp.RecordParametersTransfer)">
             <summary>
             Edits existing record.
             </summary>
             <param name="id">ID of a record to edit.</param>
-            <param name="firstName">New first name to set to editing record.</param>
-            <param name="lastName">New last name to set to editing record.</param>
-            <param name="dateOfBirth">New date of birth to set to editing record.</param>
-            <param name="height">New height to set to editing record.</param>
-            <param name="income">New income to set to editing record.</param>
-            <param name="patronymicLetter">New patronymic letter to set to editing record.</param>
-            <exception cref="T:System.ArgumentNullException">Throw when first name or last name is null.</exception>
+            <param name="transfer">Object to transfer new parameters to existing record.</param>
+            <exception cref="T:System.ArgumentNullException">Throw when first name or last name is null, when transfer object is null.</exception>
             <exception cref="T:System.ArgumentException">Thrown when firs name or last name length is out of 2 and 60 chars or contains only whitespaces, when date of birth out of 01-Jan-1950 and current date, when height is out of 1 and 300 cm, when income is negative, when patronymic letter is not a latin uppercase letter.</exception>
         </member>
         <member name="M:FileCabinetApp.FileCabinetService.GetRecords">
@@ -127,6 +117,58 @@
             Point of entrance to program.
             </summary>
             <param name="args">Command prompt arguments.</param>
+        </member>
+        <member name="T:FileCabinetApp.RecordParametersTransfer">
+            <summary>
+            Parameters transition class.
+            </summary>
+        </member>
+        <member name="M:FileCabinetApp.RecordParametersTransfer.#ctor(System.String,System.String,System.DateTime,System.Int16,System.Decimal,System.Char)">
+            <summary>
+            Initializes a new instance of the <see cref="T:FileCabinetApp.RecordParametersTransfer"/> class.
+            </summary>
+            <param name="firstName">First name parameter to transfer.</param>
+            <param name="lastName">Last name parameter to transfer.</param>
+            <param name="dateOfBirth">Date of birth parameter to transfer.</param>
+            <param name="height">Height parameter to transfer.</param>
+            <param name="income">Income parameter to transfer.</param>
+            <param name="patronymicLetter">Patronymic letter parameter to transfer.</param>
+        </member>
+        <member name="P:FileCabinetApp.RecordParametersTransfer.FirstName">
+            <summary>
+            Gets first name to transfer.
+            </summary>
+            <value>Value of first name to transfer.</value>
+        </member>
+        <member name="P:FileCabinetApp.RecordParametersTransfer.LastName">
+            <summary>
+            Gets last name to transfer.
+            </summary>
+            <value>Value of last name to transfer.</value>
+        </member>
+        <member name="P:FileCabinetApp.RecordParametersTransfer.DateOfBirth">
+            <summary>
+            Gets date of birth to transfer.
+            </summary>
+            <value>Value of date of birth to transfer.</value>
+        </member>
+        <member name="P:FileCabinetApp.RecordParametersTransfer.Height">
+            <summary>
+            Gets height to transfer.
+            </summary>
+            <value>Value of height to transfer.</value>
+        </member>
+        <member name="P:FileCabinetApp.RecordParametersTransfer.Income">
+            <summary>
+            Gets income to transfer.
+            </summary>
+            <value>Value of income to transfer.</value>
+        </member>
+        <member name="P:FileCabinetApp.RecordParametersTransfer.PatronymicLetter">
+            <summary>
+            Gets patronymic letter to transfer.
+            </summary>
+            <value>Value of patronymic letter to transfer.</value>
         </member>
     </members>
 </doc>
