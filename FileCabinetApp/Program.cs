@@ -3,6 +3,9 @@ using System.Globalization;
 
 namespace FileCabinetApp
 {
+    /// <summary>
+    /// API class of the program.
+    /// </summary>
     public static class Program
     {
         private const string DeveloperName = "Vladimir Bogomolov";
@@ -36,6 +39,10 @@ namespace FileCabinetApp
             new string[] { "find", "finds records by the given condition", "The 'find' command finds records by the given condition." },
         };
 
+        /// <summary>
+        /// Point of entrance to program.
+        /// </summary>
+        /// <param name="args">Command prompt arguments.</param>
         public static void Main(string[] args)
         {
             Console.WriteLine($"File Cabinet Application, developed by {Program.DeveloperName}");
@@ -118,7 +125,7 @@ namespace FileCabinetApp
                 Console.Write("Last name: ");
                 string lastName = Console.ReadLine();
                 Console.Write("Date of birth: ");
-                DateTime dateOfBirth = DateTime.MinValue;
+                DateTime dateOfBirth;
                 try
                 {
                     dateOfBirth = DateTime.ParseExact(Console.ReadLine(), "MM/dd/yyyy", CultureInfo.InvariantCulture);
@@ -131,8 +138,7 @@ namespace FileCabinetApp
 
                 Console.Write("Height: ");
                 string heightStr = Console.ReadLine();
-                short height;
-                if (!short.TryParse(heightStr, out height))
+                if (!short.TryParse(heightStr, out short height))
                 {
                     Console.WriteLine("Heigh must be in range of System.Int16 (from -32768 to 32767)");
                     continue;
@@ -140,8 +146,7 @@ namespace FileCabinetApp
 
                 Console.Write("Income: ");
                 string incomeStr = Console.ReadLine();
-                decimal income;
-                if (!decimal.TryParse(incomeStr, out income))
+                if (!decimal.TryParse(incomeStr, out decimal income))
                 {
                     Console.WriteLine("Income must be a decimal number from (+/-)1.0*10^(-28) to (+/-)7.9228*10^28");
                     continue;
@@ -149,8 +154,7 @@ namespace FileCabinetApp
 
                 Console.Write("Patronymic letter: ");
                 string patronymicLetterStr = Console.ReadLine();
-                char patronymicLetter;
-                if (!char.TryParse(patronymicLetterStr, out patronymicLetter))
+                if (!char.TryParse(patronymicLetterStr, out char patronymicLetter))
                 {
                     Console.WriteLine("Enter only one symbol.");
                     continue;
@@ -211,7 +215,7 @@ namespace FileCabinetApp
                             Console.Write("Last name: ");
                             string lastName = Console.ReadLine();
                             Console.Write("Date of birth: ");
-                            DateTime dateOfBirth = DateTime.MinValue;
+                            DateTime dateOfBirth;
                             try
                             {
                                 dateOfBirth = DateTime.ParseExact(Console.ReadLine(), "MM/dd/yyyy", CultureInfo.InvariantCulture);
@@ -224,8 +228,7 @@ namespace FileCabinetApp
 
                             Console.Write("Height: ");
                             string heightStr = Console.ReadLine();
-                            short height;
-                            if (!short.TryParse(heightStr, out height))
+                            if (!short.TryParse(heightStr, out short height))
                             {
                                 Console.WriteLine("Heigh must be in range of System.Int16 (from -32768 to 32767)");
                                 continue;
@@ -233,8 +236,7 @@ namespace FileCabinetApp
 
                             Console.Write("Income: ");
                             string incomeStr = Console.ReadLine();
-                            decimal income;
-                            if (!decimal.TryParse(incomeStr, out income))
+                            if (!decimal.TryParse(incomeStr, out decimal income))
                             {
                                 Console.WriteLine("Income must be a decimal number from (+/-)1.0*10^(-28) to (+/-)7.9228*10^28");
                                 continue;
@@ -242,8 +244,7 @@ namespace FileCabinetApp
 
                             Console.Write("Patronymic letter: ");
                             string patronymicLetterStr = Console.ReadLine();
-                            char patronymicLetter;
-                            if (!char.TryParse(patronymicLetterStr, out patronymicLetter))
+                            if (!char.TryParse(patronymicLetterStr, out char patronymicLetter))
                             {
                                 Console.WriteLine("Enter only one symbol.");
                                 continue;

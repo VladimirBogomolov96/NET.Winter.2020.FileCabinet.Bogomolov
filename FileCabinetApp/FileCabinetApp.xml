@@ -4,5 +4,129 @@
         <name>FileCabinetApp</name>
     </assembly>
     <members>
+        <member name="T:FileCabinetApp.FileCabinetRecord">
+            <summary>
+            Provides type to describe a record.
+            </summary>
+        </member>
+        <member name="P:FileCabinetApp.FileCabinetRecord.Id">
+            <summary>
+            Gets or sets unique ID of a record.
+            </summary>
+            <value>Value of ID of a record.</value>
+        </member>
+        <member name="P:FileCabinetApp.FileCabinetRecord.FirstName">
+            <summary>
+            Gets or sets first name of record subject.
+            </summary>
+            <value>Value of first name of a record.</value>
+        </member>
+        <member name="P:FileCabinetApp.FileCabinetRecord.LastName">
+            <summary>
+            Gets or sets last name of record subject.
+            </summary>
+            <value>Value of last name of a record.</value>
+        </member>
+        <member name="P:FileCabinetApp.FileCabinetRecord.DateOfBirth">
+            <summary>
+            Gets or sets date of birth of record subject.
+            </summary>
+            <value>Value of date of birth of a record.</value>
+        </member>
+        <member name="P:FileCabinetApp.FileCabinetRecord.Height">
+            <summary>
+            Gets or sets height of record subject.
+            </summary>
+            <value>Value of height of a record.</value>
+        </member>
+        <member name="P:FileCabinetApp.FileCabinetRecord.Income">
+            <summary>
+            Gets or sets income of record subject.
+            </summary>
+            <value>Value of income of a record.</value>
+        </member>
+        <member name="P:FileCabinetApp.FileCabinetRecord.PatronymicLetter">
+            <summary>
+            Gets or sets patronymic letter of record subject.
+            </summary>
+            <value>Value of patronymic letter of a record.</value>
+        </member>
+        <member name="T:FileCabinetApp.FileCabinetService">
+            <summary>
+            Provides methods to interact with records.
+            </summary>
+        </member>
+        <member name="M:FileCabinetApp.FileCabinetService.CreateRecord(System.String,System.String,System.DateTime,System.Int16,System.Decimal,System.Char)">
+            <summary>
+            Creates new records with given parameters.
+            </summary>
+            <param name="firstName">First name to set to new record.</param>
+            <param name="lastName">Last name to set to new record.</param>
+            <param name="dateOfBirth">Date of birth to set to new record.</param>
+            <param name="height">Height to set to new record.</param>
+            <param name="income">Income to set to new record.</param>
+            <param name="patronymicLetter">Patronymic letter to set to new record.</param>
+            <returns>ID of created record.</returns>
+            <exception cref="T:System.ArgumentNullException">Throw when first name or last name is null.</exception>
+            <exception cref="T:System.ArgumentException">Thrown when firs name or last name length is out of 2 and 60 chars or contains only whitespaces, when date of birth out of 01-Jan-1950 and current date, when height is out of 1 and 300 cm, when income is negative, when patronymic letter is not a latin uppercase letter.</exception>
+        </member>
+        <member name="M:FileCabinetApp.FileCabinetService.EditRecord(System.Int32,System.String,System.String,System.DateTime,System.Int16,System.Decimal,System.Char)">
+            <summary>
+            Edits existing record.
+            </summary>
+            <param name="id">ID of a record to edit.</param>
+            <param name="firstName">New first name to set to editing record.</param>
+            <param name="lastName">New last name to set to editing record.</param>
+            <param name="dateOfBirth">New date of birth to set to editing record.</param>
+            <param name="height">New height to set to editing record.</param>
+            <param name="income">New income to set to editing record.</param>
+            <param name="patronymicLetter">New patronymic letter to set to editing record.</param>
+            <exception cref="T:System.ArgumentNullException">Throw when first name or last name is null.</exception>
+            <exception cref="T:System.ArgumentException">Thrown when firs name or last name length is out of 2 and 60 chars or contains only whitespaces, when date of birth out of 01-Jan-1950 and current date, when height is out of 1 and 300 cm, when income is negative, when patronymic letter is not a latin uppercase letter.</exception>
+        </member>
+        <member name="M:FileCabinetApp.FileCabinetService.GetRecords">
+            <summary>
+            Gets all existing records.
+            </summary>
+            <returns>Array of all existing records.</returns>
+        </member>
+        <member name="M:FileCabinetApp.FileCabinetService.GetStat">
+            <summary>
+            Counts amount of existing records.
+            </summary>
+            <returns>Amount of existing records.</returns>
+        </member>
+        <member name="M:FileCabinetApp.FileCabinetService.FindByFirstName(System.String)">
+            <summary>
+            Finds all records with given first name.
+            </summary>
+            <param name="firstName">First name to match with.</param>
+            <returns>Array of matching records.</returns>
+        </member>
+        <member name="M:FileCabinetApp.FileCabinetService.FindByLastName(System.String)">
+            <summary>
+            Finds all records with given last name.
+            </summary>
+            <param name="lastName">Last name to match with.</param>
+            <returns>Array of matching records.</returns>
+        </member>
+        <member name="M:FileCabinetApp.FileCabinetService.FindByDateOfbirth(System.DateTime)">
+            <summary>
+            Finds all records with given date of birth.
+            </summary>
+            <param name="dateOfBirth">Date of birth to match with.</param>
+            <returns>Array of matching records.</returns>
+        </member>
+        <member name="T:FileCabinetApp.Program">
+            <summary>
+            API class of the program.
+            </summary>
+        </member>
+        <member name="M:FileCabinetApp.Program.Main(System.String[])">
+            <summary>
+            Point of entrance to program.
+            </summary>
+            <param name="args">Command prompt arguments.</param>
+        </member>
     </members>
 </doc>
