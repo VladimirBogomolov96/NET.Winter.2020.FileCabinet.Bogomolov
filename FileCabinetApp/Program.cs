@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.ObjectModel;
 using System.Globalization;
 
 namespace FileCabinetApp
@@ -224,14 +225,14 @@ namespace FileCabinetApp
 
         private static void List(string parameters)
         {
-            FileCabinetRecord[] records = fileCabinetService.GetRecords();
-            if (records.Length is 0)
+            ReadOnlyCollection<FileCabinetRecord> records = fileCabinetService.GetRecords();
+            if (records.Count is 0)
             {
                 Console.WriteLine("There is no stored records.");
             }
             else
             {
-                for (int i = 0; i < records.Length; i++)
+                for (int i = 0; i < records.Count; i++)
                 {
                     Console.WriteLine(
                         "#{0}, {1}, {2}., {3}, {4}, {5} cm, {6}$",
@@ -251,7 +252,7 @@ namespace FileCabinetApp
             if (!string.IsNullOrEmpty(parameters))
             {
                 bool wasFound = false;
-                for (int i = 0; i < fileCabinetService.GetRecords().Length; i++)
+                for (int i = 0; i < fileCabinetService.GetRecords().Count; i++)
                 {
                     if (fileCabinetService.GetRecords()[i].Id.ToString(CultureInfo.InvariantCulture) == parameters)
                     {
@@ -351,8 +352,8 @@ namespace FileCabinetApp
                 switch (parametersArr[propertyIndex])
                 {
                     case "FIRSTNAME":
-                        FileCabinetRecord[] recordsFirstName = fileCabinetService.FindByFirstName(parametersArr[searchValueIndex]);
-                        if (recordsFirstName.Length == 0)
+                        ReadOnlyCollection<FileCabinetRecord> recordsFirstName = fileCabinetService.FindByFirstName(parametersArr[searchValueIndex]);
+                        if (recordsFirstName.Count == 0)
                         {
                             Console.WriteLine("Such records don't exist.");
                             break;
@@ -373,8 +374,8 @@ namespace FileCabinetApp
 
                         break;
                     case "LASTNAME":
-                        FileCabinetRecord[] recordsLastName = fileCabinetService.FindByLastName(parametersArr[searchValueIndex]);
-                        if (recordsLastName.Length == 0)
+                        ReadOnlyCollection<FileCabinetRecord> recordsLastName = fileCabinetService.FindByLastName(parametersArr[searchValueIndex]);
+                        if (recordsLastName.Count == 0)
                         {
                             Console.WriteLine("Such records don't exist.");
                             break;
@@ -406,8 +407,8 @@ namespace FileCabinetApp
                             break;
                         }
 
-                        FileCabinetRecord[] recordsDateOfBirth = fileCabinetService.FindByDateOfbirth(dateOfBirth);
-                        if (recordsDateOfBirth.Length == 0)
+                        ReadOnlyCollection<FileCabinetRecord> recordsDateOfBirth = fileCabinetService.FindByDateOfbirth(dateOfBirth);
+                        if (recordsDateOfBirth.Count == 0)
                         {
                             Console.WriteLine("Such records don't exist.");
                             break;
