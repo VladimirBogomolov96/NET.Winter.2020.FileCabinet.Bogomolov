@@ -14,7 +14,7 @@ namespace FileCabinetApp
         private const int DescriptionHelpIndex = 1;
         private const int ExplanationHelpIndex = 2;
 
-        private static FileCabinetService fileCabinetService = new FileCabinetCustomService();
+        private static FileCabinetService fileCabinetService;
         private static bool isRunning = true;
 
         private static Tuple<string, Action<string>>[] commands = new Tuple<string, Action<string>>[]
@@ -26,6 +26,14 @@ namespace FileCabinetApp
             new Tuple<string, Action<string>>("list", List),
             new Tuple<string, Action<string>>("edit", Edit),
             new Tuple<string, Action<string>>("find", Find),
+        };
+
+        private static Tuple<string, string, Action>[] cmdCommands = new Tuple<string, string, Action>[]
+        {
+            new Tuple<string, string, Action>("--validation-rules", "default", SetDefaultService),
+            new Tuple<string, string, Action>("--validation-rules", "custom", SetCustomService),
+            new Tuple<string, string, Action>("-v", "default", SetDefaultService),
+            new Tuple<string, string, Action>("-v", "custom", SetCustomService),
         };
 
         private static string[][] helpMessages = new string[][]
@@ -46,6 +54,45 @@ namespace FileCabinetApp
         public static void Main(string[] args)
         {
             Console.WriteLine($"File Cabinet Application, developed by {Program.DeveloperName}");
+            if (!(args is null) && args.Length > 0)
+            {
+                string[] cmdParameters = args[0].Split('=');
+                string cmdTypeParameter = null;
+                string cmdTypeParameterValue = null;
+
+                if (cmdParameters.Length > 1)
+                {
+                    cmdTypeParameter = cmdParameters[0];
+                    cmdTypeParameterValue = cmdParameters[1];
+                }
+                else if (cmdParameters.Length == 1 && args.Length == 2)
+                {
+                    cmdTypeParameter = args[0];
+                    cmdTypeParameterValue = args[1];
+                }
+
+                if (!(cmdTypeParameter is null) && !(cmdTypeParameterValue is null))
+                {
+                    var index = Array.FindIndex(cmdCommands, 0, cmdCommands.Length, i => i.Item1.Equals(cmdTypeParameter, StringComparison.InvariantCultureIgnoreCase) && i.Item2.Equals(cmdTypeParameterValue, StringComparison.InvariantCultureIgnoreCase));
+                    if (index >= 0)
+                    {
+                        cmdCommands[index].Item3();
+                    }
+                    else
+                    {
+                        SetDefaultService();
+                    }
+                }
+                else
+                {
+                    SetDefaultService();
+                }
+            }
+            else
+            {
+                SetDefaultService();
+            }
+
             Console.WriteLine(Program.HintMessage);
             Console.WriteLine();
 
@@ -273,6 +320,18 @@ namespace FileCabinetApp
         {
             Console.WriteLine("Exiting an application...");
             isRunning = false;
+        }
+
+        private static void SetDefaultService()
+        {
+            fileCabinetService = new FileCabinetDefaultService();
+            Console.WriteLine("Using default validation rules.");
+        }
+
+        private static void SetCustomService()
+        {
+            fileCabinetService = new FileCabinetCustomService();
+            Console.WriteLine("Using custom validation rules.");
         }
 
         private static void Find(string parameters)
