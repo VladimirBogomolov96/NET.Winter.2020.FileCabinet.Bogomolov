@@ -31,22 +31,10 @@
             Provides method to create validator.
             </summary>
         </member>
-        <member name="M:FileCabinetApp.FileCabinetCustomService.CreateValidator">
-            <summary>
-            Creates custom validator.
-            </summary>
-            <returns>Custom validator.</returns>
-        </member>
         <member name="T:FileCabinetApp.FileCabinetDefaultService">
             <summary>
             Provides method to create validator.
             </summary>
-        </member>
-        <member name="M:FileCabinetApp.FileCabinetDefaultService.CreateValidator">
-            <summary>
-            Creates default validator.
-            </summary>
-            <returns>Default validator.</returns>
         </member>
         <member name="T:FileCabinetApp.FileCabinetRecord">
             <summary>
@@ -100,6 +88,12 @@
             Provides methods to interact with records.
             </summary>
         </member>
+        <member name="M:FileCabinetApp.FileCabinetService.#ctor(FileCabinetApp.IRecordValidator)">
+            <summary>
+            Initializes a new instance of the <see cref="T:FileCabinetApp.FileCabinetService"/> class.
+            </summary>
+            <param name="recordValidator">Validator for parameters.</param>
+        </member>
         <member name="M:FileCabinetApp.FileCabinetService.CreateRecord(FileCabinetApp.RecordParametersTransfer)">
             <summary>
             Creates new records with given parameters.
@@ -150,12 +144,6 @@
             </summary>
             <param name="dateOfBirth">Date of birth to match with.</param>
             <returns>Array of matching records.</returns>
-        </member>
-        <member name="M:FileCabinetApp.FileCabinetService.CreateValidator">
-            <summary>
-            Creates default validator.
-            </summary>
-            <returns>Validator.</returns>
         </member>
         <member name="T:FileCabinetApp.IRecordValidator">
             <summary>

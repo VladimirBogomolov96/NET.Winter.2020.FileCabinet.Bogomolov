@@ -8,12 +8,22 @@ namespace FileCabinetApp
     /// <summary>
     /// Provides methods to interact with records.
     /// </summary>
-    public abstract class FileCabinetService
+    public class FileCabinetService
     {
         private readonly List<FileCabinetRecord> list = new List<FileCabinetRecord>();
         private readonly Dictionary<string, List<FileCabinetRecord>> firstNameDictionary = new Dictionary<string, List<FileCabinetRecord>>();
         private readonly Dictionary<string, List<FileCabinetRecord>> lastNameDictionary = new Dictionary<string, List<FileCabinetRecord>>();
         private readonly Dictionary<DateTime, List<FileCabinetRecord>> dateOfBirthDictionary = new Dictionary<DateTime, List<FileCabinetRecord>>();
+        private IRecordValidator recordValidator;
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="FileCabinetService"/> class.
+        /// </summary>
+        /// <param name="recordValidator">Validator for parameters.</param>
+        public FileCabinetService(IRecordValidator recordValidator)
+        {
+            this.recordValidator = recordValidator;
+        }
 
         /// <summary>
         /// Creates new records with given parameters.
@@ -24,7 +34,7 @@ namespace FileCabinetApp
         /// <exception cref="ArgumentException">Thrown when firs name or last name length is out of 2 and 60 chars or contains only whitespaces, when date of birth out of 01-Jan-1950 and current date, when height is out of 1 and 300 cm, when income is negative, when patronymic letter is not a latin uppercase letter.</exception>
         public int CreateRecord(RecordParametersTransfer transfer)
         {
-            this.CreateValidator().ValidateParameters(transfer);
+            this.recordValidator.ValidateParameters(transfer);
             var record = new FileCabinetRecord
             {
                 Id = this.list.Count + 1,
@@ -50,7 +60,7 @@ namespace FileCabinetApp
         /// <exception cref="ArgumentException">Thrown when firs name or last name length is out of 2 and 60 chars or contains only whitespaces, when date of birth out of 01-Jan-1950 and current date, when height is out of 1 and 300 cm, when income is negative, when patronymic letter is not a latin uppercase letter.</exception>
         public void EditRecord(int id, RecordParametersTransfer transfer)
         {
-            this.CreateValidator().ValidateParameters(transfer);
+            this.recordValidator.ValidateParameters(transfer);
             FileCabinetRecord editedRecord = new FileCabinetRecord()
             {
                 Id = id,
@@ -145,12 +155,6 @@ namespace FileCabinetApp
 
             return records.ToArray();
         }
-
-        /// <summary>
-        /// Creates default validator.
-        /// </summary>
-        /// <returns>Validator.</returns>
-        protected abstract IRecordValidator CreateValidator();
 
         private void FillDictionaries(RecordParametersTransfer transfer, FileCabinetRecord record)
         {
