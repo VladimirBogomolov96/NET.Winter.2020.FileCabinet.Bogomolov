@@ -324,13 +324,13 @@ namespace FileCabinetApp
 
         private static void SetDefaultService()
         {
-            fileCabinetService = new FileCabinetDefaultService();
+            fileCabinetService = new FileCabinetService(new DefaultValidator());
             Console.WriteLine("Using default validation rules.");
         }
 
         private static void SetCustomService()
         {
-            fileCabinetService = new FileCabinetCustomService();
+            fileCabinetService = new FileCabinetService(new CustomValidator());
             Console.WriteLine("Using custom validation rules.");
         }
 

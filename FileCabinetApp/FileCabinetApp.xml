@@ -26,16 +26,6 @@
             </summary>
             <param name="transfer">Transfer parameters to validate.</param>
         </member>
-        <member name="T:FileCabinetApp.FileCabinetCustomService">
-            <summary>
-            Provides method to create validator.
-            </summary>
-        </member>
-        <member name="T:FileCabinetApp.FileCabinetDefaultService">
-            <summary>
-            Provides method to create validator.
-            </summary>
-        </member>
         <member name="T:FileCabinetApp.FileCabinetRecord">
             <summary>
             Provides type to describe a record.
