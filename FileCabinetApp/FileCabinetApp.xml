@@ -4,27 +4,49 @@
         <name>FileCabinetApp</name>
     </assembly>
     <members>
-        <member name="T:FileCabinetApp.FileCabinetCustomService">
+        <member name="T:FileCabinetApp.CustomValidator">
             <summary>
-            Provides methods to interact with records.
+            Provides method for parameters validation.
             </summary>
         </member>
-        <member name="M:FileCabinetApp.FileCabinetCustomService.ValidateParameters(FileCabinetApp.RecordParametersTransfer)">
+        <member name="M:FileCabinetApp.CustomValidator.ValidateParameters(FileCabinetApp.RecordParametersTransfer)">
+            <summary>
+            Validate given parameters.
+            </summary>
+            <param name="transfer">Transfer of parameters to validate.</param>
+        </member>
+        <member name="T:FileCabinetApp.DefaultValidator">
+            <summary>
+            Provides method for parameters validation.
+            </summary>
+        </member>
+        <member name="M:FileCabinetApp.DefaultValidator.ValidateParameters(FileCabinetApp.RecordParametersTransfer)">
             <summary>
             Validate transfer parameters to use in methods.
             </summary>
             <param name="transfer">Transfer parameters to validate.</param>
+        </member>
+        <member name="T:FileCabinetApp.FileCabinetCustomService">
+            <summary>
+            Provides method to create validator.
+            </summary>
+        </member>
+        <member name="M:FileCabinetApp.FileCabinetCustomService.CreateValidator">
+            <summary>
+            Creates custom validator.
+            </summary>
+            <returns>Custom validator.</returns>
         </member>
         <member name="T:FileCabinetApp.FileCabinetDefaultService">
             <summary>
-            Provides methods to interact with records.
+            Provides method to create validator.
             </summary>
         </member>
-        <member name="M:FileCabinetApp.FileCabinetDefaultService.ValidateParameters(FileCabinetApp.RecordParametersTransfer)">
+        <member name="M:FileCabinetApp.FileCabinetDefaultService.CreateValidator">
             <summary>
-            Validate transfer parameters to use in methods.
+            Creates default validator.
             </summary>
-            <param name="transfer">Transfer parameters to validate.</param>
+            <returns>Default validator.</returns>
         </member>
         <member name="T:FileCabinetApp.FileCabinetRecord">
             <summary>
@@ -129,11 +151,22 @@
             <param name="dateOfBirth">Date of birth to match with.</param>
             <returns>Array of matching records.</returns>
         </member>
-        <member name="M:FileCabinetApp.FileCabinetService.ValidateParameters(FileCabinetApp.RecordParametersTransfer)">
+        <member name="M:FileCabinetApp.FileCabinetService.CreateValidator">
             <summary>
-            Validate transfer parameters to use in methods.
+            Creates default validator.
             </summary>
-            <param name="transfer">Transfer parameters to validate.</param>
+            <returns>Validator.</returns>
+        </member>
+        <member name="T:FileCabinetApp.IRecordValidator">
+            <summary>
+            Interface to make validation of some parameters.
+            </summary>
+        </member>
+        <member name="M:FileCabinetApp.IRecordValidator.ValidateParameters(FileCabinetApp.RecordParametersTransfer)">
+            <summary>
+            Validate given parameters.
+            </summary>
+            <param name="transfer">Transfer of parameters to validate.</param>
         </member>
         <member name="T:FileCabinetApp.Program">
             <summary>

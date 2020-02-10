@@ -24,7 +24,7 @@ namespace FileCabinetApp
         /// <exception cref="ArgumentException">Thrown when firs name or last name length is out of 2 and 60 chars or contains only whitespaces, when date of birth out of 01-Jan-1950 and current date, when height is out of 1 and 300 cm, when income is negative, when patronymic letter is not a latin uppercase letter.</exception>
         public int CreateRecord(RecordParametersTransfer transfer)
         {
-            this.ValidateParameters(transfer);
+            this.CreateValidator().ValidateParameters(transfer);
             var record = new FileCabinetRecord
             {
                 Id = this.list.Count + 1,
@@ -50,7 +50,7 @@ namespace FileCabinetApp
         /// <exception cref="ArgumentException">Thrown when firs name or last name length is out of 2 and 60 chars or contains only whitespaces, when date of birth out of 01-Jan-1950 and current date, when height is out of 1 and 300 cm, when income is negative, when patronymic letter is not a latin uppercase letter.</exception>
         public void EditRecord(int id, RecordParametersTransfer transfer)
         {
-            this.ValidateParameters(transfer);
+            this.CreateValidator().ValidateParameters(transfer);
             FileCabinetRecord editedRecord = new FileCabinetRecord()
             {
                 Id = id,
@@ -147,10 +147,10 @@ namespace FileCabinetApp
         }
 
         /// <summary>
-        /// Validate transfer parameters to use in methods.
+        /// Creates default validator.
         /// </summary>
-        /// <param name="transfer">Transfer parameters to validate.</param>
-        protected abstract void ValidateParameters(RecordParametersTransfer transfer);
+        /// <returns>Validator.</returns>
+        protected abstract IRecordValidator CreateValidator();
 
         private void FillDictionaries(RecordParametersTransfer transfer, FileCabinetRecord record)
         {
