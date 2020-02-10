@@ -18,6 +18,13 @@ namespace FileCabinetApp
         private static IFileCabinetService fileCabinetService;
         private static bool isRunning = true;
 
+        private static Func<string, Tuple<bool, string>> firstNameValidator;
+        private static Func<string, Tuple<bool, string>> lastNameValidator;
+        private static Func<DateTime, Tuple<bool, string>> dateOfBirthValidator;
+        private static Func<short, Tuple<bool, string>> heightValidator;
+        private static Func<decimal, Tuple<bool, string>> incomeValidator;
+        private static Func<char, Tuple<bool, string>> patronymicLetterValidator;
+
         private static Tuple<string, Action<string>>[] commands = new Tuple<string, Action<string>>[]
         {
             new Tuple<string, Action<string>>("help", PrintHelp),
@@ -166,60 +173,27 @@ namespace FileCabinetApp
 
         private static void Create(string parameters)
         {
-            while (true)
+            Console.Write("First name: ");
+            string firstName = ReadInput<string>(ConvertStringToString, firstNameValidator);
+            Console.Write("Last name: ");
+            string lastName = ReadInput<string>(ConvertStringToString, lastNameValidator);
+            Console.Write("Date of birth: ");
+            DateTime dateOfBirth = ReadInput<DateTime>(ConvertStringToDateTime, dateOfBirthValidator);
+            Console.Write("Height: ");
+            short height = ReadInput<short>(ConvertStringToShort, heightValidator);
+            Console.Write("Income: ");
+            decimal income = ReadInput<decimal>(ConvertStringToDecimal, incomeValidator);
+            Console.Write("Patronymic letter: ");
+            char patronymicLetter = ReadInput<char>(ConvertStringToChar, patronymicLetterValidator);
+            RecordParametersTransfer transfer = new RecordParametersTransfer(firstName, lastName, dateOfBirth, height, income, patronymicLetter);
+            try
             {
-                Console.Write("First name: ");
-                string firstName = Console.ReadLine();
-                Console.Write("Last name: ");
-                string lastName = Console.ReadLine();
-                Console.Write("Date of birth: ");
-                DateTime dateOfBirth;
-                try
-                {
-                    dateOfBirth = DateTime.ParseExact(Console.ReadLine(), "MM/dd/yyyy", CultureInfo.InvariantCulture);
-                }
-                catch (FormatException)
-                {
-                    Console.WriteLine("Date of birth must be in the following format: month/day/year");
-                    continue;
-                }
-
-                Console.Write("Height: ");
-                string heightStr = Console.ReadLine();
-                if (!short.TryParse(heightStr, out short height))
-                {
-                    Console.WriteLine("Heigh must be in range of System.Int16 (from -32768 to 32767)");
-                    continue;
-                }
-
-                Console.Write("Income: ");
-                string incomeStr = Console.ReadLine();
-                if (!decimal.TryParse(incomeStr, out decimal income))
-                {
-                    Console.WriteLine("Income must be a decimal number from (+/-)1.0*10^(-28) to (+/-)7.9228*10^28");
-                    continue;
-                }
-
-                Console.Write("Patronymic letter: ");
-                string patronymicLetterStr = Console.ReadLine();
-                if (!char.TryParse(patronymicLetterStr, out char patronymicLetter))
-                {
-                    Console.WriteLine("Enter only one symbol.");
-                    continue;
-                }
-
-                RecordParametersTransfer transfer = new RecordParametersTransfer(firstName, lastName, dateOfBirth, height, income, patronymicLetter);
-                try
-                {
-                    int index = fileCabinetService.CreateRecord(transfer);
-                    Console.WriteLine($"Record #{index} is created.");
-                    break;
-                }
-                catch (ArgumentException ex)
-                {
-                    Console.WriteLine(ex.Message);
-                    continue;
-                }
+                int index = fileCabinetService.CreateRecord(transfer);
+                Console.WriteLine($"Record #{index} is created.");
+            }
+            catch (ArgumentException ex)
+            {
+                Console.WriteLine(ex.Message);
             }
         }
 
@@ -257,52 +231,21 @@ namespace FileCabinetApp
                     if (fileCabinetService.GetRecords()[i].Id.ToString(CultureInfo.InvariantCulture) == parameters)
                     {
                         wasFound = true;
-                        while (true)
-                        {
-                            Console.Write("First name: ");
-                            string firstName = Console.ReadLine();
-                            Console.Write("Last name: ");
-                            string lastName = Console.ReadLine();
-                            Console.Write("Date of birth: ");
-                            DateTime dateOfBirth;
-                            try
-                            {
-                                dateOfBirth = DateTime.ParseExact(Console.ReadLine(), "MM/dd/yyyy", CultureInfo.InvariantCulture);
-                            }
-                            catch (FormatException)
-                            {
-                                Console.WriteLine("Date of birth must be in the following format: month/day/year");
-                                continue;
-                            }
-
-                            Console.Write("Height: ");
-                            string heightStr = Console.ReadLine();
-                            if (!short.TryParse(heightStr, out short height))
-                            {
-                                Console.WriteLine("Heigh must be in range of System.Int16 (from -32768 to 32767)");
-                                continue;
-                            }
-
-                            Console.Write("Income: ");
-                            string incomeStr = Console.ReadLine();
-                            if (!decimal.TryParse(incomeStr, out decimal income))
-                            {
-                                Console.WriteLine("Income must be a decimal number from (+/-)1.0*10^(-28) to (+/-)7.9228*10^28");
-                                continue;
-                            }
-
-                            Console.Write("Patronymic letter: ");
-                            string patronymicLetterStr = Console.ReadLine();
-                            if (!char.TryParse(patronymicLetterStr, out char patronymicLetter))
-                            {
-                                Console.WriteLine("Enter only one symbol.");
-                                continue;
-                            }
-
-                            RecordParametersTransfer transfer = new RecordParametersTransfer(firstName, lastName, dateOfBirth, height, income, patronymicLetter);
-                            fileCabinetService.EditRecord(Convert.ToInt32(parameters, CultureInfo.InvariantCulture), transfer);
-                            break;
-                        }
+                        Console.Write("First name: ");
+                        string firstName = ReadInput<string>(ConvertStringToString, firstNameValidator);
+                        Console.Write("Last name: ");
+                        string lastName = ReadInput<string>(ConvertStringToString, lastNameValidator);
+                        Console.Write("Date of birth: ");
+                        DateTime dateOfBirth = ReadInput<DateTime>(ConvertStringToDateTime, dateOfBirthValidator);
+                        Console.Write("Height: ");
+                        short height = ReadInput<short>(ConvertStringToShort, heightValidator);
+                        Console.Write("Income: ");
+                        decimal income = ReadInput<decimal>(ConvertStringToDecimal, incomeValidator);
+                        Console.Write("Patronymic letter: ");
+                        char patronymicLetter = ReadInput<char>(ConvertStringToChar, patronymicLetterValidator);
+                        RecordParametersTransfer transfer = new RecordParametersTransfer(firstName, lastName, dateOfBirth, height, income, patronymicLetter);
+                        fileCabinetService.EditRecord(Convert.ToInt32(parameters, CultureInfo.InvariantCulture), transfer);
+                        break;
                     }
                 }
 
@@ -326,13 +269,54 @@ namespace FileCabinetApp
         private static void SetDefaultService()
         {
             fileCabinetService = new FileCabinetService(new DefaultValidator());
+            firstNameValidator += FirstNameDefaultValidation;
+            lastNameValidator += LastNameDefaultValidation;
+            dateOfBirthValidator += DateOfBirthDefaultValidation;
+            heightValidator += HeightDefaultValidation;
+            incomeValidator += IncomeDefaultValidation;
+            patronymicLetterValidator += PatronymicLetterDefaultValidation;
             Console.WriteLine("Using default validation rules.");
         }
 
         private static void SetCustomService()
         {
             fileCabinetService = new FileCabinetService(new CustomValidator());
+            firstNameValidator += FirstNameCustomValidation;
+            lastNameValidator += LastNameCustomValidation;
+            dateOfBirthValidator += DateOfBirthCustomValidation;
+            heightValidator += HeightCustomValidation;
+            incomeValidator += IncomeCustomValidation;
+            patronymicLetterValidator += PatronymicLetterCustomValidation;
             Console.WriteLine("Using custom validation rules.");
+        }
+
+        private static T ReadInput<T>(Func<string, Tuple<bool, string, T>> converter, Func<T, Tuple<bool, string>> validator)
+        {
+            do
+            {
+                T value;
+
+                var input = Console.ReadLine();
+                var conversionResult = converter(input);
+
+                if (!conversionResult.Item1)
+                {
+                    Console.WriteLine($"Conversion failed: {conversionResult.Item2}. Please, correct your input.");
+                    continue;
+                }
+
+                value = conversionResult.Item3;
+
+                var validationResult = validator(value);
+                if (!validationResult.Item1)
+                {
+                    Console.WriteLine($"Validation failed: {validationResult.Item2}. Please, correct your input.");
+                    continue;
+                }
+
+                return value;
+            }
+            while (true);
         }
 
         private static void Find(string parameters)
@@ -435,6 +419,203 @@ namespace FileCabinetApp
 
                 break;
             }
+        }
+
+        private static Tuple<bool, string, DateTime> ConvertStringToDateTime(string input)
+        {
+            bool isConverted = DateTime.TryParseExact(input, "MM/dd/yyyy", CultureInfo.InvariantCulture, DateTimeStyles.None, out DateTime dateOfBirth);
+            if (isConverted)
+            {
+                return new Tuple<bool, string, DateTime>(isConverted, string.Empty, dateOfBirth);
+            }
+            else
+            {
+                return new Tuple<bool, string, DateTime>(isConverted, "DateTime must be in format MM/dd/yyyy", DateTime.MinValue);
+            }
+        }
+
+        private static Tuple<bool, string, short> ConvertStringToShort(string input)
+        {
+            bool isConverted = short.TryParse(input, out short height);
+            if (isConverted)
+            {
+                return new Tuple<bool, string, short>(isConverted, string.Empty, height);
+            }
+            else
+            {
+                return new Tuple<bool, string, short>(isConverted, "Short must be from -32768 to 32767", short.MinValue);
+            }
+        }
+
+        private static Tuple<bool, string, decimal> ConvertStringToDecimal(string input)
+        {
+            bool isConverted = decimal.TryParse(input, out decimal income);
+            if (isConverted)
+            {
+                return new Tuple<bool, string, decimal>(isConverted, string.Empty, income);
+            }
+            else
+            {
+                return new Tuple<bool, string, decimal>(isConverted, "Decimal must be from (+/-)1.0*10^-28 to (+/-)7.9228*10^28", decimal.MinValue);
+            }
+        }
+
+        private static Tuple<bool, string, char> ConvertStringToChar(string input)
+        {
+            bool isConverted = char.TryParse(input, out char patronymicLetter);
+            if (isConverted)
+            {
+                return new Tuple<bool, string, char>(isConverted, string.Empty, patronymicLetter);
+            }
+            else
+            {
+                return new Tuple<bool, string, char>(isConverted, "Char must be a single Unicode symbol", char.MinValue);
+            }
+        }
+
+        private static Tuple<bool, string, string> ConvertStringToString(string input)
+        {
+            return new Tuple<bool, string, string>(true, string.Empty, input);
+        }
+
+        private static Tuple<bool, string> FirstNameDefaultValidation(string firstName)
+        {
+            if (firstName.Length < 2 || firstName.Length > 60)
+            {
+                return new Tuple<bool, string>(false, "First name length must be from 2 to 60 chars");
+            }
+
+            if (firstName.Trim().Length == 0)
+            {
+                return new Tuple<bool, string>(false, "First name can not contain only whitespaces");
+            }
+
+            return new Tuple<bool, string>(true, string.Empty);
+        }
+
+        private static Tuple<bool, string> FirstNameCustomValidation(string firstName)
+        {
+            if (firstName.Length < 1 || firstName.Length > 40)
+            {
+                return new Tuple<bool, string>(false, "First name length must be from 1 to 40 chars");
+            }
+
+            if (firstName.Trim().Length == 0)
+            {
+                return new Tuple<bool, string>(false, "First name can not contain only whitespaces");
+            }
+
+            return new Tuple<bool, string>(true, string.Empty);
+        }
+
+        private static Tuple<bool, string> LastNameDefaultValidation(string lastName)
+        {
+            if (lastName.Length < 2 || lastName.Length > 60)
+            {
+                return new Tuple<bool, string>(false, "Last name length must be from 2 to 60 chars");
+            }
+
+            if (lastName.Trim().Length == 0)
+            {
+                return new Tuple<bool, string>(false, "Last name can not contain only whitespaces");
+            }
+
+            return new Tuple<bool, string>(true, string.Empty);
+        }
+
+        private static Tuple<bool, string> LastNameCustomValidation(string lastName)
+        {
+            if (lastName.Length < 1 || lastName.Length > 40)
+            {
+                return new Tuple<bool, string>(false, "Last name length must be from 1 to 40 chars");
+            }
+
+            if (lastName.Trim().Length == 0)
+            {
+                return new Tuple<bool, string>(false, "Last name can not contain only whitespaces");
+            }
+
+            return new Tuple<bool, string>(true, string.Empty);
+        }
+
+        private static Tuple<bool, string> DateOfBirthDefaultValidation(DateTime dateOfBirth)
+        {
+            if (dateOfBirth < new DateTime(1950, 1, 1) || dateOfBirth > DateTime.Today)
+            {
+                return new Tuple<bool, string>(false, "Date of birth must be from 01-Jan-1950 to today");
+            }
+
+            return new Tuple<bool, string>(true, string.Empty);
+        }
+
+        private static Tuple<bool, string> DateOfBirthCustomValidation(DateTime dateOfBirth)
+        {
+            if (dateOfBirth < new DateTime(1900, 1, 1) || dateOfBirth > DateTime.Today)
+            {
+                return new Tuple<bool, string>(false, "Date of birth must be from 01-Jan-1900 to today");
+            }
+
+            return new Tuple<bool, string>(true, string.Empty);
+        }
+
+        private static Tuple<bool, string> HeightDefaultValidation(short height)
+        {
+            if (height <= 0 || height > 300)
+            {
+                return new Tuple<bool, string>(false, "Height must be from 1 to 300 cm");
+            }
+
+            return new Tuple<bool, string>(true, string.Empty);
+        }
+
+        private static Tuple<bool, string> HeightCustomValidation(short height)
+        {
+            if (height < 10 || height > 280)
+            {
+                return new Tuple<bool, string>(false, "Height must be from 10 to 280 cm");
+            }
+
+            return new Tuple<bool, string>(true, string.Empty);
+        }
+
+        private static Tuple<bool, string> IncomeDefaultValidation(decimal income)
+        {
+            if (income < 0)
+            {
+                return new Tuple<bool, string>(false, "Income must be not negative number");
+            }
+
+            return new Tuple<bool, string>(true, string.Empty);
+        }
+
+        private static Tuple<bool, string> IncomeCustomValidation(decimal income)
+        {
+            if (income < 0 || income > 999999999)
+            {
+                return new Tuple<bool, string>(false, "Income must be not negative number less than 999999999");
+            }
+
+            return new Tuple<bool, string>(true, string.Empty);
+        }
+
+        private static Tuple<bool, string> PatronymicLetterDefaultValidation(char patronymicLetter)
+        {
+            if (patronymicLetter < 'A' || patronymicLetter > 'Z')
+            {
+                return new Tuple<bool, string>(false, "Patronymic letter must be a latin letter in uppercase");
+            }
+
+            return new Tuple<bool, string>(true, string.Empty);
+        }
+
+        private static Tuple<bool, string> PatronymicLetterCustomValidation(char patronymicLetter)
+        {
+            if (patronymicLetter < 'A' || patronymicLetter > 'Z')
+            {
+                return new Tuple<bool, string>(false, "Patronymic letter must be a latin letter in uppercase");
+            }
+
+            return new Tuple<bool, string>(true, string.Empty);
         }
     }
 }
