@@ -8,7 +8,7 @@ namespace FileCabinetApp
     /// <summary>
     /// Provides methods to interact with records.
     /// </summary>
-    public class FileCabinetService
+    public abstract class FileCabinetService
     {
         private readonly List<FileCabinetRecord> list = new List<FileCabinetRecord>();
         private readonly Dictionary<string, List<FileCabinetRecord>> firstNameDictionary = new Dictionary<string, List<FileCabinetRecord>>();
@@ -24,7 +24,7 @@ namespace FileCabinetApp
         /// <exception cref="ArgumentException">Thrown when firs name or last name length is out of 2 and 60 chars or contains only whitespaces, when date of birth out of 01-Jan-1950 and current date, when height is out of 1 and 300 cm, when income is negative, when patronymic letter is not a latin uppercase letter.</exception>
         public int CreateRecord(RecordParametersTransfer transfer)
         {
-            ValidateParameters(transfer);
+            this.ValidateParameters(transfer);
             var record = new FileCabinetRecord
             {
                 Id = this.list.Count + 1,
@@ -50,7 +50,7 @@ namespace FileCabinetApp
         /// <exception cref="ArgumentException">Thrown when firs name or last name length is out of 2 and 60 chars or contains only whitespaces, when date of birth out of 01-Jan-1950 and current date, when height is out of 1 and 300 cm, when income is negative, when patronymic letter is not a latin uppercase letter.</exception>
         public void EditRecord(int id, RecordParametersTransfer transfer)
         {
-            ValidateParameters(transfer);
+            this.ValidateParameters(transfer);
             FileCabinetRecord editedRecord = new FileCabinetRecord()
             {
                 Id = id,
@@ -146,63 +146,11 @@ namespace FileCabinetApp
             return records.ToArray();
         }
 
-        private static void ValidateParameters(RecordParametersTransfer transfer)
-        {
-            if (transfer is null)
-            {
-                throw new ArgumentNullException(nameof(transfer), "Transfer object must be not null.");
-            }
-
-            if (transfer.FirstName is null)
-            {
-                throw new ArgumentNullException(nameof(transfer), "First name can not be null.");
-            }
-
-            if (transfer.FirstName.Length < 2 || transfer.FirstName.Length > 60)
-            {
-                throw new ArgumentException("First name length must be from 2 to 60 chars.", nameof(transfer));
-            }
-
-            if (transfer.FirstName.Trim().Length == 0)
-            {
-                throw new ArgumentException("First name can not contain only whitespaces.", nameof(transfer));
-            }
-
-            if (transfer.LastName is null)
-            {
-                throw new ArgumentNullException(nameof(transfer), "Last name can not be null.");
-            }
-
-            if (transfer.LastName.Length < 2 || transfer.LastName.Length > 60)
-            {
-                throw new ArgumentException("Last name length must be from 2 to 60 chars.", nameof(transfer));
-            }
-
-            if (transfer.LastName.Trim().Length == 0)
-            {
-                throw new ArgumentException("Last name can not contain only whitespaces.", nameof(transfer));
-            }
-
-            if (transfer.DateOfBirth < new DateTime(1950, 1, 1) || transfer.DateOfBirth > DateTime.Today)
-            {
-                throw new ArgumentException("Date of birth must be from 01-Jan-1950 to today.", nameof(transfer));
-            }
-
-            if (transfer.Height <= 0 || transfer.Height > 300)
-            {
-                throw new ArgumentException("Height must be from 1 to 300 cm.", nameof(transfer));
-            }
-
-            if (transfer.Income < 0)
-            {
-                throw new ArgumentException("Income must be not negative number.", nameof(transfer));
-            }
-
-            if (transfer.PatronymicLetter < 'A' || transfer.PatronymicLetter > 'Z')
-            {
-                throw new ArgumentException("Patronymic letter must be a latin letter in uppercase.", nameof(transfer));
-            }
-        }
+        /// <summary>
+        /// Validate transfer parameters to use in methods.
+        /// </summary>
+        /// <param name="transfer">Transfer parameters to validate.</param>
+        protected abstract void ValidateParameters(RecordParametersTransfer transfer);
 
         private void FillDictionaries(RecordParametersTransfer transfer, FileCabinetRecord record)
         {

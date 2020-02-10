@@ -4,6 +4,28 @@
         <name>FileCabinetApp</name>
     </assembly>
     <members>
+        <member name="T:FileCabinetApp.FileCabinetCustomService">
+            <summary>
+            Provides methods to interact with records.
+            </summary>
+        </member>
+        <member name="M:FileCabinetApp.FileCabinetCustomService.ValidateParameters(FileCabinetApp.RecordParametersTransfer)">
+            <summary>
+            Validate transfer parameters to use in methods.
+            </summary>
+            <param name="transfer">Transfer parameters to validate.</param>
+        </member>
+        <member name="T:FileCabinetApp.FileCabinetDefaultService">
+            <summary>
+            Provides methods to interact with records.
+            </summary>
+        </member>
+        <member name="M:FileCabinetApp.FileCabinetDefaultService.ValidateParameters(FileCabinetApp.RecordParametersTransfer)">
+            <summary>
+            Validate transfer parameters to use in methods.
+            </summary>
+            <param name="transfer">Transfer parameters to validate.</param>
+        </member>
         <member name="T:FileCabinetApp.FileCabinetRecord">
             <summary>
             Provides type to describe a record.
@@ -106,6 +128,12 @@
             </summary>
             <param name="dateOfBirth">Date of birth to match with.</param>
             <returns>Array of matching records.</returns>
+        </member>
+        <member name="M:FileCabinetApp.FileCabinetService.ValidateParameters(FileCabinetApp.RecordParametersTransfer)">
+            <summary>
+            Validate transfer parameters to use in methods.
+            </summary>
+            <param name="transfer">Transfer parameters to validate.</param>
         </member>
         <member name="T:FileCabinetApp.Program">
             <summary>
