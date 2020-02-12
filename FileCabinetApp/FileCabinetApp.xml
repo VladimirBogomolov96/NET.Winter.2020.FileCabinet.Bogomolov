@@ -106,6 +106,39 @@
             </summary>
             <param name="disposing">If object is disposing or not.</param>
         </member>
+        <member name="T:FileCabinetApp.FileCabinetRecordXmlWriter">
+            <summary>
+            Provides methods to write records into xml.
+            </summary>
+        </member>
+        <member name="M:FileCabinetApp.FileCabinetRecordXmlWriter.#ctor(System.Xml.XmlWriter)">
+            <summary>
+            Initializes a new instance of the <see cref="T:FileCabinetApp.FileCabinetRecordXmlWriter"/> class.
+            </summary>
+            <param name="writer">Streamwriter to save records.</param>
+        </member>
+        <member name="M:FileCabinetApp.FileCabinetRecordXmlWriter.Finalize">
+            <summary>
+            Finalizes an instance of the <see cref="T:FileCabinetApp.FileCabinetRecordXmlWriter"/> class.
+            </summary>
+        </member>
+        <member name="M:FileCabinetApp.FileCabinetRecordXmlWriter.Dispose">
+            <summary>
+            Provides disposing of an object.
+            </summary>
+        </member>
+        <member name="M:FileCabinetApp.FileCabinetRecordXmlWriter.Write(FileCabinetApp.FileCabinetRecord)">
+            <summary>
+            Writes a record into current stream.
+            </summary>
+            <param name="record">Record to write.</param>
+        </member>
+        <member name="M:FileCabinetApp.FileCabinetRecordXmlWriter.Dispose(System.Boolean)">
+            <summary>
+            Provides disposing of an object.
+            </summary>
+            <param name="disposing">If object is disposing or not.</param>
+        </member>
         <member name="T:FileCabinetApp.FileCabinetService">
             <summary>
             Provides methods to interact with records.
@@ -190,6 +223,14 @@
             Saves records to csv file.
             </summary>
             <param name="writer">Streamwriter to save records.</param>
+            <exception cref="T:System.ArgumentNullException">Writer must be not null.</exception>
+        </member>
+        <member name="M:FileCabinetApp.FileCabinetServiceSnapshot.SaveToXml(System.Xml.XmlWriter)">
+            <summary>
+            Saves records to xml file.
+            </summary>
+            <param name="writer">Streamwriter to save records.</param>
+            <exception cref="T:System.ArgumentNullException">Writer must be not null.</exception>
         </member>
         <member name="T:FileCabinetApp.IFileCabinetService">
             <summary>

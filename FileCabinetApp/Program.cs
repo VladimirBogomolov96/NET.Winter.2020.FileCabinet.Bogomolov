@@ -2,6 +2,7 @@
 using System.Collections.ObjectModel;
 using System.Globalization;
 using System.IO;
+using System.Xml;
 
 namespace FileCabinetApp
 {
@@ -169,6 +170,24 @@ namespace FileCabinetApp
                     using StreamWriter streamWriter = new StreamWriter(parametersArr[filePathIndex]);
                     streamWriter.WriteLine("ID,First Name,Patronymic,Last Name,Date Of Birth,Height,Income");
                     snapshot.SaveToCsv(streamWriter);
+                    Console.WriteLine($"All records are exported to file {parametersArr[filePathIndex]}");
+                }
+                catch (DirectoryNotFoundException ex)
+                {
+                    Console.WriteLine(ex.Message);
+                }
+            }
+            else if (parametersArr[exportTypeIndex].Equals("xml", StringComparison.OrdinalIgnoreCase))
+            {
+                XmlWriterSettings settings = new XmlWriterSettings
+                {
+                    Indent = true,
+                    IndentChars = "\t",
+                };
+                try
+                {
+                    using XmlWriter xmlWriter = XmlWriter.Create(parametersArr[filePathIndex], settings);
+                    snapshot.SaveToXml(xmlWriter);
                     Console.WriteLine($"All records are exported to file {parametersArr[filePathIndex]}");
                 }
                 catch (DirectoryNotFoundException ex)
