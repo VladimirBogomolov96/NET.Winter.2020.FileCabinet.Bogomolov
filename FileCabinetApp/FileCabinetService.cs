@@ -156,6 +156,15 @@ namespace FileCabinetApp
             return new ReadOnlyCollection<FileCabinetRecord>(records);
         }
 
+        /// <summary>
+        /// Creates a snapshot of all records in current moment.
+        /// </summary>
+        /// <returns>Snapshot of records.</returns>
+        public FileCabinetServiceSnapshot MakeSnapshot()
+        {
+            return new FileCabinetServiceSnapshot(this.list.ToArray());
+        }
+
         private void FillDictionaries(RecordParametersTransfer transfer, FileCabinetRecord record)
         {
             if (this.firstNameDictionary.ContainsKey(transfer.FirstName))

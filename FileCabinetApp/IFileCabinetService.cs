@@ -23,6 +23,12 @@ namespace FileCabinetApp
         void EditRecord(int id, RecordParametersTransfer transfer);
 
         /// <summary>
+        /// Creates a snapshot of all records in current moment.
+        /// </summary>
+        /// <returns>Snapshot of records.</returns>
+        FileCabinetServiceSnapshot MakeSnapshot();
+
+        /// <summary>
         /// Finds all records with given date of birth.
         /// </summary>
         /// <param name="dateOfBirth">Date of birth to match with.</param>

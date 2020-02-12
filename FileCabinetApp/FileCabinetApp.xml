@@ -73,6 +73,39 @@
             </summary>
             <value>Value of patronymic letter of a record.</value>
         </member>
+        <member name="T:FileCabinetApp.FileCabinetRecordCsvWriter">
+            <summary>
+            Provides methods to write records into csv.
+            </summary>
+        </member>
+        <member name="M:FileCabinetApp.FileCabinetRecordCsvWriter.#ctor(System.IO.TextWriter)">
+            <summary>
+            Initializes a new instance of the <see cref="T:FileCabinetApp.FileCabinetRecordCsvWriter"/> class.
+            </summary>
+            <param name="writer">Streamwriter to save records.</param>
+        </member>
+        <member name="M:FileCabinetApp.FileCabinetRecordCsvWriter.Finalize">
+            <summary>
+            Finalizes an instance of the <see cref="T:FileCabinetApp.FileCabinetRecordCsvWriter"/> class.
+            </summary>
+        </member>
+        <member name="M:FileCabinetApp.FileCabinetRecordCsvWriter.Dispose">
+            <summary>
+            Provides disposing of an object.
+            </summary>
+        </member>
+        <member name="M:FileCabinetApp.FileCabinetRecordCsvWriter.Write(FileCabinetApp.FileCabinetRecord)">
+            <summary>
+            Writes a record into current stream.
+            </summary>
+            <param name="record">Record to write.</param>
+        </member>
+        <member name="M:FileCabinetApp.FileCabinetRecordCsvWriter.Dispose(System.Boolean)">
+            <summary>
+            Provides disposing of an object.
+            </summary>
+            <param name="disposing">If object is disposing or not.</param>
+        </member>
         <member name="T:FileCabinetApp.FileCabinetService">
             <summary>
             Provides methods to interact with records.
@@ -135,6 +168,29 @@
             <param name="dateOfBirth">Date of birth to match with.</param>
             <returns>Array of matching records.</returns>
         </member>
+        <member name="M:FileCabinetApp.FileCabinetService.MakeSnapshot">
+            <summary>
+            Creates a snapshot of all records in current moment.
+            </summary>
+            <returns>Snapshot of records.</returns>
+        </member>
+        <member name="T:FileCabinetApp.FileCabinetServiceSnapshot">
+            <summary>
+            Provides methods to save records into csv or xml.
+            </summary>
+        </member>
+        <member name="M:FileCabinetApp.FileCabinetServiceSnapshot.#ctor(FileCabinetApp.FileCabinetRecord[])">
+            <summary>
+            Initializes a new instance of the <see cref="T:FileCabinetApp.FileCabinetServiceSnapshot"/> class.
+            </summary>
+            <param name="records">Records to save.</param>
+        </member>
+        <member name="M:FileCabinetApp.FileCabinetServiceSnapshot.SaveToCsv(System.IO.StreamWriter)">
+            <summary>
+            Saves records to csv file.
+            </summary>
+            <param name="writer">Streamwriter to save records.</param>
+        </member>
         <member name="T:FileCabinetApp.IFileCabinetService">
             <summary>
             Provides methods to interact with records.
@@ -153,6 +209,12 @@
             </summary>
             <param name="id">ID of a record to edit.</param>
             <param name="transfer">Object to transfer new parameters to existing record.</param>
+        </member>
+        <member name="M:FileCabinetApp.IFileCabinetService.MakeSnapshot">
+            <summary>
+            Creates a snapshot of all records in current moment.
+            </summary>
+            <returns>Snapshot of records.</returns>
         </member>
         <member name="M:FileCabinetApp.IFileCabinetService.FindByDateOfbirth(System.DateTime)">
             <summary>
