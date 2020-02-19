@@ -46,6 +46,14 @@
             <returns>ID of created record.</returns>
             <exception cref="T:System.ArgumentNullException">Thrown when transfer parameters is null.</exception>
         </member>
+        <member name="M:FileCabinetApp.FileCabinetFilesystemService.EditRecord(System.Int32,FileCabinetApp.RecordParametersTransfer)">
+            <summary>
+            Edits existing record.
+            </summary>
+            <param name="id">ID of a record to edit.</param>
+            <param name="transfer">Object to transfer new parameters to existing record.</param>
+            <exception cref="T:System.ArgumentNullException">Thrown when transfer parameters is null.</exception>
+        </member>
         <member name="M:FileCabinetApp.FileCabinetFilesystemService.GetRecords">
             <summary>
             Gets all existing records.

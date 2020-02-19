@@ -79,9 +79,35 @@ namespace FileCabinetApp
             return this.lastId;
         }
 
+        /// <summary>
+        /// Edits existing record.
+        /// </summary>
+        /// <param name="id">ID of a record to edit.</param>
+        /// <param name="transfer">Object to transfer new parameters to existing record.</param>
+        /// <exception cref="ArgumentNullException">Thrown when transfer parameters is null.</exception>
         public void EditRecord(int id, RecordParametersTransfer transfer)
         {
-            throw new NotImplementedException();
+            if (transfer is null)
+            {
+                throw new ArgumentNullException(nameof(transfer), "Parameters transfer must be not null.");
+            }
+
+            int tempOffset = ((id - 1) * SizeOfRecord) + SizeOfShort;
+            this.binaryWriter.Seek(tempOffset, 0);
+            this.binaryWriter.Write(id);
+            tempOffset += SizeOfInt;
+            this.binaryWriter.Write(transfer.FirstName);
+            tempOffset += SizeOfString;
+            this.binaryWriter.Seek(tempOffset, 0);
+            this.binaryWriter.Write(transfer.LastName);
+            tempOffset += SizeOfString;
+            this.binaryWriter.Seek(tempOffset, 0);
+            this.binaryWriter.Write(transfer.DateOfBirth.Day);
+            this.binaryWriter.Write(transfer.DateOfBirth.Month);
+            this.binaryWriter.Write(transfer.DateOfBirth.Year);
+            this.binaryWriter.Write(transfer.PatronymicLetter);
+            this.binaryWriter.Write(transfer.Income);
+            this.binaryWriter.Write(transfer.Height);
         }
 
         public ReadOnlyCollection<FileCabinetRecord> FindByDateOfbirth(DateTime dateOfBirth)
