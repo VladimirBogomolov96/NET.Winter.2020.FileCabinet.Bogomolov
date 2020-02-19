@@ -301,6 +301,23 @@
             </summary>
             <param name="transfer">Transfer of parameters to validate.</param>
         </member>
+        <member name="T:FileCabinetApp.Options">
+            <summary>
+            Command line options.
+            </summary>
+        </member>
+        <member name="P:FileCabinetApp.Options.Rule">
+            <summary>
+            Gets or sets type of validation rules.
+            </summary>
+            <value>Type of validation rules.</value>
+        </member>
+        <member name="P:FileCabinetApp.Options.Storage">
+            <summary>
+            Gets or sets type of storage.
+            </summary>
+            <value>Type of storage.</value>
+        </member>
         <member name="T:FileCabinetApp.Program">
             <summary>
             API class of the program.
