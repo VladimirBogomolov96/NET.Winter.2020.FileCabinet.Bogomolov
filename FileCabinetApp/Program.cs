@@ -328,12 +328,7 @@ namespace FileCabinetApp
 
         private static void SetFileService()
         {
-            if (File.Exists("cabinet-records.db"))
-            {
-                File.Delete("cabinet-records.db");
-            }
-
-            FileStream fileStream = File.Create("cabinet-records.db");
+            FileStream fileStream = new FileStream("cabinet-records.db", FileMode.Create, FileAccess.ReadWrite);
             fileCabinetService = new FileCabinetFilesystemService(fileStream);
             Console.WriteLine("Using file service.");
         }

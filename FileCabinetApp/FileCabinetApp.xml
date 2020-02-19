@@ -26,6 +26,37 @@
             </summary>
             <param name="transfer">Transfer parameters to validate.</param>
         </member>
+        <member name="T:FileCabinetApp.FileCabinetFilesystemService">
+            <summary>
+            Works woth records using file system.
+            </summary>
+        </member>
+        <member name="M:FileCabinetApp.FileCabinetFilesystemService.#ctor(System.IO.FileStream)">
+            <summary>
+            Initializes a new instance of the <see cref="T:FileCabinetApp.FileCabinetFilesystemService"/> class.
+            </summary>
+            <param name="fileStream">Stream to work with file.</param>
+            <exception cref="T:System.ArgumentNullException">Thrown when stream is null.</exception>
+        </member>
+        <member name="M:FileCabinetApp.FileCabinetFilesystemService.CreateRecord(FileCabinetApp.RecordParametersTransfer)">
+            <summary>
+            Creates new records with given parameters.
+            </summary>
+            <param name="transfer">Object to transfer parameters of new record.</param>
+            <returns>ID of created record.</returns>
+            <exception cref="T:System.ArgumentNullException">Thrown when transfer parameters is null.</exception>
+        </member>
+        <member name="M:FileCabinetApp.FileCabinetFilesystemService.Dispose">
+            <summary>
+            Dispose service.
+            </summary>
+        </member>
+        <member name="M:FileCabinetApp.FileCabinetFilesystemService.Dispose(System.Boolean)">
+            <summary>
+            If service is disposing, close streams.
+            </summary>
+            <param name="disposing">If service is disposing.</param>
+        </member>
         <member name="T:FileCabinetApp.FileCabinetMemoryService">
             <summary>
             Provides methods to interact with records.
