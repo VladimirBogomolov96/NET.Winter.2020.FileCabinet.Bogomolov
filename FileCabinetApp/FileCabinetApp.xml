@@ -46,6 +46,12 @@
             <returns>ID of created record.</returns>
             <exception cref="T:System.ArgumentNullException">Thrown when transfer parameters is null.</exception>
         </member>
+        <member name="M:FileCabinetApp.FileCabinetFilesystemService.GetRecords">
+            <summary>
+            Gets all existing records.
+            </summary>
+            <returns>Readonly collection of all existing records.</returns>
+        </member>
         <member name="M:FileCabinetApp.FileCabinetFilesystemService.Dispose">
             <summary>
             Dispose service.

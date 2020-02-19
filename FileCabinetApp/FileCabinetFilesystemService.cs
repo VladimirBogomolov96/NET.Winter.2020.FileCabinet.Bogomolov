@@ -99,9 +99,44 @@ namespace FileCabinetApp
             throw new NotImplementedException();
         }
 
+        /// <summary>
+        /// Gets all existing records.
+        /// </summary>
+        /// <returns>Readonly collection of all existing records.</returns>
         public ReadOnlyCollection<FileCabinetRecord> GetRecords()
         {
-            throw new NotImplementedException();
+            List<FileCabinetRecord> fileCabinetRecords = new List<FileCabinetRecord>();
+            long tempOffset = 0;
+            this.binaryReader.BaseStream.Seek(tempOffset, 0);
+            while (this.binaryReader.BaseStream.Position < this.binaryReader.BaseStream.Length)
+            {
+                FileCabinetRecord newRecord = new FileCabinetRecord();
+                tempOffset += SizeOfShort;
+                this.binaryReader.BaseStream.Seek(tempOffset, 0);
+                newRecord.Id = this.binaryReader.ReadInt32();
+                tempOffset += SizeOfInt;
+                newRecord.FirstName = this.binaryReader.ReadString();
+                this.binaryReader.BaseStream.Seek(tempOffset + SizeOfString, 0);
+                newRecord.LastName = this.binaryReader.ReadString();
+                tempOffset += SizeOfString;
+                this.binaryReader.BaseStream.Seek(tempOffset + SizeOfString, 0);
+                int day = this.binaryReader.ReadInt32();
+                int month = this.binaryReader.ReadInt32();
+                int year = this.binaryReader.ReadInt32();
+                Console.WriteLine($"Day {day}");
+                Console.WriteLine($"Month {month}");
+                Console.WriteLine($"Year {year}");
+                newRecord.DateOfBirth = newRecord.DateOfBirth.AddDays(day - 1);
+                newRecord.DateOfBirth = newRecord.DateOfBirth.AddMonths(month - 1);
+                newRecord.DateOfBirth = newRecord.DateOfBirth.AddYears(year - 1);
+                newRecord.PatronymicLetter = this.binaryReader.ReadChar();
+                newRecord.Income = this.binaryReader.ReadDecimal();
+                newRecord.Height = this.binaryReader.ReadInt16();
+                tempOffset = this.binaryReader.BaseStream.Position + 1;
+                fileCabinetRecords.Add(newRecord);
+            }
+
+            return fileCabinetRecords.AsReadOnly();
         }
 
         public int GetStat()
