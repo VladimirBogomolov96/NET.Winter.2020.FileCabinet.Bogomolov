@@ -337,7 +337,7 @@ namespace FileCabinetApp
 
         private static void SetDefaultService()
         {
-            fileCabinetService = new FileCabinetService(new DefaultValidator());
+            fileCabinetService = new FileCabinetMemoryService(new DefaultValidator());
             firstNameValidator += FirstNameDefaultValidation;
             lastNameValidator += LastNameDefaultValidation;
             dateOfBirthValidator += DateOfBirthDefaultValidation;
@@ -349,7 +349,7 @@ namespace FileCabinetApp
 
         private static void SetCustomService()
         {
-            fileCabinetService = new FileCabinetService(new CustomValidator());
+            fileCabinetService = new FileCabinetMemoryService(new CustomValidator());
             firstNameValidator += FirstNameCustomValidation;
             lastNameValidator += LastNameCustomValidation;
             dateOfBirthValidator += DateOfBirthCustomValidation;
