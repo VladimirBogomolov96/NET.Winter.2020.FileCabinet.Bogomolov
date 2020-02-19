@@ -110,19 +110,93 @@ namespace FileCabinetApp
             this.binaryWriter.Write(transfer.Height);
         }
 
+        /// <summary>
+        /// Finds all records with given date of birth.
+        /// </summary>
+        /// <param name="dateOfBirth">Date of birth name to match with.</param>
+        /// <returns>Array of matching records.</returns>
         public ReadOnlyCollection<FileCabinetRecord> FindByDateOfbirth(DateTime dateOfBirth)
         {
-            throw new NotImplementedException();
+            int tempOffset = SizeOfShort + SizeOfInt + SizeOfString + SizeOfString;
+            int tempID = 1;
+            int fileLength = Convert.ToInt32(this.binaryReader.BaseStream.Length);
+            List<FileCabinetRecord> fileCabinetRecords = new List<FileCabinetRecord>();
+            while (tempOffset < fileLength)
+            {
+                DateTime tempDateOfBirth = new DateTime(1, 1, 1);
+                this.binaryReader.BaseStream.Seek(tempOffset, 0);
+                tempDateOfBirth = tempDateOfBirth.AddDays(this.binaryReader.ReadInt32() - 1);
+                tempDateOfBirth = tempDateOfBirth.AddMonths(this.binaryReader.ReadInt32() - 1);
+                tempDateOfBirth = tempDateOfBirth.AddYears(this.binaryReader.ReadInt32() - 1);
+
+                if (tempDateOfBirth.Year == dateOfBirth.Year && tempDateOfBirth.Month == dateOfBirth.Month && tempDateOfBirth.Day == dateOfBirth.Day)
+                {
+                    fileCabinetRecords.Add(this.GetRecord(tempID));
+                }
+
+                tempID++;
+                tempOffset += SizeOfRecord;
+            }
+
+            return fileCabinetRecords.AsReadOnly();
         }
 
+        /// <summary>
+        /// Finds all records with given first name.
+        /// </summary>
+        /// <param name="firstName">First name to match with.</param>
+        /// <returns>Array of matching records.</returns>
         public ReadOnlyCollection<FileCabinetRecord> FindByFirstName(string firstName)
         {
-            throw new NotImplementedException();
+            int tempOffset = SizeOfShort + SizeOfInt;
+            int tempID = 1;
+            int fileLength = Convert.ToInt32(this.binaryReader.BaseStream.Length);
+            List<FileCabinetRecord> fileCabinetRecords = new List<FileCabinetRecord>();
+            string tempFirstName;
+            while (tempOffset < fileLength)
+            {
+                this.binaryReader.BaseStream.Seek(tempOffset, 0);
+                tempFirstName = this.binaryReader.ReadString();
+
+                if (tempFirstName.Equals(firstName, StringComparison.InvariantCulture))
+                {
+                    fileCabinetRecords.Add(this.GetRecord(tempID));
+                }
+
+                tempID++;
+                tempOffset += SizeOfRecord;
+            }
+
+            return fileCabinetRecords.AsReadOnly();
         }
 
+        /// <summary>
+        /// Finds all records with given last name.
+        /// </summary>
+        /// <param name="lastName">Last name to match with.</param>
+        /// <returns>Array of matching records.</returns>
         public ReadOnlyCollection<FileCabinetRecord> FindByLastName(string lastName)
         {
-            throw new NotImplementedException();
+            int tempOffset = SizeOfShort + SizeOfInt + SizeOfString;
+            int tempID = 1;
+            int fileLength = Convert.ToInt32(this.binaryReader.BaseStream.Length);
+            List<FileCabinetRecord> fileCabinetRecords = new List<FileCabinetRecord>();
+            string tempLastName;
+            while (tempOffset < fileLength)
+            {
+                this.binaryReader.BaseStream.Seek(tempOffset, 0);
+                tempLastName = this.binaryReader.ReadString();
+
+                if (tempLastName.Equals(lastName, StringComparison.InvariantCulture))
+                {
+                    fileCabinetRecords.Add(this.GetRecord(tempID));
+                }
+
+                tempID++;
+                tempOffset += SizeOfRecord;
+            }
+
+            return fileCabinetRecords.AsReadOnly();
         }
 
         /// <summary>
@@ -171,9 +245,16 @@ namespace FileCabinetApp
             return Convert.ToInt32(this.binaryReader.BaseStream.Length) / SizeOfRecord;
         }
 
+        /// <summary>
+        /// Creates a snapshot of all records in current moment.
+        /// </summary>
+        /// <returns>Snapshot of records.</returns>
         public FileCabinetServiceSnapshot MakeSnapshot()
         {
-            throw new NotImplementedException();
+            ReadOnlyCollection<FileCabinetRecord> records = this.GetRecords();
+            FileCabinetRecord[] fileCabinetRecordsArray = new FileCabinetRecord[records.Count];
+            records.CopyTo(fileCabinetRecordsArray, 0);
+            return new FileCabinetServiceSnapshot(fileCabinetRecordsArray);
         }
 
         /// <summary>
@@ -197,6 +278,33 @@ namespace FileCabinetApp
                 this.binaryReader.Dispose();
                 this.fileStream.Dispose();
             }
+        }
+
+        private FileCabinetRecord GetRecord(int id)
+        {
+            int tempOffset = ((id - 1) * SizeOfRecord) + SizeOfShort;
+            this.binaryReader.BaseStream.Seek(tempOffset, 0);
+            FileCabinetRecord tempRecord = new FileCabinetRecord
+            {
+                Id = this.binaryReader.ReadInt32(),
+            };
+            tempOffset += SizeOfInt;
+            tempRecord.FirstName = this.binaryReader.ReadString();
+            this.binaryReader.BaseStream.Seek(tempOffset + SizeOfString, 0);
+            tempRecord.LastName = this.binaryReader.ReadString();
+            tempOffset += SizeOfString;
+            this.binaryReader.BaseStream.Seek(tempOffset + SizeOfString, 0);
+            int day = this.binaryReader.ReadInt32();
+            int month = this.binaryReader.ReadInt32();
+            int year = this.binaryReader.ReadInt32();
+            tempRecord.DateOfBirth = tempRecord.DateOfBirth.AddDays(day - 1);
+            tempRecord.DateOfBirth = tempRecord.DateOfBirth.AddMonths(month - 1);
+            tempRecord.DateOfBirth = tempRecord.DateOfBirth.AddYears(year - 1);
+            tempRecord.PatronymicLetter = this.binaryReader.ReadChar();
+            tempRecord.Income = this.binaryReader.ReadDecimal();
+            tempRecord.Height = this.binaryReader.ReadInt16();
+
+            return tempRecord;
         }
     }
 }
