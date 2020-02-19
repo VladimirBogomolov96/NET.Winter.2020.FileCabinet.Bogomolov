@@ -52,6 +52,12 @@
             </summary>
             <returns>Readonly collection of all existing records.</returns>
         </member>
+        <member name="M:FileCabinetApp.FileCabinetFilesystemService.GetStat">
+            <summary>
+            Counts amount of existing records.
+            </summary>
+            <returns>Amount of existing records.</returns>
+        </member>
         <member name="M:FileCabinetApp.FileCabinetFilesystemService.Dispose">
             <summary>
             Dispose service.

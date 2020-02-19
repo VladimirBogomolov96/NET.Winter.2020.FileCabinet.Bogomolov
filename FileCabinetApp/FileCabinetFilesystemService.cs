@@ -11,12 +11,12 @@ namespace FileCabinetApp
     /// </summary>
     public class FileCabinetFilesystemService : IFileCabinetService, IDisposable
     {
-        private const int SizeOfChar = 2;
+        private const int SizeOfChar = 1;
         private const int SizeOfShort = 2;
         private const int SizeOfInt = 4;
         private const int SizeOfDecimal = 16;
-        private const int SizeOfString = 120;
-        private const int SizeOfRecord = 278;
+        private const int SizeOfString = 122;
+        private const int SizeOfRecord = 281;
         private FileStream fileStream;
         private BinaryReader binaryReader;
         private BinaryWriter binaryWriter;
@@ -123,25 +123,26 @@ namespace FileCabinetApp
                 int day = this.binaryReader.ReadInt32();
                 int month = this.binaryReader.ReadInt32();
                 int year = this.binaryReader.ReadInt32();
-                Console.WriteLine($"Day {day}");
-                Console.WriteLine($"Month {month}");
-                Console.WriteLine($"Year {year}");
                 newRecord.DateOfBirth = newRecord.DateOfBirth.AddDays(day - 1);
                 newRecord.DateOfBirth = newRecord.DateOfBirth.AddMonths(month - 1);
                 newRecord.DateOfBirth = newRecord.DateOfBirth.AddYears(year - 1);
                 newRecord.PatronymicLetter = this.binaryReader.ReadChar();
                 newRecord.Income = this.binaryReader.ReadDecimal();
                 newRecord.Height = this.binaryReader.ReadInt16();
-                tempOffset = this.binaryReader.BaseStream.Position + 1;
+                tempOffset = this.binaryReader.BaseStream.Position;
                 fileCabinetRecords.Add(newRecord);
             }
 
             return fileCabinetRecords.AsReadOnly();
         }
 
+        /// <summary>
+        /// Counts amount of existing records.
+        /// </summary>
+        /// <returns>Amount of existing records.</returns>
         public int GetStat()
         {
-            throw new NotImplementedException();
+            return Convert.ToInt32(this.binaryReader.BaseStream.Length) / SizeOfRecord;
         }
 
         public FileCabinetServiceSnapshot MakeSnapshot()
