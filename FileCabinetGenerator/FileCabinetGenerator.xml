@@ -1,0 +1,157 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>FileCabinetGenerator</name>
+    </assembly>
+    <members>
+        <member name="T:FileCabinetGenerator.FileCabinetRecords">
+            <summary>
+            Xml representation of records.
+            </summary>
+        </member>
+        <member name="P:FileCabinetGenerator.FileCabinetRecords.Records">
+            <summary>
+            Gets or sets array of xml representations of records.
+            </summary>
+            <value>Array of xml representations of records.</value>
+        </member>
+        <member name="T:FileCabinetGenerator.FileCabinetRecordXml">
+            <summary>
+            Xml representation of record.
+            </summary>
+        </member>
+        <member name="M:FileCabinetGenerator.FileCabinetRecordXml.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:FileCabinetGenerator.FileCabinetRecordXml"/> class.
+            </summary>
+        </member>
+        <member name="M:FileCabinetGenerator.FileCabinetRecordXml.#ctor(FileCabinetApp.FileCabinetRecord)">
+            <summary>
+            Initializes a new instance of the <see cref="T:FileCabinetGenerator.FileCabinetRecordXml"/> class.
+            </summary>
+            <param name="record">Records to represent to xml.</param>
+        </member>
+        <member name="P:FileCabinetGenerator.FileCabinetRecordXml.Id">
+            <summary>
+            Gets or sets unique ID of a record.
+            </summary>
+            <value>Value of ID of a record.</value>
+        </member>
+        <member name="P:FileCabinetGenerator.FileCabinetRecordXml.Name">
+            <summary>
+            Gets or sets name.
+            </summary>
+            <value>Name of a record.</value>
+        </member>
+        <member name="P:FileCabinetGenerator.FileCabinetRecordXml.DateOfBirth">
+            <summary>
+            Gets or sets date of birth of record subject.
+            </summary>
+            <value>Value of date of birth of a record.</value>
+        </member>
+        <member name="P:FileCabinetGenerator.FileCabinetRecordXml.SomeDateString">
+            <summary>
+            Gets or sets date of birth through string representation.
+            </summary>
+            <value>Value of date of birth of a record.</value>
+        </member>
+        <member name="P:FileCabinetGenerator.FileCabinetRecordXml.Height">
+            <summary>
+            Gets or sets height of record subject.
+            </summary>
+            <value>Value of height of a record.</value>
+        </member>
+        <member name="P:FileCabinetGenerator.FileCabinetRecordXml.Income">
+            <summary>
+            Gets or sets income of record subject.
+            </summary>
+            <value>Value of income of a record.</value>
+        </member>
+        <member name="P:FileCabinetGenerator.FileCabinetRecordXml.PatronymicLetter">
+            <summary>
+            Gets or sets patronymic letter of record subject.
+            </summary>
+            <value>Value of patronymic letter of a record.</value>
+        </member>
+        <member name="P:FileCabinetGenerator.FileCabinetRecordXml.PatronymicLetterAsString">
+            <summary>
+            Gets or sets patronymic letter through string representation.
+            </summary>
+            <value>Patronymic letter through string representation.</value>
+        </member>
+        <member name="T:FileCabinetGenerator.NameXml">
+            <summary>
+            Name representation to xml.
+            </summary>
+        </member>
+        <member name="P:FileCabinetGenerator.NameXml.FirstName">
+            <summary>
+            Gets or sets first name of record subject.
+            </summary>
+            <value>Value of first name of a record.</value>
+        </member>
+        <member name="P:FileCabinetGenerator.NameXml.LastName">
+            <summary>
+            Gets or sets last name of record subject.
+            </summary>
+            <value>Value of last name of a record.</value>
+        </member>
+        <member name="T:FileCabinetGenerator.Options">
+            <summary>
+            Command line options.
+            </summary>
+        </member>
+        <member name="P:FileCabinetGenerator.Options.OutputType">
+            <summary>
+            Gets or sets type of output file.
+            </summary>
+            <value>Type of output file.</value>
+        </member>
+        <member name="P:FileCabinetGenerator.Options.OutputFileName">
+            <summary>
+            Gets or sets name of output file.
+            </summary>
+            <value>Name of output file.</value>
+        </member>
+        <member name="P:FileCabinetGenerator.Options.RecordsAmount">
+            <summary>
+            Gets or sets amount of records.
+            </summary>
+            <value>Amount of records.</value>
+        </member>
+        <member name="P:FileCabinetGenerator.Options.StartId">
+            <summary>
+            Gets or sets start id.
+            </summary>
+            <value>Start id.</value>
+        </member>
+        <member name="T:FileCabinetGenerator.Program">
+            <summary>
+            API class of the program.
+            </summary>
+        </member>
+        <member name="M:FileCabinetGenerator.Program.Main(System.String[])">
+            <summary>
+            Point of entrance to program.
+            </summary>
+            <param name="args">Command prompt arguments.</param>
+        </member>
+        <member name="T:FileCabinetGenerator.XmlWriterToGenerator">
+            <summary>
+            Xml writer of file cabinet generator.
+            </summary>
+        </member>
+        <member name="M:FileCabinetGenerator.XmlWriterToGenerator.#ctor(System.Xml.XmlWriter,FileCabinetGenerator.FileCabinetRecordXml[])">
+            <summary>
+            Initializes a new instance of the <see cref="T:FileCabinetGenerator.XmlWriterToGenerator"/> class.
+            </summary>
+            <param name="fileStream">File stream.</param>
+            <param name="records">Records to serialize.</param>
+        </member>
+        <member name="M:FileCabinetGenerator.XmlWriterToGenerator.Write">
+            <summary>
+            Writes records to xml.
+            </summary>
+        </member>
+    </members>
+</doc>

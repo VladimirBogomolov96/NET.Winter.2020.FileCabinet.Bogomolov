@@ -145,12 +145,18 @@ namespace FileCabinetApp
             FileCabinetServiceSnapshot snapshot = new FileCabinetServiceSnapshot();
             if (parametersArr[importTypeIndex].Equals("csv", StringComparison.OrdinalIgnoreCase))
             {
-                using (StreamReader fileStream = new StreamReader(parametersArr[filePathIndex]))
-                {
-                    snapshot.LoadFromCsv(fileStream);
-                    int numberOfStored = fileCabinetService.Restore(snapshot);
-                    Console.WriteLine(string.Format(CultureInfo.InvariantCulture, "{0} records were imported from {1}", numberOfStored, parametersArr[filePathIndex]));
-                }
+                using StreamReader fileStream = new StreamReader(parametersArr[filePathIndex]);
+                snapshot.LoadFromCsv(fileStream);
+                int numberOfImported = fileCabinetService.Restore(snapshot);
+                Console.WriteLine(string.Format(CultureInfo.InvariantCulture, "{0} records were imported from {1}", numberOfImported, parametersArr[filePathIndex]));
+            }
+            else if (parametersArr[importTypeIndex].Equals("xml", StringComparison.OrdinalIgnoreCase))
+            {
+                using StreamReader fileStream = new StreamReader(parametersArr[filePathIndex]);
+                using XmlReader xmlReader = XmlReader.Create(fileStream);
+                snapshot.LoadFromXml(xmlReader);
+                int numberOfImported = fileCabinetService.Restore(snapshot);
+                Console.WriteLine(string.Format(CultureInfo.InvariantCulture, "{0} records were imported from {1}", numberOfImported, parametersArr[filePathIndex]));
             }
             else
             {

@@ -5,15 +5,30 @@ using FileCabinetApp;
 
 namespace FileCabinetGenerator
 {
+    /// <summary>
+    /// Xml representation of record.
+    /// </summary>
     [Serializable]
     public class FileCabinetRecordXml
     {
+        /// <summary>
+        /// Initializes a new instance of the <see cref="FileCabinetRecordXml"/> class.
+        /// </summary>
         public FileCabinetRecordXml()
         {
         }
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="FileCabinetRecordXml"/> class.
+        /// </summary>
+        /// <param name="record">Records to represent to xml.</param>
         public FileCabinetRecordXml(FileCabinetRecord record)
         {
+            if (record is null)
+            {
+                throw new ArgumentNullException(nameof(record), "Record must be not null.");
+            }
+
             this.Id = record.Id;
             this.Name = new NameXml() { FirstName = record.FirstName, LastName = record.LastName };
             this.DateOfBirth = record.DateOfBirth;
@@ -22,39 +37,40 @@ namespace FileCabinetGenerator
             this.PatronymicLetter = record.PatronymicLetter;
         }
 
-        [XmlAttribute("id")]
         /// <summary>
         /// Gets or sets unique ID of a record.
         /// </summary>
         /// <value>Value of ID of a record.</value>
+        [XmlAttribute("id")]
         public int Id { get; set; }
 
-        [XmlElement("name")]
         /// <summary>
         /// Gets or sets name.
         /// </summary>
         /// <value>Name of a record.</value>
-        public NameXml Name;
+        [XmlElement("name")]
+        public NameXml Name { get; set; }
 
-        [XmlIgnore]
         /// <summary>
         /// Gets or sets date of birth of record subject.
         /// </summary>
         /// <value>Value of date of birth of a record.</value>
+        [XmlIgnore]
         public DateTime DateOfBirth { get; set; }
 
-        [XmlElement("dateOfBirth")]
         /// <summary>
         /// Gets or sets date of birth through string representation.
         /// </summary>
         /// <value>Value of date of birth of a record.</value>
+        [XmlElement("dateOfBirth")]
         public string SomeDateString
         {
-            get 
-            { 
+            get
+            {
                 return this.DateOfBirth.ToString("dd/MM/yyyy", CultureInfo.InvariantCulture);
             }
-            set 
+
+            set
             {
                 bool isConverted = DateTime.TryParseExact(value, "MM/dd/yyyy", CultureInfo.InvariantCulture, DateTimeStyles.None, out DateTime dateOfBirth);
                 if (!isConverted)
@@ -66,25 +82,43 @@ namespace FileCabinetGenerator
             }
         }
 
-        [XmlElement("height")]
         /// <summary>
         /// Gets or sets height of record subject.
         /// </summary>
         /// <value>Value of height of a record.</value>
+        [XmlElement("height")]
         public short Height { get; set; }
 
-        [XmlElement("income")]
         /// <summary>
         /// Gets or sets income of record subject.
         /// </summary>
         /// <value>Value of income of a record.</value>
+        [XmlElement("income")]
         public decimal Income { get; set; }
 
-        [XmlElement("patronymicLetter")]
         /// <summary>
         /// Gets or sets patronymic letter of record subject.
         /// </summary>
         /// <value>Value of patronymic letter of a record.</value>
+        [XmlIgnore]
         public char PatronymicLetter { get; set; }
+
+        /// <summary>
+        /// Gets or sets patronymic letter through string representation.
+        /// </summary>
+        /// <value>Patronymic letter through string representation.</value>
+        [XmlElement("patronymicLetter")]
+        public string PatronymicLetterAsString
+        {
+            get
+            {
+                return this.PatronymicLetter.ToString(CultureInfo.InvariantCulture);
+            }
+
+            set
+            {
+                this.PatronymicLetter = Convert.ToChar(value, CultureInfo.InvariantCulture);
+            }
+        }
     }
 }

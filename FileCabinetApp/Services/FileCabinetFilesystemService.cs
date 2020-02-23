@@ -273,46 +273,10 @@ namespace FileCabinetApp
         }
 
         /// <summary>
-        /// If service is disposing, close streams.
+        /// Restores statement from snapshot.
         /// </summary>
-        /// <param name="disposing">If service is disposing.</param>
-        protected virtual void Dispose(bool disposing)
-        {
-            if (disposing)
-            {
-                this.binaryWriter.Dispose();
-                this.binaryReader.Dispose();
-                this.fileStream.Dispose();
-            }
-        }
-
-        private FileCabinetRecord GetRecord(int id)
-        {
-            int tempOffset = ((id - 1) * SizeOfRecord) + SizeOfShort;
-            this.binaryReader.BaseStream.Seek(tempOffset, 0);
-            FileCabinetRecord tempRecord = new FileCabinetRecord
-            {
-                Id = this.binaryReader.ReadInt32(),
-            };
-            tempOffset += SizeOfInt;
-            tempRecord.FirstName = this.binaryReader.ReadString();
-            this.binaryReader.BaseStream.Seek(tempOffset + SizeOfString, 0);
-            tempRecord.LastName = this.binaryReader.ReadString();
-            tempOffset += SizeOfString;
-            this.binaryReader.BaseStream.Seek(tempOffset + SizeOfString, 0);
-            int day = this.binaryReader.ReadInt32();
-            int month = this.binaryReader.ReadInt32();
-            int year = this.binaryReader.ReadInt32();
-            tempRecord.DateOfBirth = tempRecord.DateOfBirth.AddDays(day - 1);
-            tempRecord.DateOfBirth = tempRecord.DateOfBirth.AddMonths(month - 1);
-            tempRecord.DateOfBirth = tempRecord.DateOfBirth.AddYears(year - 1);
-            tempRecord.PatronymicLetter = this.binaryReader.ReadChar();
-            tempRecord.Income = this.binaryReader.ReadDecimal();
-            tempRecord.Height = this.binaryReader.ReadInt16();
-
-            return tempRecord;
-        }
-
+        /// <param name="snapshot">Snapshot that represent statement to restore.</param>
+        /// <returns>Amount of new records added.</returns>
         public int Restore(FileCabinetServiceSnapshot snapshot)
         {
             if (snapshot is null)
@@ -396,9 +360,27 @@ namespace FileCabinetApp
             return importIndex;
         }
 
+        /// <summary>
+        /// Sets record validator.
+        /// </summary>
+        /// <param name="recordValidator">Rules of validation.</param>
         public void SetRecordValidator(IRecordValidator recordValidator)
         {
             this.recordValidator = recordValidator;
+        }
+
+        /// <summary>
+        /// If service is disposing, close streams.
+        /// </summary>
+        /// <param name="disposing">If service is disposing.</param>
+        protected virtual void Dispose(bool disposing)
+        {
+            if (disposing)
+            {
+                this.binaryWriter.Dispose();
+                this.binaryReader.Dispose();
+                this.fileStream.Dispose();
+            }
         }
 
         private void WriteImportToFile(List<FileCabinetRecord> records)
@@ -430,6 +412,33 @@ namespace FileCabinetApp
                 this.binaryWriter.Write(record.Height);
                 this.currentOffset += SizeOfShort;
             }
+        }
+
+        private FileCabinetRecord GetRecord(int id)
+        {
+            int tempOffset = ((id - 1) * SizeOfRecord) + SizeOfShort;
+            this.binaryReader.BaseStream.Seek(tempOffset, 0);
+            FileCabinetRecord tempRecord = new FileCabinetRecord
+            {
+                Id = this.binaryReader.ReadInt32(),
+            };
+            tempOffset += SizeOfInt;
+            tempRecord.FirstName = this.binaryReader.ReadString();
+            this.binaryReader.BaseStream.Seek(tempOffset + SizeOfString, 0);
+            tempRecord.LastName = this.binaryReader.ReadString();
+            tempOffset += SizeOfString;
+            this.binaryReader.BaseStream.Seek(tempOffset + SizeOfString, 0);
+            int day = this.binaryReader.ReadInt32();
+            int month = this.binaryReader.ReadInt32();
+            int year = this.binaryReader.ReadInt32();
+            tempRecord.DateOfBirth = tempRecord.DateOfBirth.AddDays(day - 1);
+            tempRecord.DateOfBirth = tempRecord.DateOfBirth.AddMonths(month - 1);
+            tempRecord.DateOfBirth = tempRecord.DateOfBirth.AddYears(year - 1);
+            tempRecord.PatronymicLetter = this.binaryReader.ReadChar();
+            tempRecord.Income = this.binaryReader.ReadDecimal();
+            tempRecord.Height = this.binaryReader.ReadInt16();
+
+            return tempRecord;
         }
     }
 }

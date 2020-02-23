@@ -1,17 +1,24 @@
-﻿using CommandLine;
-using System;
-using FileCabinetApp;
-using System.IO;
+﻿using System;
 using System.Collections.Generic;
-using System.Xml;
+using System.IO;
 using System.Linq;
+using System.Xml;
+using CommandLine;
+using FileCabinetApp;
 
 namespace FileCabinetGenerator
 {
-    public class Program
+    /// <summary>
+    /// API class of the program.
+    /// </summary>
+    public static class Program
     {
         private const string Alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
 
+        /// <summary>
+        /// Point of entrance to program.
+        /// </summary>
+        /// <param name="args">Command prompt arguments.</param>
         public static void Main(string[] args)
         {
             Options options = GetCommandLineArguments(args);
@@ -66,7 +73,7 @@ namespace FileCabinetGenerator
 
                 XmlWriterSettings settings = new XmlWriterSettings
                 {
-                    Indent = true
+                    Indent = true,
                 };
                 try
                 {
@@ -115,13 +122,12 @@ namespace FileCabinetGenerator
                     DateOfBirth = GetRandomDate(new DateTime(1950, 1, 1), random),
                     PatronymicLetter = (char)random.Next((int)'A', (int)'Z'),
                     Income = random.Next(),
-                    Height = (short)random.Next(1, 300)
+                    Height = (short)random.Next(1, 300),
                 };
                 records[i] = newRecord;
             }
 
             return records;
-
         }
 
         private static string GetRandomString(string charsArr, int length, Random random)

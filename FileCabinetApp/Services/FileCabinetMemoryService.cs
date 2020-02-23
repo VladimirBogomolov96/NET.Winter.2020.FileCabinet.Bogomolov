@@ -172,6 +172,11 @@ namespace FileCabinetApp
             return new FileCabinetServiceSnapshot(this.list.ToArray());
         }
 
+        /// <summary>
+        /// Restores statement from snapshot.
+        /// </summary>
+        /// <param name="snapshot">Snapshot that represent statement to restore.</param>
+        /// <returns>Amount of new records added.</returns>
         public int Restore(FileCabinetServiceSnapshot snapshot)
         {
             if (snapshot is null)
@@ -254,6 +259,15 @@ namespace FileCabinetApp
             return importIndex;
         }
 
+        /// <summary>
+        /// Sets record validator.
+        /// </summary>
+        /// <param name="recordValidator">Rules of validation.</param>
+        public void SetRecordValidator(IRecordValidator recordValidator)
+        {
+            this.recordValidator = recordValidator;
+        }
+
         private void FillDictionaries(RecordParametersTransfer transfer, FileCabinetRecord record)
         {
             if (this.firstNameDictionary.ContainsKey(transfer.FirstName))
@@ -285,11 +299,6 @@ namespace FileCabinetApp
                 this.dateOfBirthDictionary.Add(transfer.DateOfBirth, new List<FileCabinetRecord>());
                 this.dateOfBirthDictionary[transfer.DateOfBirth].Add(record);
             }
-        }
-
-        public void SetRecordValidator(IRecordValidator recordValidator)
-        {
-            this.recordValidator = recordValidator;
         }
     }
 }
