@@ -3,6 +3,8 @@ using System;
 using FileCabinetApp;
 using System.IO;
 using System.Collections.Generic;
+using System.Xml;
+using System.Linq;
 
 namespace FileCabinetGenerator
 {
@@ -43,6 +45,35 @@ namespace FileCabinetGenerator
                     foreach (FileCabinetRecord record in records)
                     {
                         csvWriter.Write(record);
+                    }
+
+                    Console.WriteLine($"All records are exported to file {options.OutputFileName}");
+                }
+                catch (DirectoryNotFoundException ex)
+                {
+                    Console.WriteLine(ex.Message);
+                }
+            }
+            else if (options.OutputType.Equals("xml", StringComparison.OrdinalIgnoreCase))
+            {
+                FileCabinetRecordXml[] xmlRecords = new FileCabinetRecordXml[records.Count()];
+                int counter = 0;
+                foreach (FileCabinetRecord record in records)
+                {
+                    xmlRecords[counter] = new FileCabinetRecordXml(record);
+                    counter++;
+                }
+
+                XmlWriterSettings settings = new XmlWriterSettings
+                {
+                    Indent = true
+                };
+                try
+                {
+                    using (var fileWriter = XmlWriter.Create(options.OutputFileName, settings))
+                    {
+                        XmlWriterToGenerator xmlWriter = new XmlWriterToGenerator(fileWriter, xmlRecords);
+                        xmlWriter.Write();
                     }
 
                     Console.WriteLine($"All records are exported to file {options.OutputFileName}");
