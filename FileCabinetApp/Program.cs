@@ -59,7 +59,7 @@ namespace FileCabinetApp
         public static void Main(string[] args)
         {
             Console.WriteLine($"File Cabinet Application, developed by {Program.DeveloperName}");
-            GetCommandLineArguments(args);
+            SetCommandLineSettings(args);
             Console.WriteLine(Program.HintMessage);
             Console.WriteLine();
 
@@ -91,7 +91,7 @@ namespace FileCabinetApp
             while (isRunning);
         }
 
-        private static void GetCommandLineArguments(string[] args)
+        private static void SetCommandLineSettings(string[] args)
         {
             Options options = new Options();
             var result = Parser.Default.ParseArguments<Options>(args).WithParsed(parsed => options = parsed);
