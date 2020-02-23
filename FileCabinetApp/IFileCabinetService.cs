@@ -22,6 +22,8 @@ namespace FileCabinetApp
         /// <param name="transfer">Object to transfer new parameters to existing record.</param>
         void EditRecord(int id, RecordParametersTransfer transfer);
 
+        void SetRecordValidator(IRecordValidator recordValidator);
+
         /// <summary>
         /// Creates a snapshot of all records in current moment.
         /// </summary>

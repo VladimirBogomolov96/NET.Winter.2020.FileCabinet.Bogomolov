@@ -38,6 +38,14 @@
             <param name="fileStream">Stream to work with file.</param>
             <exception cref="T:System.ArgumentNullException">Thrown when stream is null.</exception>
         </member>
+        <member name="M:FileCabinetApp.FileCabinetFilesystemService.#ctor(System.IO.FileStream,FileCabinetApp.IRecordValidator)">
+            <summary>
+            Initializes a new instance of the <see cref="T:FileCabinetApp.FileCabinetFilesystemService"/> class.
+            </summary>
+            <param name="fileStream">Stream to work with file.</param>
+            <param name="recordValidator">Validation rules.</param>
+            <exception cref="T:System.ArgumentNullException">Thrown when stream is null.</exception>
+        </member>
         <member name="M:FileCabinetApp.FileCabinetFilesystemService.CreateRecord(FileCabinetApp.RecordParametersTransfer)">
             <summary>
             Creates new records with given parameters.
@@ -114,6 +122,11 @@
             Initializes a new instance of the <see cref="T:FileCabinetApp.FileCabinetMemoryService"/> class.
             </summary>
             <param name="recordValidator">Validator for parameters.</param>
+        </member>
+        <member name="M:FileCabinetApp.FileCabinetMemoryService.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:FileCabinetApp.FileCabinetMemoryService"/> class.
+            </summary>
         </member>
         <member name="M:FileCabinetApp.FileCabinetMemoryService.CreateRecord(FileCabinetApp.RecordParametersTransfer)">
             <summary>

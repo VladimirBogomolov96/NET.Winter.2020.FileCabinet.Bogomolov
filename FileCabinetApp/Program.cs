@@ -97,19 +97,6 @@ namespace FileCabinetApp
         {
             Options options = new Options();
             var result = Parser.Default.ParseArguments<Options>(args).WithParsed(parsed => options = parsed);
-            if (options.Rule.Equals("custom", StringComparison.InvariantCultureIgnoreCase))
-            {
-                SetCustomService();
-            }
-            else if (options.Rule.Equals("default", StringComparison.InvariantCultureIgnoreCase))
-            {
-                SetDefaultService();
-            }
-            else
-            {
-                throw new ArgumentException("Wrong command line argument.", nameof(args));
-            }
-
             if (options.Storage.Equals("file", StringComparison.InvariantCultureIgnoreCase))
             {
                 SetFileService();
@@ -117,6 +104,19 @@ namespace FileCabinetApp
             else if (options.Storage.Equals("memory", StringComparison.InvariantCultureIgnoreCase))
             {
                 SetMemoryService();
+            }
+            else
+            {
+                throw new ArgumentException("Wrong command line argument.", nameof(args));
+            }
+
+            if (options.Rule.Equals("custom", StringComparison.InvariantCultureIgnoreCase))
+            {
+                SetCustomService();
+            }
+            else if (options.Rule.Equals("default", StringComparison.InvariantCultureIgnoreCase))
+            {
+                SetDefaultService();
             }
             else
             {
@@ -359,6 +359,7 @@ namespace FileCabinetApp
 
         private static void SetMemoryService()
         {
+            fileCabinetService = new FileCabinetMemoryService();
             Console.WriteLine("Using memory service.");
         }
 
@@ -371,7 +372,7 @@ namespace FileCabinetApp
 
         private static void SetDefaultService()
         {
-            fileCabinetService = new FileCabinetMemoryService(new DefaultValidator());
+            fileCabinetService.SetRecordValidator(new DefaultValidator());
             firstNameValidator += FirstNameDefaultValidation;
             lastNameValidator += LastNameDefaultValidation;
             dateOfBirthValidator += DateOfBirthDefaultValidation;
@@ -383,7 +384,7 @@ namespace FileCabinetApp
 
         private static void SetCustomService()
         {
-            fileCabinetService = new FileCabinetMemoryService(new CustomValidator());
+            fileCabinetService.SetRecordValidator(new CustomValidator());
             firstNameValidator += FirstNameCustomValidation;
             lastNameValidator += LastNameCustomValidation;
             dateOfBirthValidator += DateOfBirthCustomValidation;

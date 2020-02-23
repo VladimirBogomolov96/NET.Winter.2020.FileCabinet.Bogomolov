@@ -27,6 +27,13 @@ namespace FileCabinetApp
         }
 
         /// <summary>
+        /// Initializes a new instance of the <see cref="FileCabinetMemoryService"/> class.
+        /// </summary>
+        public FileCabinetMemoryService()
+        {
+        }
+
+        /// <summary>
         /// Creates new records with given parameters.
         /// </summary>
         /// <param name="transfer">Object to transfer parameters of new record.</param>
@@ -278,6 +285,11 @@ namespace FileCabinetApp
                 this.dateOfBirthDictionary.Add(transfer.DateOfBirth, new List<FileCabinetRecord>());
                 this.dateOfBirthDictionary[transfer.DateOfBirth].Add(record);
             }
+        }
+
+        public void SetRecordValidator(IRecordValidator recordValidator)
+        {
+            this.recordValidator = recordValidator;
         }
     }
 }
