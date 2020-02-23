@@ -1,6 +1,8 @@
 ﻿using CommandLine;
 using System;
 using FileCabinetApp;
+using System.IO;
+using System.Collections.Generic;
 
 namespace FileCabinetGenerator
 {
@@ -12,6 +14,48 @@ namespace FileCabinetGenerator
         {
             Options options = GetCommandLineArguments(args);
             FileCabinetRecord[] records = GenerateRandomRecords(options.StartId, options.RecordsAmount);
+            Export(options, records);
+        }
+
+        private static void Export(Options options, IEnumerable<FileCabinetRecord> records)
+        {
+            if (File.Exists(options.OutputFileName))
+            {
+                Console.WriteLine($"File is exist - rewrite {options.OutputFileName}? [Y/n]");
+                string answer = Console.ReadLine();
+                if (answer.Equals("y", StringComparison.OrdinalIgnoreCase))
+                {
+                    File.Delete(options.OutputFileName);
+                }
+                else
+                {
+                    return;
+                }
+            }
+
+            if (options.OutputType.Equals("csv", StringComparison.OrdinalIgnoreCase))
+            {
+                try
+                {
+                    using StreamWriter streamWriter = new StreamWriter(options.OutputFileName);
+                    streamWriter.WriteLine("ID,First Name,Patronymic,Last Name,Date Of Birth,Height,Income");
+                    using FileCabinetRecordCsvWriter csvWriter = new FileCabinetRecordCsvWriter(streamWriter);
+                    foreach (FileCabinetRecord record in records)
+                    {
+                        csvWriter.Write(record);
+                    }
+
+                    Console.WriteLine($"All records are exported to file {options.OutputFileName}");
+                }
+                catch (DirectoryNotFoundException ex)
+                {
+                    Console.WriteLine(ex.Message);
+                }
+            }
+            else
+            {
+                Console.WriteLine("Wrong format type.");
+            }
         }
 
         private static Options GetCommandLineArguments(string[] args)

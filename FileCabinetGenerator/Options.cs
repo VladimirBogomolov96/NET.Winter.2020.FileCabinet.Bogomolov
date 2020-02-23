@@ -35,7 +35,7 @@ namespace FileCabinetGenerator
         /// Gets or sets start id.
         /// </summary>
         /// <value>Start id.</value>
-        [Option('i', "start-id	", Default = 1, Required = false)]
+        [Option('i', "start-id", Default = 1, Required = false)]
         public int StartId { get; set; }
     }
 }
