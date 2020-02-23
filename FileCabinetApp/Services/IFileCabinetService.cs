@@ -23,6 +23,12 @@ namespace FileCabinetApp
         void EditRecord(int id, RecordParametersTransfer transfer);
 
         /// <summary>
+        /// Sets record validator.
+        /// </summary>
+        /// <param name="recordValidator">Rules of validation.</param>
+        void SetRecordValidator(IRecordValidator recordValidator);
+
+        /// <summary>
         /// Creates a snapshot of all records in current moment.
         /// </summary>
         /// <returns>Snapshot of records.</returns>
@@ -60,5 +66,12 @@ namespace FileCabinetApp
         /// </summary>
         /// <returns>Amount of existing records.</returns>
         int GetStat();
+
+        /// <summary>
+        /// Restores statement from snapshot.
+        /// </summary>
+        /// <param name="snapshot">Snapshot that represent statement to restore.</param>
+        /// <returns>Amount of new records added.</returns>
+        int Restore(FileCabinetServiceSnapshot snapshot);
     }
 }

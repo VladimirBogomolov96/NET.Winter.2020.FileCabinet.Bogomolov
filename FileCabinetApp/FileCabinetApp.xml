@@ -4,27 +4,283 @@
         <name>FileCabinetApp</name>
     </assembly>
     <members>
-        <member name="T:FileCabinetApp.CustomValidator">
+        <member name="T:FileCabinetApp.FileCabinetRecord">
             <summary>
-            Provides method for parameters validation.
+            Provides type to describe a record.
             </summary>
         </member>
-        <member name="M:FileCabinetApp.CustomValidator.ValidateParameters(FileCabinetApp.RecordParametersTransfer)">
+        <member name="P:FileCabinetApp.FileCabinetRecord.Id">
             <summary>
-            Validate given parameters.
+            Gets or sets unique ID of a record.
             </summary>
-            <param name="transfer">Transfer of parameters to validate.</param>
+            <value>Value of ID of a record.</value>
         </member>
-        <member name="T:FileCabinetApp.DefaultValidator">
+        <member name="P:FileCabinetApp.FileCabinetRecord.FirstName">
             <summary>
-            Provides method for parameters validation.
+            Gets or sets first name of record subject.
+            </summary>
+            <value>Value of first name of a record.</value>
+        </member>
+        <member name="P:FileCabinetApp.FileCabinetRecord.LastName">
+            <summary>
+            Gets or sets last name of record subject.
+            </summary>
+            <value>Value of last name of a record.</value>
+        </member>
+        <member name="P:FileCabinetApp.FileCabinetRecord.DateOfBirth">
+            <summary>
+            Gets or sets date of birth of record subject.
+            </summary>
+            <value>Value of date of birth of a record.</value>
+        </member>
+        <member name="P:FileCabinetApp.FileCabinetRecord.Height">
+            <summary>
+            Gets or sets height of record subject.
+            </summary>
+            <value>Value of height of a record.</value>
+        </member>
+        <member name="P:FileCabinetApp.FileCabinetRecord.Income">
+            <summary>
+            Gets or sets income of record subject.
+            </summary>
+            <value>Value of income of a record.</value>
+        </member>
+        <member name="P:FileCabinetApp.FileCabinetRecord.PatronymicLetter">
+            <summary>
+            Gets or sets patronymic letter of record subject.
+            </summary>
+            <value>Value of patronymic letter of a record.</value>
+        </member>
+        <member name="T:FileCabinetApp.FileCabinetServiceSnapshot">
+            <summary>
+            Provides methods to save records into csv or xml.
             </summary>
         </member>
-        <member name="M:FileCabinetApp.DefaultValidator.ValidateParameters(FileCabinetApp.RecordParametersTransfer)">
+        <member name="M:FileCabinetApp.FileCabinetServiceSnapshot.#ctor">
             <summary>
-            Validate transfer parameters to use in methods.
+            Initializes a new instance of the <see cref="T:FileCabinetApp.FileCabinetServiceSnapshot"/> class.
             </summary>
-            <param name="transfer">Transfer parameters to validate.</param>
+        </member>
+        <member name="M:FileCabinetApp.FileCabinetServiceSnapshot.#ctor(FileCabinetApp.FileCabinetRecord[])">
+            <summary>
+            Initializes a new instance of the <see cref="T:FileCabinetApp.FileCabinetServiceSnapshot"/> class.
+            </summary>
+            <param name="records">Records to save.</param>
+        </member>
+        <member name="P:FileCabinetApp.FileCabinetServiceSnapshot.GetRecords">
+            <summary>
+            Gets records as readonly collection.
+            </summary>
+            <value>Readonly collection of records.</value>
+        </member>
+        <member name="M:FileCabinetApp.FileCabinetServiceSnapshot.SaveToCsv(System.IO.StreamWriter)">
+            <summary>
+            Saves records to csv file.
+            </summary>
+            <param name="writer">Streamwriter to save records.</param>
+            <exception cref="T:System.ArgumentNullException">Writer must be not null.</exception>
+        </member>
+        <member name="M:FileCabinetApp.FileCabinetServiceSnapshot.SaveToXml(System.Xml.XmlWriter)">
+            <summary>
+            Saves records to xml file.
+            </summary>
+            <param name="writer">Streamwriter to save records.</param>
+            <exception cref="T:System.ArgumentNullException">Writer must be not null.</exception>
+        </member>
+        <member name="M:FileCabinetApp.FileCabinetServiceSnapshot.LoadFromCsv(System.IO.StreamReader)">
+            <summary>
+            Gets records from csv.
+            </summary>
+            <param name="streamReader">Stream reader to get records.</param>
+        </member>
+        <member name="M:FileCabinetApp.FileCabinetServiceSnapshot.LoadFromXml(System.Xml.XmlReader)">
+            <summary>
+            Gets records from xml.
+            </summary>
+            <param name="xmlReader">Xml reader to get records.</param>
+        </member>
+        <member name="T:FileCabinetApp.FileCabinetRecordsXmlModel">
+            <summary>
+            Model of filecabinet records.
+            </summary>
+        </member>
+        <member name="P:FileCabinetApp.FileCabinetRecordsXmlModel.Records">
+            <summary>
+            Gets or sets array of records.
+            </summary>
+            <value>Array of records.</value>
+        </member>
+        <member name="T:FileCabinetApp.FileCabinetRecordXmlModel">
+            <summary>
+            Record xml model.
+            </summary>
+        </member>
+        <member name="P:FileCabinetApp.FileCabinetRecordXmlModel.Id">
+            <summary>
+            Gets or sets ID.
+            </summary>
+            <value>ID.</value>
+        </member>
+        <member name="P:FileCabinetApp.FileCabinetRecordXmlModel.Name">
+            <summary>
+            Gets or sets name.
+            </summary>
+            <value>Name.</value>
+        </member>
+        <member name="P:FileCabinetApp.FileCabinetRecordXmlModel.DateOfBirth">
+            <summary>
+            Gets or sets date of birth.
+            </summary>
+            <value>Date of birth.</value>
+        </member>
+        <member name="P:FileCabinetApp.FileCabinetRecordXmlModel.PatronymicLetter">
+            <summary>
+            Gets or sets patronymic letter.
+            </summary>
+            <value>Patronymic letter.</value>
+        </member>
+        <member name="P:FileCabinetApp.FileCabinetRecordXmlModel.Income">
+            <summary>
+            Gets or sets patronymic income.
+            </summary>
+            <value>Income.</value>
+        </member>
+        <member name="P:FileCabinetApp.FileCabinetRecordXmlModel.Height">
+            <summary>
+            Gets or sets patronymic height.
+            </summary>
+            <value>Height.</value>
+        </member>
+        <member name="T:FileCabinetApp.FileCabinetRecordXmlName">
+            <summary>
+            Name xml model.
+            </summary>
+        </member>
+        <member name="P:FileCabinetApp.FileCabinetRecordXmlName.FirstName">
+            <summary>
+            Gets or sets first name.
+            </summary>
+            <value>First name.</value>
+        </member>
+        <member name="P:FileCabinetApp.FileCabinetRecordXmlName.LastName">
+            <summary>
+            Gets or sets last name.
+            </summary>
+            <value>Last name.</value>
+        </member>
+        <member name="T:FileCabinetApp.Options">
+            <summary>
+            Command line options.
+            </summary>
+        </member>
+        <member name="P:FileCabinetApp.Options.Rule">
+            <summary>
+            Gets or sets type of validation rules.
+            </summary>
+            <value>Type of validation rules.</value>
+        </member>
+        <member name="P:FileCabinetApp.Options.Storage">
+            <summary>
+            Gets or sets type of storage.
+            </summary>
+            <value>Type of storage.</value>
+        </member>
+        <member name="T:FileCabinetApp.Program">
+            <summary>
+            API class of the program.
+            </summary>
+        </member>
+        <member name="M:FileCabinetApp.Program.Main(System.String[])">
+            <summary>
+            Point of entrance to program.
+            </summary>
+            <param name="args">Command prompt arguments.</param>
+        </member>
+        <member name="T:FileCabinetApp.FileCabinetRecordCsvReader">
+            <summary>
+            Reader of csv records.
+            </summary>
+        </member>
+        <member name="M:FileCabinetApp.FileCabinetRecordCsvReader.#ctor(System.IO.StreamReader)">
+            <summary>
+            Initializes a new instance of the <see cref="T:FileCabinetApp.FileCabinetRecordCsvReader"/> class.
+            </summary>
+            <param name="fileReader">File reader.</param>
+        </member>
+        <member name="M:FileCabinetApp.FileCabinetRecordCsvReader.ReadAll">
+            <summary>
+            Reads all strings from xml file.
+            </summary>
+            <returns>List of records.</returns>
+        </member>
+        <member name="T:FileCabinetApp.FileCabinetRecordXmlReader">
+            <summary>
+            Xml reader of filecabinet records.
+            </summary>
+        </member>
+        <member name="M:FileCabinetApp.FileCabinetRecordXmlReader.#ctor(System.Xml.XmlReader)">
+            <summary>
+            Initializes a new instance of the <see cref="T:FileCabinetApp.FileCabinetRecordXmlReader"/> class.
+            </summary>
+            <param name="xmlReader">Xml reader.</param>
+        </member>
+        <member name="M:FileCabinetApp.FileCabinetRecordXmlReader.ReadAll">
+            <summary>
+            Reads all strings from xml file.
+            </summary>
+            <returns>List of records.</returns>
+        </member>
+        <member name="T:FileCabinetApp.RecordParametersTransfer">
+            <summary>
+            Parameters transition class.
+            </summary>
+        </member>
+        <member name="M:FileCabinetApp.RecordParametersTransfer.#ctor(System.String,System.String,System.DateTime,System.Int16,System.Decimal,System.Char)">
+            <summary>
+            Initializes a new instance of the <see cref="T:FileCabinetApp.RecordParametersTransfer"/> class.
+            </summary>
+            <param name="firstName">First name parameter to transfer.</param>
+            <param name="lastName">Last name parameter to transfer.</param>
+            <param name="dateOfBirth">Date of birth parameter to transfer.</param>
+            <param name="height">Height parameter to transfer.</param>
+            <param name="income">Income parameter to transfer.</param>
+            <param name="patronymicLetter">Patronymic letter parameter to transfer.</param>
+        </member>
+        <member name="P:FileCabinetApp.RecordParametersTransfer.FirstName">
+            <summary>
+            Gets first name to transfer.
+            </summary>
+            <value>Value of first name to transfer.</value>
+        </member>
+        <member name="P:FileCabinetApp.RecordParametersTransfer.LastName">
+            <summary>
+            Gets last name to transfer.
+            </summary>
+            <value>Value of last name to transfer.</value>
+        </member>
+        <member name="P:FileCabinetApp.RecordParametersTransfer.DateOfBirth">
+            <summary>
+            Gets date of birth to transfer.
+            </summary>
+            <value>Value of date of birth to transfer.</value>
+        </member>
+        <member name="P:FileCabinetApp.RecordParametersTransfer.Height">
+            <summary>
+            Gets height to transfer.
+            </summary>
+            <value>Value of height to transfer.</value>
+        </member>
+        <member name="P:FileCabinetApp.RecordParametersTransfer.Income">
+            <summary>
+            Gets income to transfer.
+            </summary>
+            <value>Value of income to transfer.</value>
+        </member>
+        <member name="P:FileCabinetApp.RecordParametersTransfer.PatronymicLetter">
+            <summary>
+            Gets patronymic letter to transfer.
+            </summary>
+            <value>Value of patronymic letter to transfer.</value>
         </member>
         <member name="T:FileCabinetApp.FileCabinetFilesystemService">
             <summary>
@@ -36,6 +292,14 @@
             Initializes a new instance of the <see cref="T:FileCabinetApp.FileCabinetFilesystemService"/> class.
             </summary>
             <param name="fileStream">Stream to work with file.</param>
+            <exception cref="T:System.ArgumentNullException">Thrown when stream is null.</exception>
+        </member>
+        <member name="M:FileCabinetApp.FileCabinetFilesystemService.#ctor(System.IO.FileStream,FileCabinetApp.IRecordValidator)">
+            <summary>
+            Initializes a new instance of the <see cref="T:FileCabinetApp.FileCabinetFilesystemService"/> class.
+            </summary>
+            <param name="fileStream">Stream to work with file.</param>
+            <param name="recordValidator">Validation rules.</param>
             <exception cref="T:System.ArgumentNullException">Thrown when stream is null.</exception>
         </member>
         <member name="M:FileCabinetApp.FileCabinetFilesystemService.CreateRecord(FileCabinetApp.RecordParametersTransfer)">
@@ -98,6 +362,19 @@
             Dispose service.
             </summary>
         </member>
+        <member name="M:FileCabinetApp.FileCabinetFilesystemService.Restore(FileCabinetApp.FileCabinetServiceSnapshot)">
+            <summary>
+            Restores statement from snapshot.
+            </summary>
+            <param name="snapshot">Snapshot that represent statement to restore.</param>
+            <returns>Amount of new records added.</returns>
+        </member>
+        <member name="M:FileCabinetApp.FileCabinetFilesystemService.SetRecordValidator(FileCabinetApp.IRecordValidator)">
+            <summary>
+            Sets record validator.
+            </summary>
+            <param name="recordValidator">Rules of validation.</param>
+        </member>
         <member name="M:FileCabinetApp.FileCabinetFilesystemService.Dispose(System.Boolean)">
             <summary>
             If service is disposing, close streams.
@@ -114,6 +391,11 @@
             Initializes a new instance of the <see cref="T:FileCabinetApp.FileCabinetMemoryService"/> class.
             </summary>
             <param name="recordValidator">Validator for parameters.</param>
+        </member>
+        <member name="M:FileCabinetApp.FileCabinetMemoryService.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:FileCabinetApp.FileCabinetMemoryService"/> class.
+            </summary>
         </member>
         <member name="M:FileCabinetApp.FileCabinetMemoryService.CreateRecord(FileCabinetApp.RecordParametersTransfer)">
             <summary>
@@ -172,52 +454,122 @@
             </summary>
             <returns>Snapshot of records.</returns>
         </member>
-        <member name="T:FileCabinetApp.FileCabinetRecord">
+        <member name="M:FileCabinetApp.FileCabinetMemoryService.Restore(FileCabinetApp.FileCabinetServiceSnapshot)">
             <summary>
-            Provides type to describe a record.
+            Restores statement from snapshot.
+            </summary>
+            <param name="snapshot">Snapshot that represent statement to restore.</param>
+            <returns>Amount of new records added.</returns>
+        </member>
+        <member name="M:FileCabinetApp.FileCabinetMemoryService.SetRecordValidator(FileCabinetApp.IRecordValidator)">
+            <summary>
+            Sets record validator.
+            </summary>
+            <param name="recordValidator">Rules of validation.</param>
+        </member>
+        <member name="T:FileCabinetApp.IFileCabinetService">
+            <summary>
+            Provides methods to interact with records.
             </summary>
         </member>
-        <member name="P:FileCabinetApp.FileCabinetRecord.Id">
+        <member name="M:FileCabinetApp.IFileCabinetService.CreateRecord(FileCabinetApp.RecordParametersTransfer)">
             <summary>
-            Gets or sets unique ID of a record.
+            Creates new records with given parameters.
             </summary>
-            <value>Value of ID of a record.</value>
+            <param name="transfer">Object to transfer parameters of new record.</param>
+            <returns>ID of created record.</returns>
         </member>
-        <member name="P:FileCabinetApp.FileCabinetRecord.FirstName">
+        <member name="M:FileCabinetApp.IFileCabinetService.EditRecord(System.Int32,FileCabinetApp.RecordParametersTransfer)">
             <summary>
-            Gets or sets first name of record subject.
+            Edits existing record.
             </summary>
-            <value>Value of first name of a record.</value>
+            <param name="id">ID of a record to edit.</param>
+            <param name="transfer">Object to transfer new parameters to existing record.</param>
         </member>
-        <member name="P:FileCabinetApp.FileCabinetRecord.LastName">
+        <member name="M:FileCabinetApp.IFileCabinetService.SetRecordValidator(FileCabinetApp.IRecordValidator)">
             <summary>
-            Gets or sets last name of record subject.
+            Sets record validator.
             </summary>
-            <value>Value of last name of a record.</value>
+            <param name="recordValidator">Rules of validation.</param>
         </member>
-        <member name="P:FileCabinetApp.FileCabinetRecord.DateOfBirth">
+        <member name="M:FileCabinetApp.IFileCabinetService.MakeSnapshot">
             <summary>
-            Gets or sets date of birth of record subject.
+            Creates a snapshot of all records in current moment.
             </summary>
-            <value>Value of date of birth of a record.</value>
+            <returns>Snapshot of records.</returns>
         </member>
-        <member name="P:FileCabinetApp.FileCabinetRecord.Height">
+        <member name="M:FileCabinetApp.IFileCabinetService.FindByDateOfbirth(System.DateTime)">
             <summary>
-            Gets or sets height of record subject.
+            Finds all records with given date of birth.
             </summary>
-            <value>Value of height of a record.</value>
+            <param name="dateOfBirth">Date of birth to match with.</param>
+            <returns>Array of matching records.</returns>
         </member>
-        <member name="P:FileCabinetApp.FileCabinetRecord.Income">
+        <member name="M:FileCabinetApp.IFileCabinetService.FindByFirstName(System.String)">
             <summary>
-            Gets or sets income of record subject.
+            Finds all records with given first name.
             </summary>
-            <value>Value of income of a record.</value>
+            <param name="firstName">First name to match with.</param>
+            <returns>Array of matching records.</returns>
         </member>
-        <member name="P:FileCabinetApp.FileCabinetRecord.PatronymicLetter">
+        <member name="M:FileCabinetApp.IFileCabinetService.FindByLastName(System.String)">
             <summary>
-            Gets or sets patronymic letter of record subject.
+            Finds all records with given last name.
             </summary>
-            <value>Value of patronymic letter of a record.</value>
+            <param name="lastName">Last name to match with.</param>
+            <returns>Array of matching records.</returns>
+        </member>
+        <member name="M:FileCabinetApp.IFileCabinetService.GetRecords">
+            <summary>
+            Gets all existing records.
+            </summary>
+            <returns>Array of all existing records.</returns>
+        </member>
+        <member name="M:FileCabinetApp.IFileCabinetService.GetStat">
+            <summary>
+            Counts amount of existing records.
+            </summary>
+            <returns>Amount of existing records.</returns>
+        </member>
+        <member name="M:FileCabinetApp.IFileCabinetService.Restore(FileCabinetApp.FileCabinetServiceSnapshot)">
+            <summary>
+            Restores statement from snapshot.
+            </summary>
+            <param name="snapshot">Snapshot that represent statement to restore.</param>
+            <returns>Amount of new records added.</returns>
+        </member>
+        <member name="T:FileCabinetApp.CustomValidator">
+            <summary>
+            Provides method for parameters validation.
+            </summary>
+        </member>
+        <member name="M:FileCabinetApp.CustomValidator.ValidateParameters(FileCabinetApp.RecordParametersTransfer)">
+            <summary>
+            Validate given parameters.
+            </summary>
+            <param name="transfer">Transfer of parameters to validate.</param>
+        </member>
+        <member name="T:FileCabinetApp.DefaultValidator">
+            <summary>
+            Provides method for parameters validation.
+            </summary>
+        </member>
+        <member name="M:FileCabinetApp.DefaultValidator.ValidateParameters(FileCabinetApp.RecordParametersTransfer)">
+            <summary>
+            Validate transfer parameters to use in methods.
+            </summary>
+            <param name="transfer">Transfer parameters to validate.</param>
+        </member>
+        <member name="T:FileCabinetApp.IRecordValidator">
+            <summary>
+            Interface to make validation of some parameters.
+            </summary>
+        </member>
+        <member name="M:FileCabinetApp.IRecordValidator.ValidateParameters(FileCabinetApp.RecordParametersTransfer)">
+            <summary>
+            Validate given parameters.
+            </summary>
+            <param name="transfer">Transfer of parameters to validate.</param>
         </member>
         <member name="T:FileCabinetApp.FileCabinetRecordCsvWriter">
             <summary>
@@ -284,180 +636,6 @@
             Provides disposing of an object.
             </summary>
             <param name="disposing">If object is disposing or not.</param>
-        </member>
-        <member name="T:FileCabinetApp.FileCabinetServiceSnapshot">
-            <summary>
-            Provides methods to save records into csv or xml.
-            </summary>
-        </member>
-        <member name="M:FileCabinetApp.FileCabinetServiceSnapshot.#ctor(FileCabinetApp.FileCabinetRecord[])">
-            <summary>
-            Initializes a new instance of the <see cref="T:FileCabinetApp.FileCabinetServiceSnapshot"/> class.
-            </summary>
-            <param name="records">Records to save.</param>
-        </member>
-        <member name="M:FileCabinetApp.FileCabinetServiceSnapshot.SaveToCsv(System.IO.StreamWriter)">
-            <summary>
-            Saves records to csv file.
-            </summary>
-            <param name="writer">Streamwriter to save records.</param>
-            <exception cref="T:System.ArgumentNullException">Writer must be not null.</exception>
-        </member>
-        <member name="M:FileCabinetApp.FileCabinetServiceSnapshot.SaveToXml(System.Xml.XmlWriter)">
-            <summary>
-            Saves records to xml file.
-            </summary>
-            <param name="writer">Streamwriter to save records.</param>
-            <exception cref="T:System.ArgumentNullException">Writer must be not null.</exception>
-        </member>
-        <member name="T:FileCabinetApp.IFileCabinetService">
-            <summary>
-            Provides methods to interact with records.
-            </summary>
-        </member>
-        <member name="M:FileCabinetApp.IFileCabinetService.CreateRecord(FileCabinetApp.RecordParametersTransfer)">
-            <summary>
-            Creates new records with given parameters.
-            </summary>
-            <param name="transfer">Object to transfer parameters of new record.</param>
-            <returns>ID of created record.</returns>
-        </member>
-        <member name="M:FileCabinetApp.IFileCabinetService.EditRecord(System.Int32,FileCabinetApp.RecordParametersTransfer)">
-            <summary>
-            Edits existing record.
-            </summary>
-            <param name="id">ID of a record to edit.</param>
-            <param name="transfer">Object to transfer new parameters to existing record.</param>
-        </member>
-        <member name="M:FileCabinetApp.IFileCabinetService.MakeSnapshot">
-            <summary>
-            Creates a snapshot of all records in current moment.
-            </summary>
-            <returns>Snapshot of records.</returns>
-        </member>
-        <member name="M:FileCabinetApp.IFileCabinetService.FindByDateOfbirth(System.DateTime)">
-            <summary>
-            Finds all records with given date of birth.
-            </summary>
-            <param name="dateOfBirth">Date of birth to match with.</param>
-            <returns>Array of matching records.</returns>
-        </member>
-        <member name="M:FileCabinetApp.IFileCabinetService.FindByFirstName(System.String)">
-            <summary>
-            Finds all records with given first name.
-            </summary>
-            <param name="firstName">First name to match with.</param>
-            <returns>Array of matching records.</returns>
-        </member>
-        <member name="M:FileCabinetApp.IFileCabinetService.FindByLastName(System.String)">
-            <summary>
-            Finds all records with given last name.
-            </summary>
-            <param name="lastName">Last name to match with.</param>
-            <returns>Array of matching records.</returns>
-        </member>
-        <member name="M:FileCabinetApp.IFileCabinetService.GetRecords">
-            <summary>
-            Gets all existing records.
-            </summary>
-            <returns>Array of all existing records.</returns>
-        </member>
-        <member name="M:FileCabinetApp.IFileCabinetService.GetStat">
-            <summary>
-            Counts amount of existing records.
-            </summary>
-            <returns>Amount of existing records.</returns>
-        </member>
-        <member name="T:FileCabinetApp.IRecordValidator">
-            <summary>
-            Interface to make validation of some parameters.
-            </summary>
-        </member>
-        <member name="M:FileCabinetApp.IRecordValidator.ValidateParameters(FileCabinetApp.RecordParametersTransfer)">
-            <summary>
-            Validate given parameters.
-            </summary>
-            <param name="transfer">Transfer of parameters to validate.</param>
-        </member>
-        <member name="T:FileCabinetApp.Options">
-            <summary>
-            Command line options.
-            </summary>
-        </member>
-        <member name="P:FileCabinetApp.Options.Rule">
-            <summary>
-            Gets or sets type of validation rules.
-            </summary>
-            <value>Type of validation rules.</value>
-        </member>
-        <member name="P:FileCabinetApp.Options.Storage">
-            <summary>
-            Gets or sets type of storage.
-            </summary>
-            <value>Type of storage.</value>
-        </member>
-        <member name="T:FileCabinetApp.Program">
-            <summary>
-            API class of the program.
-            </summary>
-        </member>
-        <member name="M:FileCabinetApp.Program.Main(System.String[])">
-            <summary>
-            Point of entrance to program.
-            </summary>
-            <param name="args">Command prompt arguments.</param>
-        </member>
-        <member name="T:FileCabinetApp.RecordParametersTransfer">
-            <summary>
-            Parameters transition class.
-            </summary>
-        </member>
-        <member name="M:FileCabinetApp.RecordParametersTransfer.#ctor(System.String,System.String,System.DateTime,System.Int16,System.Decimal,System.Char)">
-            <summary>
-            Initializes a new instance of the <see cref="T:FileCabinetApp.RecordParametersTransfer"/> class.
-            </summary>
-            <param name="firstName">First name parameter to transfer.</param>
-            <param name="lastName">Last name parameter to transfer.</param>
-            <param name="dateOfBirth">Date of birth parameter to transfer.</param>
-            <param name="height">Height parameter to transfer.</param>
-            <param name="income">Income parameter to transfer.</param>
-            <param name="patronymicLetter">Patronymic letter parameter to transfer.</param>
-        </member>
-        <member name="P:FileCabinetApp.RecordParametersTransfer.FirstName">
-            <summary>
-            Gets first name to transfer.
-            </summary>
-            <value>Value of first name to transfer.</value>
-        </member>
-        <member name="P:FileCabinetApp.RecordParametersTransfer.LastName">
-            <summary>
-            Gets last name to transfer.
-            </summary>
-            <value>Value of last name to transfer.</value>
-        </member>
-        <member name="P:FileCabinetApp.RecordParametersTransfer.DateOfBirth">
-            <summary>
-            Gets date of birth to transfer.
-            </summary>
-            <value>Value of date of birth to transfer.</value>
-        </member>
-        <member name="P:FileCabinetApp.RecordParametersTransfer.Height">
-            <summary>
-            Gets height to transfer.
-            </summary>
-            <value>Value of height to transfer.</value>
-        </member>
-        <member name="P:FileCabinetApp.RecordParametersTransfer.Income">
-            <summary>
-            Gets income to transfer.
-            </summary>
-            <value>Value of income to transfer.</value>
-        </member>
-        <member name="P:FileCabinetApp.RecordParametersTransfer.PatronymicLetter">
-            <summary>
-            Gets patronymic letter to transfer.
-            </summary>
-            <value>Value of patronymic letter to transfer.</value>
         </member>
     </members>
 </doc>

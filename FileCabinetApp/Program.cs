@@ -38,6 +38,7 @@ namespace FileCabinetApp
             new Tuple<string, Action<string>>("edit", Edit),
             new Tuple<string, Action<string>>("find", Find),
             new Tuple<string, Action<string>>("export", Export),
+            new Tuple<string, Action<string>>("import", Import),
         };
 
         private static string[][] helpMessages = new string[][]
@@ -50,6 +51,7 @@ namespace FileCabinetApp
             new string[] { "edit", "edits existing record", "The 'edit' command edits existing record." },
             new string[] { "find", "finds records by the given condition", "The 'find' command finds records by the given condition." },
             new string[] { "export", "exports current records into file of given format", "The 'export' command exports current records into file of given format." },
+            new string[] { "import", "imports records from given file", "The 'import' imports records from given file." },
         };
 
         /// <summary>
@@ -59,7 +61,7 @@ namespace FileCabinetApp
         public static void Main(string[] args)
         {
             Console.WriteLine($"File Cabinet Application, developed by {Program.DeveloperName}");
-            GetCommandLineArguments(args);
+            SetCommandLineSettings(args);
             Console.WriteLine(Program.HintMessage);
             Console.WriteLine();
 
@@ -91,10 +93,23 @@ namespace FileCabinetApp
             while (isRunning);
         }
 
-        private static void GetCommandLineArguments(string[] args)
+        private static void SetCommandLineSettings(string[] args)
         {
             Options options = new Options();
             var result = Parser.Default.ParseArguments<Options>(args).WithParsed(parsed => options = parsed);
+            if (options.Storage.Equals("file", StringComparison.InvariantCultureIgnoreCase))
+            {
+                SetFileService();
+            }
+            else if (options.Storage.Equals("memory", StringComparison.InvariantCultureIgnoreCase))
+            {
+                SetMemoryService();
+            }
+            else
+            {
+                throw new ArgumentException("Wrong command line argument.", nameof(args));
+            }
+
             if (options.Rule.Equals("custom", StringComparison.InvariantCultureIgnoreCase))
             {
                 SetCustomService();
@@ -107,18 +122,45 @@ namespace FileCabinetApp
             {
                 throw new ArgumentException("Wrong command line argument.", nameof(args));
             }
+        }
 
-            if (options.Storage.Equals("file", StringComparison.InvariantCultureIgnoreCase))
+        private static void Import(string parameters)
+        {
+            string[] parametersArr = parameters.Split(' ', 2);
+            if (parametersArr.Length < 2)
             {
-                SetFileService();
+                Console.WriteLine("Enter import format and destination file.");
+                return;
             }
-            else if (options.Storage.Equals("memory", StringComparison.InvariantCultureIgnoreCase))
+
+            const int importTypeIndex = 0;
+            const int filePathIndex = 1;
+
+            if (!File.Exists(parametersArr[filePathIndex]))
             {
-                SetMemoryService();
+                Console.WriteLine($"File {parametersArr[filePathIndex]} isn't exist.");
+                return;
+            }
+
+            FileCabinetServiceSnapshot snapshot = new FileCabinetServiceSnapshot();
+            if (parametersArr[importTypeIndex].Equals("csv", StringComparison.OrdinalIgnoreCase))
+            {
+                using StreamReader fileStream = new StreamReader(parametersArr[filePathIndex]);
+                snapshot.LoadFromCsv(fileStream);
+                int numberOfImported = fileCabinetService.Restore(snapshot);
+                Console.WriteLine(string.Format(CultureInfo.InvariantCulture, "{0} records were imported from {1}", numberOfImported, parametersArr[filePathIndex]));
+            }
+            else if (parametersArr[importTypeIndex].Equals("xml", StringComparison.OrdinalIgnoreCase))
+            {
+                using StreamReader fileStream = new StreamReader(parametersArr[filePathIndex]);
+                using XmlReader xmlReader = XmlReader.Create(fileStream);
+                snapshot.LoadFromXml(xmlReader);
+                int numberOfImported = fileCabinetService.Restore(snapshot);
+                Console.WriteLine(string.Format(CultureInfo.InvariantCulture, "{0} records were imported from {1}", numberOfImported, parametersArr[filePathIndex]));
             }
             else
             {
-                throw new ArgumentException("Wrong command line argument.", nameof(args));
+                Console.WriteLine("Wrong format type.");
             }
         }
 
@@ -323,6 +365,7 @@ namespace FileCabinetApp
 
         private static void SetMemoryService()
         {
+            fileCabinetService = new FileCabinetMemoryService();
             Console.WriteLine("Using memory service.");
         }
 
@@ -335,7 +378,7 @@ namespace FileCabinetApp
 
         private static void SetDefaultService()
         {
-            fileCabinetService = new FileCabinetMemoryService(new DefaultValidator());
+            fileCabinetService.SetRecordValidator(new DefaultValidator());
             firstNameValidator += FirstNameDefaultValidation;
             lastNameValidator += LastNameDefaultValidation;
             dateOfBirthValidator += DateOfBirthDefaultValidation;
@@ -347,7 +390,7 @@ namespace FileCabinetApp
 
         private static void SetCustomService()
         {
-            fileCabinetService = new FileCabinetMemoryService(new CustomValidator());
+            fileCabinetService.SetRecordValidator(new CustomValidator());
             firstNameValidator += FirstNameCustomValidation;
             lastNameValidator += LastNameCustomValidation;
             dateOfBirthValidator += DateOfBirthCustomValidation;

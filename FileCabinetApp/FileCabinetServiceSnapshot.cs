@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.IO;
+using System.Linq;
 using System.Text;
 using System.Xml;
 
@@ -11,7 +13,14 @@ namespace FileCabinetApp
     /// </summary>
     public class FileCabinetServiceSnapshot
     {
-        private readonly FileCabinetRecord[] records;
+        private FileCabinetRecord[] records;
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="FileCabinetServiceSnapshot"/> class.
+        /// </summary>
+        public FileCabinetServiceSnapshot()
+        {
+        }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="FileCabinetServiceSnapshot"/> class.
@@ -20,6 +29,18 @@ namespace FileCabinetApp
         public FileCabinetServiceSnapshot(FileCabinetRecord[] records)
         {
             this.records = records;
+        }
+
+        /// <summary>
+        /// Gets records as readonly collection.
+        /// </summary>
+        /// <value>Readonly collection of records.</value>
+        public ReadOnlyCollection<FileCabinetRecord> GetRecords
+        {
+            get
+            {
+                return Array.AsReadOnly(this.records);
+            }
         }
 
         /// <summary>
@@ -61,6 +82,26 @@ namespace FileCabinetApp
             }
 
             writer.WriteEndElement();
+        }
+
+        /// <summary>
+        /// Gets records from csv.
+        /// </summary>
+        /// <param name="streamReader">Stream reader to get records.</param>
+        public void LoadFromCsv(StreamReader streamReader)
+        {
+            FileCabinetRecordCsvReader csvReader = new FileCabinetRecordCsvReader(streamReader);
+            this.records = csvReader.ReadAll().ToArray();
+        }
+
+        /// <summary>
+        /// Gets records from xml.
+        /// </summary>
+        /// <param name="xmlReader">Xml reader to get records.</param>
+        public void LoadFromXml(XmlReader xmlReader)
+        {
+            FileCabinetRecordXmlReader fileXmlReader = new FileCabinetRecordXmlReader(xmlReader);
+            this.records = fileXmlReader.ReadAll().ToArray();
         }
     }
 }

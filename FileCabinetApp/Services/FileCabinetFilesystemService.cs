@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Globalization;
 using System.IO;
 using System.Text;
 
@@ -22,6 +23,7 @@ namespace FileCabinetApp
         private BinaryWriter binaryWriter;
         private int lastId;
         private int currentOffset;
+        private IRecordValidator recordValidator;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="FileCabinetFilesystemService"/> class.
@@ -41,6 +43,18 @@ namespace FileCabinetApp
         }
 
         /// <summary>
+        /// Initializes a new instance of the <see cref="FileCabinetFilesystemService"/> class.
+        /// </summary>
+        /// <param name="fileStream">Stream to work with file.</param>
+        /// <param name="recordValidator">Validation rules.</param>
+        /// <exception cref="ArgumentNullException">Thrown when stream is null.</exception>
+        public FileCabinetFilesystemService(FileStream fileStream, IRecordValidator recordValidator)
+            : this(fileStream)
+        {
+            this.recordValidator = recordValidator;
+        }
+
+        /// <summary>
         /// Creates new records with given parameters.
         /// </summary>
         /// <param name="transfer">Object to transfer parameters of new record.</param>
@@ -48,11 +62,7 @@ namespace FileCabinetApp
         /// <exception cref="ArgumentNullException">Thrown when transfer parameters is null.</exception>
         public int CreateRecord(RecordParametersTransfer transfer)
         {
-            if (transfer is null)
-            {
-                throw new ArgumentNullException(nameof(transfer), "Parameters transfer must be not null.");
-            }
-
+            this.recordValidator.ValidateParameters(transfer);
             this.lastId++;
             this.currentOffset += SizeOfShort;
             this.binaryWriter.Seek(this.currentOffset, 0);
@@ -87,11 +97,7 @@ namespace FileCabinetApp
         /// <exception cref="ArgumentNullException">Thrown when transfer parameters is null.</exception>
         public void EditRecord(int id, RecordParametersTransfer transfer)
         {
-            if (transfer is null)
-            {
-                throw new ArgumentNullException(nameof(transfer), "Parameters transfer must be not null.");
-            }
-
+            this.recordValidator.ValidateParameters(transfer);
             int tempOffset = ((id - 1) * SizeOfRecord) + SizeOfShort;
             this.binaryWriter.Seek(tempOffset, 0);
             this.binaryWriter.Write(id);
@@ -267,6 +273,103 @@ namespace FileCabinetApp
         }
 
         /// <summary>
+        /// Restores statement from snapshot.
+        /// </summary>
+        /// <param name="snapshot">Snapshot that represent statement to restore.</param>
+        /// <returns>Amount of new records added.</returns>
+        public int Restore(FileCabinetServiceSnapshot snapshot)
+        {
+            if (snapshot is null)
+            {
+                throw new ArgumentNullException(nameof(snapshot), "Snapshot must be not null.");
+            }
+
+            List<FileCabinetRecord> resultRecords = new List<FileCabinetRecord>();
+            ReadOnlyCollection<FileCabinetRecord> importData = snapshot.GetRecords;
+            ReadOnlyCollection<FileCabinetRecord> source = this.GetRecords();
+
+            int sourceIndex = 0;
+            int importIndex = 0;
+
+            for (; sourceIndex < source.Count && importIndex < importData.Count;)
+            {
+                if (source[sourceIndex].Id < importData[importIndex].Id)
+                {
+                    resultRecords.Add(source[sourceIndex]);
+                    sourceIndex++;
+                }
+                else if (source[sourceIndex].Id == importData[importIndex].Id)
+                {
+                    try
+                    {
+                        RecordParametersTransfer transfer = new RecordParametersTransfer(importData[importIndex].FirstName, importData[importIndex].LastName, importData[importIndex].DateOfBirth, importData[importIndex].Height, importData[importIndex].Income, importData[importIndex].PatronymicLetter);
+                        this.recordValidator.ValidateParameters(transfer);
+                        resultRecords.Add(importData[importIndex]);
+                        importIndex++;
+                        sourceIndex++;
+                    }
+                    catch (ArgumentException ex)
+                    {
+                        Console.WriteLine(string.Format(CultureInfo.InvariantCulture, "Wrong data in record #{0} : {1}", importData[importIndex].Id, ex.Message));
+                        importIndex++;
+                        sourceIndex++;
+                        continue;
+                    }
+                }
+                else
+                {
+                    try
+                    {
+                        RecordParametersTransfer transfer = new RecordParametersTransfer(importData[importIndex].FirstName, importData[importIndex].LastName, importData[importIndex].DateOfBirth, importData[importIndex].Height, importData[importIndex].Income, importData[importIndex].PatronymicLetter);
+                        this.recordValidator.ValidateParameters(transfer);
+                        resultRecords.Add(importData[importIndex]);
+                        importIndex++;
+                    }
+                    catch (ArgumentException ex)
+                    {
+                        Console.WriteLine(string.Format(CultureInfo.InvariantCulture, "Wrong data in record #{0} : {1}", importData[importIndex].Id, ex.Message));
+                        importIndex++;
+                        continue;
+                    }
+                }
+            }
+
+            for (; importIndex < importData.Count; importIndex++)
+            {
+                try
+                {
+                    RecordParametersTransfer transfer = new RecordParametersTransfer(importData[importIndex].FirstName, importData[importIndex].LastName, importData[importIndex].DateOfBirth, importData[importIndex].Height, importData[importIndex].Income, importData[importIndex].PatronymicLetter);
+                    this.recordValidator.ValidateParameters(transfer);
+                    resultRecords.Add(importData[importIndex]);
+                }
+                catch (ArgumentException ex)
+                {
+                    Console.WriteLine(string.Format(CultureInfo.InvariantCulture, "Wrong data in record #{0} : {1}", importData[importIndex].Id, ex.Message));
+                    continue;
+                }
+            }
+
+            for (; sourceIndex < source.Count; sourceIndex++)
+            {
+                resultRecords.Add(source[sourceIndex]);
+            }
+
+            this.lastId = resultRecords[^1].Id;
+            this.WriteImportToFile(resultRecords);
+
+            return importIndex;
+        }
+
+        /// <summary>
+        /// Sets record validator.
+        /// </summary>
+        /// <param name="recordValidator">Rules of validation.</param>
+        public void SetRecordValidator(IRecordValidator recordValidator)
+        {
+            this.recordValidator = recordValidator;
+        }
+
+        /// <summary>
         /// If service is disposing, close streams.
         /// </summary>
         /// <param name="disposing">If service is disposing.</param>
@@ -277,6 +380,37 @@ namespace FileCabinetApp
                 this.binaryWriter.Dispose();
                 this.binaryReader.Dispose();
                 this.fileStream.Dispose();
+            }
+        }
+
+        private void WriteImportToFile(List<FileCabinetRecord> records)
+        {
+            this.binaryWriter.BaseStream.Seek(0, 0);
+            this.currentOffset = 0;
+            foreach (var record in records)
+            {
+                this.currentOffset += SizeOfShort;
+                this.binaryWriter.Seek(this.currentOffset, 0);
+                this.binaryWriter.Write(record.Id);
+                this.currentOffset += SizeOfInt;
+                this.binaryWriter.Write(record.FirstName);
+                this.currentOffset += SizeOfString;
+                this.binaryWriter.Seek(this.currentOffset, 0);
+                this.binaryWriter.Write(record.LastName);
+                this.currentOffset += SizeOfString;
+                this.binaryWriter.Seek(this.currentOffset, 0);
+                this.binaryWriter.Write(record.DateOfBirth.Day);
+                this.currentOffset += SizeOfInt;
+                this.binaryWriter.Write(record.DateOfBirth.Month);
+                this.currentOffset += SizeOfInt;
+                this.binaryWriter.Write(record.DateOfBirth.Year);
+                this.currentOffset += SizeOfInt;
+                this.binaryWriter.Write(record.PatronymicLetter);
+                this.currentOffset += SizeOfChar;
+                this.binaryWriter.Write(record.Income);
+                this.currentOffset += SizeOfDecimal;
+                this.binaryWriter.Write(record.Height);
+                this.currentOffset += SizeOfShort;
             }
         }
 
