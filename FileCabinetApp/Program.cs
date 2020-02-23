@@ -38,6 +38,7 @@ namespace FileCabinetApp
             new Tuple<string, Action<string>>("edit", Edit),
             new Tuple<string, Action<string>>("find", Find),
             new Tuple<string, Action<string>>("export", Export),
+            new Tuple<string, Action<string>>("import", Import),
         };
 
         private static string[][] helpMessages = new string[][]
@@ -50,6 +51,7 @@ namespace FileCabinetApp
             new string[] { "edit", "edits existing record", "The 'edit' command edits existing record." },
             new string[] { "find", "finds records by the given condition", "The 'find' command finds records by the given condition." },
             new string[] { "export", "exports current records into file of given format", "The 'export' command exports current records into file of given format." },
+            new string[] { "import", "imports records from given file", "The 'import' imports records from given file." },
         };
 
         /// <summary>
@@ -119,6 +121,40 @@ namespace FileCabinetApp
             else
             {
                 throw new ArgumentException("Wrong command line argument.", nameof(args));
+            }
+        }
+
+        private static void Import(string parameters)
+        {
+            string[] parametersArr = parameters.Split(' ', 2);
+            if (parametersArr.Length < 2)
+            {
+                Console.WriteLine("Enter import format and destination file.");
+                return;
+            }
+
+            const int importTypeIndex = 0;
+            const int filePathIndex = 1;
+
+            if (!File.Exists(parametersArr[filePathIndex]))
+            {
+                Console.WriteLine($"File {parametersArr[filePathIndex]} isn't exist.");
+                return;
+            }
+
+            FileCabinetServiceSnapshot snapshot = new FileCabinetServiceSnapshot();
+            if (parametersArr[importTypeIndex].Equals("csv", StringComparison.OrdinalIgnoreCase))
+            {
+                using (StreamReader fileStream = new StreamReader(parametersArr[filePathIndex]))
+                {
+                    snapshot.LoadFromCsv(fileStream);
+                    int numberOfStored = fileCabinetService.Restore(snapshot);
+                    Console.WriteLine(string.Format(CultureInfo.InvariantCulture, "{0} records were imported from {1}", numberOfStored, parametersArr[filePathIndex]));
+                }
+            }
+            else
+            {
+                Console.WriteLine("Wrong format type.");
             }
         }
 

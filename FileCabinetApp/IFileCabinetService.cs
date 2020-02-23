@@ -60,5 +60,7 @@ namespace FileCabinetApp
         /// </summary>
         /// <returns>Amount of existing records.</returns>
         int GetStat();
+
+        int Restore(FileCabinetServiceSnapshot snapshot);
     }
 }

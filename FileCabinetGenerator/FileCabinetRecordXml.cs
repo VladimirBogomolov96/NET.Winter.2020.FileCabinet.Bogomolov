@@ -43,7 +43,7 @@ namespace FileCabinetGenerator
         /// <value>Value of date of birth of a record.</value>
         public DateTime DateOfBirth { get; set; }
 
-        [XmlElement("DateOfBirth")]
+        [XmlElement("dateOfBirth")]
         /// <summary>
         /// Gets or sets date of birth through string representation.
         /// </summary>

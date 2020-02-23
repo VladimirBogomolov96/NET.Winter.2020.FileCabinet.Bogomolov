@@ -11,11 +11,11 @@ namespace FileCabinetApp
     /// </summary>
     public class FileCabinetMemoryService : IFileCabinetService
     {
-        private readonly List<FileCabinetRecord> list = new List<FileCabinetRecord>();
         private readonly Dictionary<string, List<FileCabinetRecord>> firstNameDictionary = new Dictionary<string, List<FileCabinetRecord>>();
         private readonly Dictionary<string, List<FileCabinetRecord>> lastNameDictionary = new Dictionary<string, List<FileCabinetRecord>>();
         private readonly Dictionary<DateTime, List<FileCabinetRecord>> dateOfBirthDictionary = new Dictionary<DateTime, List<FileCabinetRecord>>();
         private IRecordValidator recordValidator;
+        private List<FileCabinetRecord> list = new List<FileCabinetRecord>();
 
         /// <summary>
         /// Initializes a new instance of the <see cref="FileCabinetMemoryService"/> class.
@@ -163,6 +163,88 @@ namespace FileCabinetApp
         public FileCabinetServiceSnapshot MakeSnapshot()
         {
             return new FileCabinetServiceSnapshot(this.list.ToArray());
+        }
+
+        public int Restore(FileCabinetServiceSnapshot snapshot)
+        {
+            if (snapshot is null)
+            {
+                throw new ArgumentNullException(nameof(snapshot), "Snapshot must be not null.");
+            }
+
+            List<FileCabinetRecord> resultRecords = new List<FileCabinetRecord>();
+            ReadOnlyCollection<FileCabinetRecord> importData = snapshot.GetRecords;
+            int sourceIndex = 0;
+            int importIndex = 0;
+
+            for (; sourceIndex < this.list.Count && importIndex < importData.Count;)
+            {
+                if (this.list[sourceIndex].Id < importData[importIndex].Id)
+                {
+                    resultRecords.Add(this.list[sourceIndex]);
+                    sourceIndex++;
+                }
+                else if (this.list[sourceIndex].Id == importData[importIndex].Id)
+                {
+                    try
+                    {
+                        RecordParametersTransfer transfer = new RecordParametersTransfer(importData[importIndex].FirstName, importData[importIndex].LastName, importData[importIndex].DateOfBirth, importData[importIndex].Height, importData[importIndex].Income, importData[importIndex].PatronymicLetter);
+                        this.recordValidator.ValidateParameters(transfer);
+                        resultRecords.Add(importData[importIndex]);
+                        importIndex++;
+                        sourceIndex++;
+                    }
+                    catch (ArgumentException ex)
+                    {
+                        Console.WriteLine(string.Format(CultureInfo.InvariantCulture, "Wrong data in record #{0} : {1}", importData[importIndex].Id, ex.Message));
+                        importIndex++;
+                        sourceIndex++;
+                        continue;
+                    }
+                }
+                else
+                {
+                    try
+                    {
+                        RecordParametersTransfer transfer = new RecordParametersTransfer(importData[importIndex].FirstName, importData[importIndex].LastName, importData[importIndex].DateOfBirth, importData[importIndex].Height, importData[importIndex].Income, importData[importIndex].PatronymicLetter);
+                        this.recordValidator.ValidateParameters(transfer);
+                        resultRecords.Add(importData[importIndex]);
+                        this.FillDictionaries(transfer, importData[importIndex]);
+                        importIndex++;
+                    }
+                    catch (ArgumentException ex)
+                    {
+                        Console.WriteLine(string.Format(CultureInfo.InvariantCulture, "Wrong data in record #{0} : {1}", importData[importIndex].Id, ex.Message));
+                        importIndex++;
+                        continue;
+                    }
+                }
+            }
+
+            for (; importIndex < importData.Count; importIndex++)
+            {
+                try
+                {
+                    RecordParametersTransfer transfer = new RecordParametersTransfer(importData[importIndex].FirstName, importData[importIndex].LastName, importData[importIndex].DateOfBirth, importData[importIndex].Height, importData[importIndex].Income, importData[importIndex].PatronymicLetter);
+                    this.recordValidator.ValidateParameters(transfer);
+                    resultRecords.Add(importData[importIndex]);
+                    this.FillDictionaries(transfer, importData[importIndex]);
+                }
+                catch (ArgumentException ex)
+                {
+                    Console.WriteLine(string.Format(CultureInfo.InvariantCulture, "Wrong data in record #{0} : {1}", importData[importIndex].Id, ex.Message));
+                    continue;
+                }
+            }
+
+            for (; sourceIndex < this.list.Count; sourceIndex++)
+            {
+                resultRecords.Add(this.list[sourceIndex]);
+            }
+
+            this.list = resultRecords;
+
+            return importIndex;
         }
 
         private void FillDictionaries(RecordParametersTransfer transfer, FileCabinetRecord record)

@@ -306,5 +306,10 @@ namespace FileCabinetApp
 
             return tempRecord;
         }
+
+        public int Restore(FileCabinetServiceSnapshot snapshot)
+        {
+            throw new NotImplementedException();
+        }
     }
 }
