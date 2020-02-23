@@ -14,14 +14,14 @@ namespace FileCabinetGenerator
         /// Gets or sets type of output file.
         /// </summary>
         /// <value>Type of output file.</value>
-        [Option('t', "output-type", Default = "csv", Required = true)]
+        [Option('t', "output-type", Default = "csv", Required = false)]
         public string OutputType { get; set; }
 
         /// <summary>
         /// Gets or sets name of output file.
         /// </summary>
         /// <value>Name of output file.</value>
-        [Option('o', "output", Default = "NewFile", Required = true)]
+        [Option('o', "output", Default = "NewFile", Required = false)]
         public string OutputFileName { get; set; }
 
         /// <summary>
