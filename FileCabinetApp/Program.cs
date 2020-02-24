@@ -39,6 +39,7 @@ namespace FileCabinetApp
             new Tuple<string, Action<string>>("find", Find),
             new Tuple<string, Action<string>>("export", Export),
             new Tuple<string, Action<string>>("import", Import),
+            new Tuple<string, Action<string>>("remove", Remove),
         };
 
         private static string[][] helpMessages = new string[][]
@@ -52,6 +53,7 @@ namespace FileCabinetApp
             new string[] { "find", "finds records by the given condition", "The 'find' command finds records by the given condition." },
             new string[] { "export", "exports current records into file of given format", "The 'export' command exports current records into file of given format." },
             new string[] { "import", "imports records from given file", "The 'import' imports records from given file." },
+            new string[] { "remove", "removes records from service", "The 'remove' removes records from service." },
         };
 
         /// <summary>
@@ -91,6 +93,24 @@ namespace FileCabinetApp
                 }
             }
             while (isRunning);
+        }
+
+        private static void Remove(string parameters)
+        {
+            if (!int.TryParse(parameters, out int id))
+            {
+                Console.WriteLine("Enter correct ID.");
+                return;
+            }
+
+            if (fileCabinetService.Remove(id))
+            {
+                Console.WriteLine("Record #{0} is removed.", id);
+            }
+            else
+            {
+                Console.WriteLine("Record #{0} doesn't exist.", id);
+            }
         }
 
         private static void SetCommandLineSettings(string[] args)

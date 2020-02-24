@@ -370,6 +370,16 @@ namespace FileCabinetApp
         }
 
         /// <summary>
+        /// Removes record by given id.
+        /// </summary>
+        /// <param name="id">ID of record to remove.</param>
+        /// <returns>Whether record existed or not.</returns>
+        public bool Remove(int id)
+        {
+            throw new NotImplementedException();
+        }
+
+        /// <summary>
         /// If service is disposing, close streams.
         /// </summary>
         /// <param name="disposing">If service is disposing.</param>

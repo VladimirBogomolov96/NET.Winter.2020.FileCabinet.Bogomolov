@@ -375,6 +375,13 @@
             </summary>
             <param name="recordValidator">Rules of validation.</param>
         </member>
+        <member name="M:FileCabinetApp.FileCabinetFilesystemService.Remove(System.Int32)">
+            <summary>
+            Removes record by given id.
+            </summary>
+            <param name="id">ID of record to remove.</param>
+            <returns>Whether record existed or not.</returns>
+        </member>
         <member name="M:FileCabinetApp.FileCabinetFilesystemService.Dispose(System.Boolean)">
             <summary>
             If service is disposing, close streams.
@@ -453,6 +460,13 @@
             Creates a snapshot of all records in current moment.
             </summary>
             <returns>Snapshot of records.</returns>
+        </member>
+        <member name="M:FileCabinetApp.FileCabinetMemoryService.Remove(System.Int32)">
+            <summary>
+            Removes record by given id.
+            </summary>
+            <param name="id">ID of record to remove.</param>
+            <returns>Whether record existed or not.</returns>
         </member>
         <member name="M:FileCabinetApp.FileCabinetMemoryService.Restore(FileCabinetApp.FileCabinetServiceSnapshot)">
             <summary>
@@ -537,6 +551,13 @@
             </summary>
             <param name="snapshot">Snapshot that represent statement to restore.</param>
             <returns>Amount of new records added.</returns>
+        </member>
+        <member name="M:FileCabinetApp.IFileCabinetService.Remove(System.Int32)">
+            <summary>
+            Removes record by given id.
+            </summary>
+            <param name="id">ID of record to remove.</param>
+            <returns>Whether records existed or not.</returns>
         </member>
         <member name="T:FileCabinetApp.CustomValidator">
             <summary>
