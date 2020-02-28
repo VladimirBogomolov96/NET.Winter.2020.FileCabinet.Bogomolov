@@ -555,7 +555,7 @@
             <summary>
             Counts amount of existing records.
             </summary>
-            <returns>Amount of existing records.</returns>
+            <returns>Amount of existing and removed records.</returns>
         </member>
         <member name="M:FileCabinetApp.IFileCabinetService.Restore(FileCabinetApp.FileCabinetServiceSnapshot)">
             <summary>

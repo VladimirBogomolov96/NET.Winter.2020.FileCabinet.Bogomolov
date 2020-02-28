@@ -64,8 +64,8 @@ namespace FileCabinetApp
         /// <summary>
         /// Counts amount of existing records.
         /// </summary>
-        /// <returns>Amount of existing records.</returns>
-        int GetStat();
+        /// <returns>Amount of existing and removed records.</returns>
+        (int, int) GetStat();
 
         /// <summary>
         /// Restores statement from snapshot.

@@ -102,7 +102,7 @@ namespace FileCabinetApp
             if (fileCabinetService is FileCabinetFilesystemService)
             {
                 int purgedRecords = fileCabinetService.Purge();
-                Console.WriteLine("Data file processing is completed: {0} of {1} records were purged.", purgedRecords, purgedRecords + fileCabinetService.GetStat());
+                Console.WriteLine("Data file processing is completed: {0} of {1} records were purged.", purgedRecords, purgedRecords + fileCabinetService.GetStat().Item1);
             }
             else
             {
@@ -299,8 +299,8 @@ namespace FileCabinetApp
 
         private static void Stat(string parameters)
         {
-            var recordsCount = Program.fileCabinetService.GetStat();
-            Console.WriteLine($"{recordsCount} record(s).");
+            var recordsCount = fileCabinetService.GetStat();
+            Console.WriteLine($"{recordsCount.Item1} record(s). {recordsCount.Item2} removed record(s).");
         }
 
         private static void Create(string parameters)

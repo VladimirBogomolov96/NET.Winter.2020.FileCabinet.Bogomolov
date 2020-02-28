@@ -282,10 +282,11 @@ namespace FileCabinetApp
         /// Counts amount of existing records.
         /// </summary>
         /// <returns>Amount of existing records.</returns>
-        public int GetStat()
+        public (int, int) GetStat()
         {
             int tempOffset = 0;
             int counter = 0;
+            int removedCounter = 0;
             int fileLength = Convert.ToInt32(this.binaryReader.BaseStream.Length);
             while (tempOffset < fileLength)
             {
@@ -293,6 +294,7 @@ namespace FileCabinetApp
                 if (this.binaryReader.ReadBoolean())
                 {
                     tempOffset += SizeOfRecord;
+                    removedCounter++;
                     continue;
                 }
 
@@ -300,7 +302,7 @@ namespace FileCabinetApp
                 tempOffset += SizeOfRecord;
             }
 
-            return counter;
+            return (counter, removedCounter);
         }
 
         /// <summary>

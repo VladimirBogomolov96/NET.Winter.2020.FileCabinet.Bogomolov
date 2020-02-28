@@ -45,7 +45,6 @@ namespace FileCabinetApp
             this.recordValidator.ValidateParameters(transfer);
             var record = new FileCabinetRecord
             {
-                Id = this.list[this.list.Count - 1].Id + 1,
                 FirstName = transfer.FirstName,
                 LastName = transfer.LastName,
                 DateOfBirth = transfer.DateOfBirth,
@@ -53,6 +52,15 @@ namespace FileCabinetApp
                 Income = transfer.Income,
                 PatronymicLetter = transfer.PatronymicLetter,
             };
+
+            if (this.list.Count is 0)
+            {
+                record.Id = 1;
+            }
+            else
+            {
+                record.Id = this.list[this.list.Count - 1].Id + 1;
+            }
 
             this.list.Add(record);
             this.FillDictionaries(transfer, record);
@@ -111,9 +119,9 @@ namespace FileCabinetApp
         /// Counts amount of existing records.
         /// </summary>
         /// <returns>Amount of existing records.</returns>
-        public int GetStat()
+        public (int, int) GetStat()
         {
-            return this.list.Count;
+            return (this.list.Count, 0);
         }
 
         /// <summary>
