@@ -64,8 +64,8 @@ namespace FileCabinetApp
         /// <summary>
         /// Counts amount of existing records.
         /// </summary>
-        /// <returns>Amount of existing records.</returns>
-        int GetStat();
+        /// <returns>Amount of existing and removed records.</returns>
+        (int, int) GetStat();
 
         /// <summary>
         /// Restores statement from snapshot.
@@ -73,5 +73,18 @@ namespace FileCabinetApp
         /// <param name="snapshot">Snapshot that represent statement to restore.</param>
         /// <returns>Amount of new records added.</returns>
         int Restore(FileCabinetServiceSnapshot snapshot);
+
+        /// <summary>
+        /// Removes record by given id.
+        /// </summary>
+        /// <param name="id">ID of record to remove.</param>
+        /// <returns>Whether records existed or not.</returns>
+        bool Remove(int id);
+
+        /// <summary>
+        /// Defragments file.
+        /// </summary>
+        /// <returns>Amount of purged records.</returns>
+        int Purge();
     }
 }

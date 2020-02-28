@@ -39,6 +39,8 @@ namespace FileCabinetApp
             new Tuple<string, Action<string>>("find", Find),
             new Tuple<string, Action<string>>("export", Export),
             new Tuple<string, Action<string>>("import", Import),
+            new Tuple<string, Action<string>>("remove", Remove),
+            new Tuple<string, Action<string>>("purge", Purge),
         };
 
         private static string[][] helpMessages = new string[][]
@@ -51,7 +53,9 @@ namespace FileCabinetApp
             new string[] { "edit", "edits existing record", "The 'edit' command edits existing record." },
             new string[] { "find", "finds records by the given condition", "The 'find' command finds records by the given condition." },
             new string[] { "export", "exports current records into file of given format", "The 'export' command exports current records into file of given format." },
-            new string[] { "import", "imports records from given file", "The 'import' imports records from given file." },
+            new string[] { "import", "imports records from given file", "The 'import' command imports records from given file." },
+            new string[] { "remove", "removes records from service", "The 'remove' command removes records from service." },
+            new string[] { "purge", "defragments file", "The 'purge' command defragments file." },
         };
 
         /// <summary>
@@ -91,6 +95,37 @@ namespace FileCabinetApp
                 }
             }
             while (isRunning);
+        }
+
+        private static void Purge(string parameters)
+        {
+            if (fileCabinetService is FileCabinetFilesystemService)
+            {
+                int purgedRecords = fileCabinetService.Purge();
+                Console.WriteLine("Data file processing is completed: {0} of {1} records were purged.", purgedRecords, purgedRecords + fileCabinetService.GetStat().Item1);
+            }
+            else
+            {
+                Console.WriteLine("Purge command can be used only with Filesystem Service.");
+            }
+        }
+
+        private static void Remove(string parameters)
+        {
+            if (!int.TryParse(parameters, out int id))
+            {
+                Console.WriteLine("Enter correct ID.");
+                return;
+            }
+
+            if (fileCabinetService.Remove(id))
+            {
+                Console.WriteLine("Record #{0} is removed.", id);
+            }
+            else
+            {
+                Console.WriteLine("Record #{0} doesn't exist.", id);
+            }
         }
 
         private static void SetCommandLineSettings(string[] args)
@@ -264,8 +299,8 @@ namespace FileCabinetApp
 
         private static void Stat(string parameters)
         {
-            var recordsCount = Program.fileCabinetService.GetStat();
-            Console.WriteLine($"{recordsCount} record(s).");
+            var recordsCount = fileCabinetService.GetStat();
+            Console.WriteLine($"{recordsCount.Item1} record(s). {recordsCount.Item2} removed record(s).");
         }
 
         private static void Create(string parameters)

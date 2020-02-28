@@ -45,7 +45,6 @@ namespace FileCabinetApp
             this.recordValidator.ValidateParameters(transfer);
             var record = new FileCabinetRecord
             {
-                Id = this.list.Count + 1,
                 FirstName = transfer.FirstName,
                 LastName = transfer.LastName,
                 DateOfBirth = transfer.DateOfBirth,
@@ -53,6 +52,15 @@ namespace FileCabinetApp
                 Income = transfer.Income,
                 PatronymicLetter = transfer.PatronymicLetter,
             };
+
+            if (this.list.Count is 0)
+            {
+                record.Id = 1;
+            }
+            else
+            {
+                record.Id = this.list[this.list.Count - 1].Id + 1;
+            }
 
             this.list.Add(record);
             this.FillDictionaries(transfer, record);
@@ -83,9 +91,7 @@ namespace FileCabinetApp
             {
                 if (this.list[i].Id == id)
                 {
-                    this.firstNameDictionary[this.list[i].FirstName].Remove(this.list[i]);
-                    this.lastNameDictionary[this.list[i].LastName].Remove(this.list[i]);
-                    this.dateOfBirthDictionary[this.list[i].DateOfBirth].Remove(this.list[i]);
+                    this.RemoveFromDictionaries(this.list[i]);
                     this.list[i] = editedRecord;
                     break;
                 }
@@ -113,9 +119,9 @@ namespace FileCabinetApp
         /// Counts amount of existing records.
         /// </summary>
         /// <returns>Amount of existing records.</returns>
-        public int GetStat()
+        public (int, int) GetStat()
         {
-            return this.list.Count;
+            return (this.list.Count, 0);
         }
 
         /// <summary>
@@ -173,6 +179,26 @@ namespace FileCabinetApp
         }
 
         /// <summary>
+        /// Removes record by given id.
+        /// </summary>
+        /// <param name="id">ID of record to remove.</param>
+        /// <returns>Whether record existed or not.</returns>
+        public bool Remove(int id)
+        {
+            foreach (FileCabinetRecord record in this.list)
+            {
+                if (record.Id == id)
+                {
+                    this.list.Remove(record);
+                    this.RemoveFromDictionaries(record);
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
+        /// <summary>
         /// Restores statement from snapshot.
         /// </summary>
         /// <param name="snapshot">Snapshot that represent statement to restore.</param>
@@ -202,6 +228,8 @@ namespace FileCabinetApp
                     {
                         RecordParametersTransfer transfer = new RecordParametersTransfer(importData[importIndex].FirstName, importData[importIndex].LastName, importData[importIndex].DateOfBirth, importData[importIndex].Height, importData[importIndex].Income, importData[importIndex].PatronymicLetter);
                         this.recordValidator.ValidateParameters(transfer);
+                        this.RemoveFromDictionaries(this.list[sourceIndex]);
+                        this.FillDictionaries(transfer, importData[importIndex]);
                         resultRecords.Add(importData[importIndex]);
                         importIndex++;
                         sourceIndex++;
@@ -268,6 +296,15 @@ namespace FileCabinetApp
             this.recordValidator = recordValidator;
         }
 
+        /// <summary>
+        /// Defragments file.
+        /// </summary>
+        /// <returns>Amount of purged records.</returns>
+        public int Purge()
+        {
+            throw new InvalidOperationException("Purge command can't be used in memory sevice.");
+        }
+
         private void FillDictionaries(RecordParametersTransfer transfer, FileCabinetRecord record)
         {
             if (this.firstNameDictionary.ContainsKey(transfer.FirstName))
@@ -298,6 +335,27 @@ namespace FileCabinetApp
             {
                 this.dateOfBirthDictionary.Add(transfer.DateOfBirth, new List<FileCabinetRecord>());
                 this.dateOfBirthDictionary[transfer.DateOfBirth].Add(record);
+            }
+        }
+
+        private void RemoveFromDictionaries(FileCabinetRecord record)
+        {
+            this.firstNameDictionary[record.FirstName].Remove(record);
+            if (this.firstNameDictionary[record.FirstName].Count is 0)
+            {
+                this.firstNameDictionary.Remove(record.FirstName);
+            }
+
+            this.lastNameDictionary[record.LastName].Remove(record);
+            if (this.lastNameDictionary[record.LastName].Count is 0)
+            {
+                this.lastNameDictionary.Remove(record.LastName);
+            }
+
+            this.dateOfBirthDictionary[record.DateOfBirth].Remove(record);
+            if (this.dateOfBirthDictionary[record.DateOfBirth].Count is 0)
+            {
+                this.dateOfBirthDictionary.Remove(record.DateOfBirth);
             }
         }
     }
