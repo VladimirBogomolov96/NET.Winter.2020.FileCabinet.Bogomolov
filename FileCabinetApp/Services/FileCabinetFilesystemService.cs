@@ -98,7 +98,14 @@ namespace FileCabinetApp
         public void EditRecord(int id, RecordParametersTransfer transfer)
         {
             this.recordValidator.ValidateParameters(transfer);
-            int tempOffset = ((id - 1) * SizeOfRecord) + SizeOfShort;
+            int tempOffset = (id - 1) * SizeOfRecord;
+            this.binaryWriter.Seek(tempOffset, 0);
+            if (this.binaryReader.ReadBoolean())
+            {
+                return;
+            }
+
+            tempOffset += SizeOfShort;
             this.binaryWriter.Seek(tempOffset, 0);
             this.binaryWriter.Write(id);
             tempOffset += SizeOfInt;
@@ -123,24 +130,32 @@ namespace FileCabinetApp
         /// <returns>Array of matching records.</returns>
         public ReadOnlyCollection<FileCabinetRecord> FindByDateOfbirth(DateTime dateOfBirth)
         {
-            int tempOffset = SizeOfShort + SizeOfInt + SizeOfString + SizeOfString;
-            int tempID = 1;
+            const int dateOfBirthPosition = SizeOfShort + SizeOfInt + SizeOfString + SizeOfString;
+            int tempOffset = 0;
             int fileLength = Convert.ToInt32(this.binaryReader.BaseStream.Length);
             List<FileCabinetRecord> fileCabinetRecords = new List<FileCabinetRecord>();
             while (tempOffset < fileLength)
             {
                 DateTime tempDateOfBirth = new DateTime(1, 1, 1);
                 this.binaryReader.BaseStream.Seek(tempOffset, 0);
+                if (this.binaryReader.ReadBoolean())
+                {
+                    tempOffset += SizeOfRecord;
+                    continue;
+                }
+
+                this.binaryReader.BaseStream.Seek(tempOffset + SizeOfShort, 0);
+                this.binaryReader.ReadInt32();
+                this.binaryReader.BaseStream.Seek(tempOffset + dateOfBirthPosition, 0);
                 tempDateOfBirth = tempDateOfBirth.AddDays(this.binaryReader.ReadInt32() - 1);
                 tempDateOfBirth = tempDateOfBirth.AddMonths(this.binaryReader.ReadInt32() - 1);
                 tempDateOfBirth = tempDateOfBirth.AddYears(this.binaryReader.ReadInt32() - 1);
 
                 if (tempDateOfBirth.Year == dateOfBirth.Year && tempDateOfBirth.Month == dateOfBirth.Month && tempDateOfBirth.Day == dateOfBirth.Day)
                 {
-                    fileCabinetRecords.Add(this.GetRecord(tempID));
+                    fileCabinetRecords.Add(this.GetRecord(tempOffset));
                 }
 
-                tempID++;
                 tempOffset += SizeOfRecord;
             }
 
@@ -154,22 +169,28 @@ namespace FileCabinetApp
         /// <returns>Array of matching records.</returns>
         public ReadOnlyCollection<FileCabinetRecord> FindByFirstName(string firstName)
         {
-            int tempOffset = SizeOfShort + SizeOfInt;
-            int tempID = 1;
+            int tempOffset = 0;
             int fileLength = Convert.ToInt32(this.binaryReader.BaseStream.Length);
             List<FileCabinetRecord> fileCabinetRecords = new List<FileCabinetRecord>();
             string tempFirstName;
             while (tempOffset < fileLength)
             {
                 this.binaryReader.BaseStream.Seek(tempOffset, 0);
+                if (this.binaryReader.ReadBoolean())
+                {
+                    tempOffset += SizeOfRecord;
+                    continue;
+                }
+
+                this.binaryReader.BaseStream.Seek(tempOffset + SizeOfShort, 0);
+                this.binaryReader.ReadInt32();
                 tempFirstName = this.binaryReader.ReadString();
 
                 if (tempFirstName.Equals(firstName, StringComparison.InvariantCulture))
                 {
-                    fileCabinetRecords.Add(this.GetRecord(tempID));
+                    fileCabinetRecords.Add(this.GetRecord(tempOffset));
                 }
 
-                tempID++;
                 tempOffset += SizeOfRecord;
             }
 
@@ -183,22 +204,31 @@ namespace FileCabinetApp
         /// <returns>Array of matching records.</returns>
         public ReadOnlyCollection<FileCabinetRecord> FindByLastName(string lastName)
         {
-            int tempOffset = SizeOfShort + SizeOfInt + SizeOfString;
-            int tempID = 1;
+            const int lastNamePosition = SizeOfShort + SizeOfInt + SizeOfString;
+            int tempOffset = 0;
             int fileLength = Convert.ToInt32(this.binaryReader.BaseStream.Length);
             List<FileCabinetRecord> fileCabinetRecords = new List<FileCabinetRecord>();
             string tempLastName;
             while (tempOffset < fileLength)
             {
                 this.binaryReader.BaseStream.Seek(tempOffset, 0);
+                if (this.binaryReader.ReadBoolean())
+                {
+                    tempOffset += SizeOfRecord;
+                    continue;
+                }
+
+                this.binaryReader.BaseStream.Seek(tempOffset + SizeOfShort, 0);
+                this.binaryReader.ReadInt32();
+                this.binaryReader.BaseStream.Seek(tempOffset + lastNamePosition, 0);
+
                 tempLastName = this.binaryReader.ReadString();
 
                 if (tempLastName.Equals(lastName, StringComparison.InvariantCulture))
                 {
-                    fileCabinetRecords.Add(this.GetRecord(tempID));
+                    fileCabinetRecords.Add(this.GetRecord(tempOffset));
                 }
 
-                tempID++;
                 tempOffset += SizeOfRecord;
             }
 
@@ -213,9 +243,15 @@ namespace FileCabinetApp
         {
             List<FileCabinetRecord> fileCabinetRecords = new List<FileCabinetRecord>();
             long tempOffset = 0;
-            this.binaryReader.BaseStream.Seek(tempOffset, 0);
-            while (this.binaryReader.BaseStream.Position < this.binaryReader.BaseStream.Length)
+            while (tempOffset < this.binaryReader.BaseStream.Length)
             {
+                this.binaryReader.BaseStream.Seek(tempOffset, 0);
+                if (this.binaryReader.ReadBoolean())
+                {
+                    tempOffset += SizeOfRecord;
+                    continue;
+                }
+
                 FileCabinetRecord newRecord = new FileCabinetRecord();
                 tempOffset += SizeOfShort;
                 this.binaryReader.BaseStream.Seek(tempOffset, 0);
@@ -248,7 +284,23 @@ namespace FileCabinetApp
         /// <returns>Amount of existing records.</returns>
         public int GetStat()
         {
-            return Convert.ToInt32(this.binaryReader.BaseStream.Length) / SizeOfRecord;
+            int tempOffset = 0;
+            int counter = 0;
+            int fileLength = Convert.ToInt32(this.binaryReader.BaseStream.Length);
+            while (tempOffset < fileLength)
+            {
+                this.binaryReader.BaseStream.Seek(tempOffset, 0);
+                if (this.binaryReader.ReadBoolean())
+                {
+                    tempOffset += SizeOfRecord;
+                    continue;
+                }
+
+                counter++;
+                tempOffset += SizeOfRecord;
+            }
+
+            return counter;
         }
 
         /// <summary>
@@ -376,7 +428,23 @@ namespace FileCabinetApp
         /// <returns>Whether record existed or not.</returns>
         public bool Remove(int id)
         {
-            throw new NotImplementedException();
+            int tempOffset = SizeOfShort;
+            this.binaryReader.BaseStream.Seek(tempOffset, 0);
+            while (tempOffset < this.binaryReader.BaseStream.Length)
+            {
+                this.binaryReader.BaseStream.Seek(tempOffset, 0);
+                int tempID = this.binaryReader.ReadInt32();
+                if (id == tempID)
+                {
+                    this.binaryReader.BaseStream.Seek(tempOffset - SizeOfShort, 0);
+                    this.binaryWriter.Write(true);
+                    return true;
+                }
+
+                tempOffset += SizeOfRecord;
+            }
+
+            return false;
         }
 
         /// <summary>
@@ -424,9 +492,9 @@ namespace FileCabinetApp
             }
         }
 
-        private FileCabinetRecord GetRecord(int id)
+        private FileCabinetRecord GetRecord(int offset)
         {
-            int tempOffset = ((id - 1) * SizeOfRecord) + SizeOfShort;
+            int tempOffset = offset + SizeOfShort;
             this.binaryReader.BaseStream.Seek(tempOffset, 0);
             FileCabinetRecord tempRecord = new FileCabinetRecord
             {
