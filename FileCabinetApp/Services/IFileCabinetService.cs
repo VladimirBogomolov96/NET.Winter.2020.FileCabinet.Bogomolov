@@ -80,5 +80,11 @@ namespace FileCabinetApp
         /// <param name="id">ID of record to remove.</param>
         /// <returns>Whether records existed or not.</returns>
         bool Remove(int id);
+
+        /// <summary>
+        /// Defragments file.
+        /// </summary>
+        /// <returns>Amount of purged records.</returns>
+        int Purge();
     }
 }

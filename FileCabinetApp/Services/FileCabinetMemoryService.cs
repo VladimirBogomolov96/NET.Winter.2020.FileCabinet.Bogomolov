@@ -288,6 +288,15 @@ namespace FileCabinetApp
             this.recordValidator = recordValidator;
         }
 
+        /// <summary>
+        /// Defragments file.
+        /// </summary>
+        /// <returns>Amount of purged records.</returns>
+        public int Purge()
+        {
+            throw new InvalidOperationException("Purge command can't be used in memory sevice.");
+        }
+
         private void FillDictionaries(RecordParametersTransfer transfer, FileCabinetRecord record)
         {
             if (this.firstNameDictionary.ContainsKey(transfer.FirstName))

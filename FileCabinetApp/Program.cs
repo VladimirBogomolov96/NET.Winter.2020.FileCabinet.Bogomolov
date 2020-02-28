@@ -40,6 +40,7 @@ namespace FileCabinetApp
             new Tuple<string, Action<string>>("export", Export),
             new Tuple<string, Action<string>>("import", Import),
             new Tuple<string, Action<string>>("remove", Remove),
+            new Tuple<string, Action<string>>("purge", Purge),
         };
 
         private static string[][] helpMessages = new string[][]
@@ -52,8 +53,9 @@ namespace FileCabinetApp
             new string[] { "edit", "edits existing record", "The 'edit' command edits existing record." },
             new string[] { "find", "finds records by the given condition", "The 'find' command finds records by the given condition." },
             new string[] { "export", "exports current records into file of given format", "The 'export' command exports current records into file of given format." },
-            new string[] { "import", "imports records from given file", "The 'import' imports records from given file." },
-            new string[] { "remove", "removes records from service", "The 'remove' removes records from service." },
+            new string[] { "import", "imports records from given file", "The 'import' command imports records from given file." },
+            new string[] { "remove", "removes records from service", "The 'remove' command removes records from service." },
+            new string[] { "purge", "defragments file", "The 'purge' command defragments file." },
         };
 
         /// <summary>
@@ -93,6 +95,19 @@ namespace FileCabinetApp
                 }
             }
             while (isRunning);
+        }
+
+        private static void Purge(string parameters)
+        {
+            if (fileCabinetService is FileCabinetFilesystemService)
+            {
+                int purgedRecords = fileCabinetService.Purge();
+                Console.WriteLine("Data file processing is completed: {0} of {1} records were purged.", purgedRecords, purgedRecords + fileCabinetService.GetStat());
+            }
+            else
+            {
+                Console.WriteLine("Purge command can be used only with Filesystem Service.");
+            }
         }
 
         private static void Remove(string parameters)

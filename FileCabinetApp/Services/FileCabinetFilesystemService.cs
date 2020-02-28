@@ -448,6 +448,51 @@ namespace FileCabinetApp
         }
 
         /// <summary>
+        /// Defragments file.
+        /// </summary>
+        /// <returns>Amount of purged records.</returns>
+        public int Purge()
+        {
+            int tempOffset = 0;
+            long initialLength = this.binaryReader.BaseStream.Length;
+            int deletePosition;
+            while (tempOffset < this.binaryReader.BaseStream.Length)
+            {
+                this.binaryReader.BaseStream.Seek(tempOffset, 0);
+                if (this.binaryReader.ReadBoolean())
+                {
+                    deletePosition = tempOffset;
+                    tempOffset += SizeOfRecord;
+                    while (tempOffset < this.binaryReader.BaseStream.Length)
+                    {
+                        this.binaryReader.BaseStream.Seek(tempOffset, 0);
+                        if (!this.binaryReader.ReadBoolean())
+                        {
+                            var record = this.GetRecord(tempOffset);
+                            this.binaryWriter.BaseStream.Seek(tempOffset, 0);
+                            this.binaryWriter.Write(true);
+                            this.WriteToFile(record, deletePosition);
+                            tempOffset = deletePosition;
+                            break;
+                        }
+
+                        tempOffset += SizeOfRecord;
+                    }
+
+                    if (tempOffset >= this.binaryReader.BaseStream.Length)
+                    {
+                        this.binaryReader.BaseStream.SetLength(deletePosition);
+                        this.currentOffset = deletePosition;
+                    }
+                }
+
+                tempOffset += SizeOfRecord;
+            }
+
+            return (int)(initialLength - this.binaryReader.BaseStream.Length) / SizeOfRecord;
+        }
+
+        /// <summary>
         /// If service is disposing, close streams.
         /// </summary>
         /// <param name="disposing">If service is disposing.</param>
@@ -459,6 +504,28 @@ namespace FileCabinetApp
                 this.binaryReader.Dispose();
                 this.fileStream.Dispose();
             }
+        }
+
+        private void WriteToFile(FileCabinetRecord record, int offset)
+        {
+            this.binaryWriter.Seek(offset, 0);
+            this.binaryWriter.Write(false);
+            offset += SizeOfShort;
+            this.binaryWriter.Seek(offset, 0);
+            this.binaryWriter.Write(record.Id);
+            offset += SizeOfInt;
+            this.binaryWriter.Write(record.FirstName);
+            offset += SizeOfString;
+            this.binaryWriter.Seek(offset, 0);
+            this.binaryWriter.Write(record.LastName);
+            offset += SizeOfString;
+            this.binaryWriter.Seek(offset, 0);
+            this.binaryWriter.Write(record.DateOfBirth.Day);
+            this.binaryWriter.Write(record.DateOfBirth.Month);
+            this.binaryWriter.Write(record.DateOfBirth.Year);
+            this.binaryWriter.Write(record.PatronymicLetter);
+            this.binaryWriter.Write(record.Income);
+            this.binaryWriter.Write(record.Height);
         }
 
         private void WriteImportToFile(List<FileCabinetRecord> records)

@@ -382,6 +382,12 @@
             <param name="id">ID of record to remove.</param>
             <returns>Whether record existed or not.</returns>
         </member>
+        <member name="M:FileCabinetApp.FileCabinetFilesystemService.Purge">
+            <summary>
+            Defragments file.
+            </summary>
+            <returns>Amount of purged records.</returns>
+        </member>
         <member name="M:FileCabinetApp.FileCabinetFilesystemService.Dispose(System.Boolean)">
             <summary>
             If service is disposing, close streams.
@@ -481,6 +487,12 @@
             </summary>
             <param name="recordValidator">Rules of validation.</param>
         </member>
+        <member name="M:FileCabinetApp.FileCabinetMemoryService.Purge">
+            <summary>
+            Defragments file.
+            </summary>
+            <returns>Amount of purged records.</returns>
+        </member>
         <member name="T:FileCabinetApp.IFileCabinetService">
             <summary>
             Provides methods to interact with records.
@@ -558,6 +570,12 @@
             </summary>
             <param name="id">ID of record to remove.</param>
             <returns>Whether records existed or not.</returns>
+        </member>
+        <member name="M:FileCabinetApp.IFileCabinetService.Purge">
+            <summary>
+            Defragments file.
+            </summary>
+            <returns>Amount of purged records.</returns>
         </member>
         <member name="T:FileCabinetApp.CustomValidator">
             <summary>
