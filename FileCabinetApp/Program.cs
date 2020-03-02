@@ -118,14 +118,14 @@ namespace FileCabinetApp
 
         private static void SetDefaultService()
         {
-            fileCabinetService.SetRecordValidator(new DefaultValidator());
+            fileCabinetService.SetRecordValidator(new ValidatorBuilder().CreateDefault());
             ValidatorsAgregator.SetDefaultValidators();
             Console.WriteLine("Using default validation rules.");
         }
 
         private static void SetCustomService()
         {
-            fileCabinetService.SetRecordValidator(new CustomValidator());
+            fileCabinetService.SetRecordValidator(new ValidatorBuilder().CreateCustom());
             ValidatorsAgregator.SetCustomValidators();
             Console.WriteLine("Using custom validation rules.");
         }

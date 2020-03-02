@@ -4,6 +4,9 @@ using System.Text;
 
 namespace FileCabinetApp.CommandHandlers
 {
+    /// <summary>
+    /// Command handler to help method.
+    /// </summary>
     public class HelpCommandHandler : CommandHandlerBase
     {
         private const int CommandHelpIndex = 0;
@@ -24,6 +27,10 @@ namespace FileCabinetApp.CommandHandlers
             new string[] { "purge", "defragments file", "The 'purge' command defragments file." },
         };
 
+        /// <summary>
+        /// Handles command line request.
+        /// </summary>
+        /// <param name="commandRequest">Command line request.</param>
         public override void Handle(AppCommandRequest commandRequest)
         {
             if (commandRequest is null)

@@ -10,9 +10,11 @@ namespace FileCabinetApp
     public interface IRecordValidator
     {
         /// <summary>
-        /// Validate given parameters.
+        /// Validate given record.
         /// </summary>
-        /// <param name="transfer">Transfer of parameters to validate.</param>
-        void ValidateParameters(RecordParametersTransfer transfer);
+        /// <param name="record">Record to validate.</param>
+        /// <returns>Whether validation was succesful and reason of fail.</returns>
+        /// <exception cref="ArgumentNullException">Thrown when record is null.</exception>
+        Tuple<bool, string> ValidateParameters(FileCabinetRecord record);
     }
 }

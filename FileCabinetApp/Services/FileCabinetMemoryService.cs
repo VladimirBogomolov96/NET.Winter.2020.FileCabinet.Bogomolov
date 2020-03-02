@@ -42,7 +42,16 @@ namespace FileCabinetApp
         /// <exception cref="ArgumentException">Thrown when firs name or last name length is out of 2 and 60 chars or contains only whitespaces, when date of birth out of 01-Jan-1950 and current date, when height is out of 1 and 300 cm, when income is negative, when patronymic letter is not a latin uppercase letter.</exception>
         public int CreateRecord(RecordParametersTransfer transfer)
         {
-            this.recordValidator.ValidateParameters(transfer);
+            if (transfer is null)
+            {
+                throw new ArgumentNullException(nameof(transfer), "Transfer must be not null.");
+            }
+
+            if (!this.recordValidator.ValidateParameters(transfer.RecordSimulation()).Item1)
+            {
+                throw new ArgumentException(this.recordValidator.ValidateParameters(transfer.RecordSimulation()).Item2);
+            }
+
             var record = new FileCabinetRecord
             {
                 FirstName = transfer.FirstName,
@@ -76,7 +85,16 @@ namespace FileCabinetApp
         /// <exception cref="ArgumentException">Thrown when firs name or last name length is out of 2 and 60 chars or contains only whitespaces, when date of birth out of 01-Jan-1950 and current date, when height is out of 1 and 300 cm, when income is negative, when patronymic letter is not a latin uppercase letter.</exception>
         public void EditRecord(int id, RecordParametersTransfer transfer)
         {
-            this.recordValidator.ValidateParameters(transfer);
+            if (transfer is null)
+            {
+                throw new ArgumentNullException(nameof(transfer), "Transfer must be not null.");
+            }
+
+            if (!this.recordValidator.ValidateParameters(transfer.RecordSimulation()).Item1)
+            {
+                throw new ArgumentException(this.recordValidator.ValidateParameters(transfer.RecordSimulation()).Item2);
+            }
+
             FileCabinetRecord editedRecord = new FileCabinetRecord()
             {
                 Id = id,
@@ -226,8 +244,18 @@ namespace FileCabinetApp
                 {
                     try
                     {
-                        RecordParametersTransfer transfer = new RecordParametersTransfer(importData[importIndex].FirstName, importData[importIndex].LastName, importData[importIndex].DateOfBirth, importData[importIndex].Height, importData[importIndex].Income, importData[importIndex].PatronymicLetter);
-                        this.recordValidator.ValidateParameters(transfer);
+                        RecordParametersTransfer transfer = new RecordParametersTransfer(
+                            importData[importIndex].FirstName,
+                            importData[importIndex].LastName,
+                            importData[importIndex].DateOfBirth,
+                            importData[importIndex].Height,
+                            importData[importIndex].Income,
+                            importData[importIndex].PatronymicLetter);
+                        if (!this.recordValidator.ValidateParameters(transfer.RecordSimulation()).Item1)
+                        {
+                            throw new ArgumentException(this.recordValidator.ValidateParameters(transfer.RecordSimulation()).Item2);
+                        }
+
                         this.RemoveFromDictionaries(this.list[sourceIndex]);
                         this.FillDictionaries(transfer, importData[importIndex]);
                         resultRecords.Add(importData[importIndex]);
@@ -246,8 +274,18 @@ namespace FileCabinetApp
                 {
                     try
                     {
-                        RecordParametersTransfer transfer = new RecordParametersTransfer(importData[importIndex].FirstName, importData[importIndex].LastName, importData[importIndex].DateOfBirth, importData[importIndex].Height, importData[importIndex].Income, importData[importIndex].PatronymicLetter);
-                        this.recordValidator.ValidateParameters(transfer);
+                        RecordParametersTransfer transfer = new RecordParametersTransfer(
+                            importData[importIndex].FirstName,
+                            importData[importIndex].LastName,
+                            importData[importIndex].DateOfBirth,
+                            importData[importIndex].Height,
+                            importData[importIndex].Income,
+                            importData[importIndex].PatronymicLetter);
+                        if (!this.recordValidator.ValidateParameters(transfer.RecordSimulation()).Item1)
+                        {
+                            throw new ArgumentException(this.recordValidator.ValidateParameters(transfer.RecordSimulation()).Item2);
+                        }
+
                         resultRecords.Add(importData[importIndex]);
                         this.FillDictionaries(transfer, importData[importIndex]);
                         importIndex++;
@@ -265,8 +303,18 @@ namespace FileCabinetApp
             {
                 try
                 {
-                    RecordParametersTransfer transfer = new RecordParametersTransfer(importData[importIndex].FirstName, importData[importIndex].LastName, importData[importIndex].DateOfBirth, importData[importIndex].Height, importData[importIndex].Income, importData[importIndex].PatronymicLetter);
-                    this.recordValidator.ValidateParameters(transfer);
+                    RecordParametersTransfer transfer = new RecordParametersTransfer(
+                        importData[importIndex].FirstName,
+                        importData[importIndex].LastName,
+                        importData[importIndex].DateOfBirth,
+                        importData[importIndex].Height,
+                        importData[importIndex].Income,
+                        importData[importIndex].PatronymicLetter);
+                    if (!this.recordValidator.ValidateParameters(transfer.RecordSimulation()).Item1)
+                    {
+                        throw new ArgumentException(this.recordValidator.ValidateParameters(transfer.RecordSimulation()).Item2);
+                    }
+
                     resultRecords.Add(importData[importIndex]);
                     this.FillDictionaries(transfer, importData[importIndex]);
                 }

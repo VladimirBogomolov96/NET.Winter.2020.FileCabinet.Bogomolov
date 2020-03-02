@@ -5,8 +5,15 @@ using System.Text;
 
 namespace FileCabinetApp.Printers
 {
+    /// <summary>
+    /// Default printer for records.
+    /// </summary>
     public class DefaultPrinter : IRecordPrinter
     {
+        /// <summary>
+        /// Prints records.
+        /// </summary>
+        /// <param name="records">Records to print.</param>
         public void Print(IEnumerable<FileCabinetRecord> records)
         {
             if (records is null)

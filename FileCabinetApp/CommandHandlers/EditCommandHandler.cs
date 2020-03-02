@@ -6,13 +6,24 @@ using FileCabinetApp.Validators;
 
 namespace FileCabinetApp.CommandHandlers
 {
+    /// <summary>
+    /// Command handler to edit method.
+    /// </summary>
     public class EditCommandHandler : ServiceCommandHandlerBase
     {
+        /// <summary>
+        /// Initializes a new instance of the <see cref="EditCommandHandler"/> class.
+        /// </summary>
+        /// <param name="fileCabinetService">File cabinet service to call.</param>
         public EditCommandHandler(IFileCabinetService fileCabinetService)
             : base(fileCabinetService)
         {
         }
 
+        /// <summary>
+        /// Handles command line request.
+        /// </summary>
+        /// <param name="commandRequest">Command line request.</param>
         public override void Handle(AppCommandRequest commandRequest)
         {
             if (commandRequest is null)

@@ -4,13 +4,24 @@ using System.Text;
 
 namespace FileCabinetApp.CommandHandlers
 {
+    /// <summary>
+    /// Command handler to purge method.
+    /// </summary>
     public class PurgeCommandHandler : ServiceCommandHandlerBase
     {
+        /// <summary>
+        /// Initializes a new instance of the <see cref="PurgeCommandHandler"/> class.
+        /// </summary>
+        /// <param name="fileCabinetService">File cabinet service to call.</param>
         public PurgeCommandHandler(IFileCabinetService fileCabinetService)
             : base(fileCabinetService)
         {
         }
 
+        /// <summary>
+        /// Handles command line request.
+        /// </summary>
+        /// <param name="commandRequest">Command line request.</param>
         public override void Handle(AppCommandRequest commandRequest)
         {
             if (commandRequest is null)

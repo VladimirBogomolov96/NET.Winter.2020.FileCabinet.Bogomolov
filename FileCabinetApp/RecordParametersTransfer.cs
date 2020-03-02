@@ -63,5 +63,22 @@ namespace FileCabinetApp
         /// </summary>
         /// <value>Value of patronymic letter to transfer.</value>
         public char PatronymicLetter { get; }
+
+        /// <summary>
+        /// Simulates record from transfer.
+        /// </summary>
+        /// <returns>Simulation of record.</returns>
+        public FileCabinetRecord RecordSimulation()
+        {
+            return new FileCabinetRecord()
+            {
+                FirstName = this.FirstName,
+                LastName = this.LastName,
+                DateOfBirth = this.DateOfBirth,
+                Height = this.Height,
+                Income = this.Income,
+                PatronymicLetter = this.PatronymicLetter,
+            };
+        }
     }
 }

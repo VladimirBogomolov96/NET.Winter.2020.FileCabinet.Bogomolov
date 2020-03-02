@@ -7,13 +7,24 @@ using System.Xml;
 
 namespace FileCabinetApp.CommandHandlers
 {
+    /// <summary>
+    /// Command handler to import method.
+    /// </summary>
     public class ImportCommandHandler : ServiceCommandHandlerBase
     {
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ImportCommandHandler"/> class.
+        /// </summary>
+        /// <param name="fileCabinetService">File cabinet service to call.</param>
         public ImportCommandHandler(IFileCabinetService fileCabinetService)
             : base(fileCabinetService)
         {
         }
 
+        /// <summary>
+        /// Handles command line request.
+        /// </summary>
+        /// <param name="commandRequest">Command line request.</param>
         public override void Handle(AppCommandRequest commandRequest)
         {
             if (commandRequest is null)

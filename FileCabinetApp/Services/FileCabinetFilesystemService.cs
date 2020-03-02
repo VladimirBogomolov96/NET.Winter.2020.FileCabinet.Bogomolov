@@ -62,7 +62,16 @@ namespace FileCabinetApp
         /// <exception cref="ArgumentNullException">Thrown when transfer parameters is null.</exception>
         public int CreateRecord(RecordParametersTransfer transfer)
         {
-            this.recordValidator.ValidateParameters(transfer);
+            if (transfer is null)
+            {
+                throw new ArgumentNullException(nameof(transfer), "Transfer must be not null.");
+            }
+
+            if (!this.recordValidator.ValidateParameters(transfer.RecordSimulation()).Item1)
+            {
+                throw new ArgumentException(this.recordValidator.ValidateParameters(transfer.RecordSimulation()).Item2);
+            }
+
             this.lastId++;
             this.currentOffset += SizeOfShort;
             this.binaryWriter.Seek(this.currentOffset, 0);
@@ -97,7 +106,16 @@ namespace FileCabinetApp
         /// <exception cref="ArgumentNullException">Thrown when transfer parameters is null.</exception>
         public void EditRecord(int id, RecordParametersTransfer transfer)
         {
-            this.recordValidator.ValidateParameters(transfer);
+            if (transfer is null)
+            {
+                throw new ArgumentNullException(nameof(transfer), "Transfer must be not null.");
+            }
+
+            if (!this.recordValidator.ValidateParameters(transfer.RecordSimulation()).Item1)
+            {
+                throw new ArgumentException(this.recordValidator.ValidateParameters(transfer.RecordSimulation()).Item2);
+            }
+
             int tempOffset = (id - 1) * SizeOfRecord;
             this.binaryWriter.Seek(tempOffset, 0);
             if (this.binaryReader.ReadBoolean())
@@ -356,8 +374,18 @@ namespace FileCabinetApp
                 {
                     try
                     {
-                        RecordParametersTransfer transfer = new RecordParametersTransfer(importData[importIndex].FirstName, importData[importIndex].LastName, importData[importIndex].DateOfBirth, importData[importIndex].Height, importData[importIndex].Income, importData[importIndex].PatronymicLetter);
-                        this.recordValidator.ValidateParameters(transfer);
+                        RecordParametersTransfer transfer = new RecordParametersTransfer(
+                            importData[importIndex].FirstName,
+                            importData[importIndex].LastName,
+                            importData[importIndex].DateOfBirth,
+                            importData[importIndex].Height,
+                            importData[importIndex].Income,
+                            importData[importIndex].PatronymicLetter);
+                        if (!this.recordValidator.ValidateParameters(transfer.RecordSimulation()).Item1)
+                        {
+                            throw new ArgumentException(this.recordValidator.ValidateParameters(transfer.RecordSimulation()).Item2);
+                        }
+
                         resultRecords.Add(importData[importIndex]);
                         importIndex++;
                         sourceIndex++;
@@ -374,8 +402,18 @@ namespace FileCabinetApp
                 {
                     try
                     {
-                        RecordParametersTransfer transfer = new RecordParametersTransfer(importData[importIndex].FirstName, importData[importIndex].LastName, importData[importIndex].DateOfBirth, importData[importIndex].Height, importData[importIndex].Income, importData[importIndex].PatronymicLetter);
-                        this.recordValidator.ValidateParameters(transfer);
+                        RecordParametersTransfer transfer = new RecordParametersTransfer(
+                            importData[importIndex].FirstName,
+                            importData[importIndex].LastName,
+                            importData[importIndex].DateOfBirth,
+                            importData[importIndex].Height,
+                            importData[importIndex].Income,
+                            importData[importIndex].PatronymicLetter);
+                        if (!this.recordValidator.ValidateParameters(transfer.RecordSimulation()).Item1)
+                        {
+                            throw new ArgumentException(this.recordValidator.ValidateParameters(transfer.RecordSimulation()).Item2);
+                        }
+
                         resultRecords.Add(importData[importIndex]);
                         importIndex++;
                     }
@@ -392,8 +430,18 @@ namespace FileCabinetApp
             {
                 try
                 {
-                    RecordParametersTransfer transfer = new RecordParametersTransfer(importData[importIndex].FirstName, importData[importIndex].LastName, importData[importIndex].DateOfBirth, importData[importIndex].Height, importData[importIndex].Income, importData[importIndex].PatronymicLetter);
-                    this.recordValidator.ValidateParameters(transfer);
+                    RecordParametersTransfer transfer = new RecordParametersTransfer(
+                        importData[importIndex].FirstName,
+                        importData[importIndex].LastName,
+                        importData[importIndex].DateOfBirth,
+                        importData[importIndex].Height,
+                        importData[importIndex].Income,
+                        importData[importIndex].PatronymicLetter);
+                    if (!this.recordValidator.ValidateParameters(transfer.RecordSimulation()).Item1)
+                    {
+                        throw new ArgumentException(this.recordValidator.ValidateParameters(transfer.RecordSimulation()).Item2);
+                    }
+
                     resultRecords.Add(importData[importIndex]);
                 }
                 catch (ArgumentException ex)

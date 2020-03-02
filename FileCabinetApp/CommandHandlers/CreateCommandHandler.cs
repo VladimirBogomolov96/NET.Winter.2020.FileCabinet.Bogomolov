@@ -5,13 +5,24 @@ using FileCabinetApp.Validators;
 
 namespace FileCabinetApp.CommandHandlers
 {
+    /// <summary>
+    /// Command handler to create method.
+    /// </summary>
     public class CreateCommandHandler : ServiceCommandHandlerBase
     {
+        /// <summary>
+        /// Initializes a new instance of the <see cref="CreateCommandHandler"/> class.
+        /// </summary>
+        /// <param name="fileCabinetService">File cabinet service to call.</param>
         public CreateCommandHandler(IFileCabinetService fileCabinetService)
             : base(fileCabinetService)
         {
         }
 
+        /// <summary>
+        /// Handles command line request.
+        /// </summary>
+        /// <param name="commandRequest">Command line request.</param>
         public override void Handle(AppCommandRequest commandRequest)
         {
             if (commandRequest is null)

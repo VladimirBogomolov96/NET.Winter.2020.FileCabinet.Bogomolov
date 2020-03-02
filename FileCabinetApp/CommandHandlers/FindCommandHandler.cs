@@ -7,16 +7,28 @@ using FileCabinetApp.Printers;
 
 namespace FileCabinetApp.CommandHandlers
 {
+    /// <summary>
+    /// Command handler to find method.
+    /// </summary>
     public class FindCommandHandler : ServiceCommandHandlerBase
     {
         private Action<IEnumerable<FileCabinetRecord>> printer;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="FindCommandHandler"/> class.
+        /// </summary>
+        /// <param name="fileCabinetService">File cabinet service to call.</param>
+        /// <param name="printer">Printer to records.</param>
         public FindCommandHandler(IFileCabinetService fileCabinetService, Action<IEnumerable<FileCabinetRecord>> printer)
             : base(fileCabinetService)
         {
             this.printer = printer;
         }
 
+        /// <summary>
+        /// Handles command line request.
+        /// </summary>
+        /// <param name="commandRequest">Command line request.</param>
         public override void Handle(AppCommandRequest commandRequest)
         {
             if (commandRequest is null)
