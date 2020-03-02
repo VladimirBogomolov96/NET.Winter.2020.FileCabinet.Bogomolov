@@ -9,9 +9,9 @@ namespace FileCabinetApp.CommandHandlers
 {
     public class FindCommandHandler : ServiceCommandHandlerBase
     {
-        private IRecordPrinter printer;
+        private Action<IEnumerable<FileCabinetRecord>> printer;
 
-        public FindCommandHandler(IFileCabinetService fileCabinetService, IRecordPrinter printer)
+        public FindCommandHandler(IFileCabinetService fileCabinetService, Action<IEnumerable<FileCabinetRecord>> printer)
             : base(fileCabinetService)
         {
             this.printer = printer;
@@ -65,7 +65,7 @@ namespace FileCabinetApp.CommandHandlers
                             break;
                         }
 
-                        this.printer.Print(recordsFirstName);
+                        this.printer.Invoke(recordsFirstName);
                         break;
                     case "LASTNAME":
                         ReadOnlyCollection<FileCabinetRecord> recordsLastName = this.Service.FindByLastName(parametersArr[searchValueIndex]);
@@ -75,7 +75,7 @@ namespace FileCabinetApp.CommandHandlers
                             break;
                         }
 
-                        this.printer.Print(recordsLastName);
+                        this.printer.Invoke(recordsLastName);
                         break;
                     case "DATEOFBIRTH":
                         DateTime dateOfBirth;
@@ -96,7 +96,7 @@ namespace FileCabinetApp.CommandHandlers
                             break;
                         }
 
-                        this.printer.Print(recordsDateOfBirth);
+                        this.printer.Invoke(recordsDateOfBirth);
                         break;
                     default:
                         Console.WriteLine("Wrong property parameter.");
