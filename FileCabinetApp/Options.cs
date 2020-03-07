@@ -25,10 +25,17 @@ namespace FileCabinetApp
         public string Storage { get; set; }
 
         /// <summary>
-        /// Gets or sets a value indicating whether stopwatch are using or not.
+        /// Gets or sets a value indicating whether stopwatch is using or not.
         /// </summary>
         /// <value>Whether stopwatch are using or not.</value>
         [Option("use-stopwatch", Default = false, Required = false)]
         public bool Stopwatch { get; set; }
+
+        /// <summary>
+        /// Gets or sets a value indicating whether stopwatch is using or not.
+        /// </summary>
+        /// <value>Whether stopwatch is using or not.</value>
+        [Option("use-logger", Default = false, Required = false)]
+        public bool Logger { get; set; }
     }
 }

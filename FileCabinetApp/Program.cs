@@ -77,7 +77,7 @@ namespace FileCabinetApp
 
         private static void SetCommandLineSettings(string[] args)
         {
-            if (!File.Exists("D:\\EPAM\\internship\\FileCabinet\\FileCabinetApp\\bin\\Debug\\netcoreapp3.1\\validation-rules.json"))
+            if (!File.Exists("D:\\EPAM\\internship\\FileCabinet\\FileCabinetApp\\Validators\\validation-rules.json"))
             {
                 Console.WriteLine("Can't find validation-rules.json file.");
                 Environment.Exit(-1);
@@ -87,7 +87,7 @@ namespace FileCabinetApp
             try
             {
                 configuration = new ConfigurationBuilder()
-                   .SetBasePath("D:\\EPAM\\internship\\FileCabinet\\FileCabinetApp\\bin\\Debug\\netcoreapp3.1")
+                   .SetBasePath("D:\\EPAM\\internship\\FileCabinet\\FileCabinetApp\\Validators")
                    .AddJsonFile("validation-rules.json")
                    .Build();
             }
@@ -125,6 +125,11 @@ namespace FileCabinetApp
                 throw new ArgumentException("Wrong command line argument.", nameof(args));
             }
 
+            if (options.Logger)
+            {
+                SetLogger();
+            }
+
             if (options.Stopwatch)
             {
                 SetStopwatch();
@@ -160,6 +165,12 @@ namespace FileCabinetApp
         {
             fileCabinetService = new ServiceMeter(fileCabinetService);
             Console.WriteLine("Using stopwatch.");
+        }
+
+        private static void SetLogger()
+        {
+            fileCabinetService = new ServiceLogger(fileCabinetService);
+            Console.WriteLine("Using logger.");
         }
 
         private static void IsRunning(bool state)
