@@ -8,6 +8,7 @@ using System.Xml;
 using CommandLine;
 using FileCabinetApp.CommandHandlers;
 using FileCabinetApp.Printers;
+using FileCabinetApp.Services;
 using FileCabinetApp.Validators;
 using Microsoft.Extensions.Configuration;
 
@@ -123,6 +124,11 @@ namespace FileCabinetApp
             {
                 throw new ArgumentException("Wrong command line argument.", nameof(args));
             }
+
+            if (options.Stopwatch)
+            {
+                SetStopwatch();
+            }
         }
 
         private static void SetMemoryService()
@@ -148,6 +154,12 @@ namespace FileCabinetApp
         {
             fileCabinetService.SetRecordValidator(new ValidatorBuilder().CreateValidator(configuration.GetSection("custom")));
             Console.WriteLine("Using custom validation rules.");
+        }
+
+        private static void SetStopwatch()
+        {
+            fileCabinetService = new ServiceMeter(fileCabinetService);
+            Console.WriteLine("Using stopwatch.");
         }
 
         private static void IsRunning(bool state)

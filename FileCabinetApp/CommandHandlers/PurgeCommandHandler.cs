@@ -48,14 +48,14 @@ namespace FileCabinetApp.CommandHandlers
 
         private void Purge(string parameters)
         {
-            if (this.Service is FileCabinetFilesystemService)
+            try
             {
                 int purgedRecords = this.Service.Purge();
                 Console.WriteLine("Data file processing is completed: {0} of {1} records were purged.", purgedRecords, purgedRecords + this.Service.GetStat().Item1);
             }
-            else
+            catch (InvalidOperationException ex)
             {
-                Console.WriteLine("Purge command can be used only with Filesystem Service.");
+                Console.WriteLine(ex.Message);
             }
         }
     }

@@ -23,5 +23,12 @@ namespace FileCabinetApp
         /// <value>Type of storage.</value>
         [Option('s', "storage", Default = "memory", Required = false)]
         public string Storage { get; set; }
+
+        /// <summary>
+        /// Gets or sets a value indicating whether stopwatch are using or not.
+        /// </summary>
+        /// <value>Whether stopwatch are using or not.</value>
+        [Option("use-stopwatch", Default = false, Required = false)]
+        public bool Stopwatch { get; set; }
     }
 }
