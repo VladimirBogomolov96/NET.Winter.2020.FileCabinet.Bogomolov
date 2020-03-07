@@ -3,14 +3,11 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Globalization;
 using System.IO;
-using System.Reflection;
 using System.Xml;
 using CommandLine;
 using FileCabinetApp.CommandHandlers;
 using FileCabinetApp.Printers;
-using FileCabinetApp.Services;
 using FileCabinetApp.Validators;
-using Microsoft.Extensions.Configuration;
 
 namespace FileCabinetApp
 {
@@ -77,26 +74,6 @@ namespace FileCabinetApp
 
         private static void SetCommandLineSettings(string[] args)
         {
-            if (!File.Exists("D:\\EPAM\\internship\\FileCabinet\\FileCabinetApp\\Validators\\validation-rules.json"))
-            {
-                Console.WriteLine("Can't find validation-rules.json file.");
-                Environment.Exit(-1);
-            }
-
-            IConfigurationRoot configuration = null;
-            try
-            {
-                configuration = new ConfigurationBuilder()
-                   .SetBasePath("D:\\EPAM\\internship\\FileCabinet\\FileCabinetApp\\Validators")
-                   .AddJsonFile("validation-rules.json")
-                   .Build();
-            }
-            catch (FormatException)
-            {
-                Console.WriteLine("Invalid data in validation-rules.json file.");
-                Environment.Exit(-1);
-            }
-
             Options options = new Options();
             var result = Parser.Default.ParseArguments<Options>(args).WithParsed(parsed => options = parsed);
             if (options.Storage.Equals("file", StringComparison.InvariantCultureIgnoreCase))
@@ -114,25 +91,15 @@ namespace FileCabinetApp
 
             if (options.Rule.Equals("custom", StringComparison.InvariantCultureIgnoreCase))
             {
-                SetCustomService(configuration);
+                SetCustomService();
             }
             else if (options.Rule.Equals("default", StringComparison.InvariantCultureIgnoreCase))
             {
-                SetDefaultService(configuration);
+                SetDefaultService();
             }
             else
             {
                 throw new ArgumentException("Wrong command line argument.", nameof(args));
-            }
-
-            if (options.Logger)
-            {
-                SetLogger();
-            }
-
-            if (options.Stopwatch)
-            {
-                SetStopwatch();
             }
         }
 
@@ -149,28 +116,18 @@ namespace FileCabinetApp
             Console.WriteLine("Using file service.");
         }
 
-        private static void SetDefaultService(IConfigurationRoot configuration)
+        private static void SetDefaultService()
         {
-            fileCabinetService.SetRecordValidator(new ValidatorBuilder().CreateValidator(configuration.GetSection("default")));
+            fileCabinetService.SetRecordValidator(new ValidatorBuilder().CreateDefault());
+            ValidatorsAgregator.SetDefaultValidators();
             Console.WriteLine("Using default validation rules.");
         }
 
-        private static void SetCustomService(IConfigurationRoot configuration)
+        private static void SetCustomService()
         {
-            fileCabinetService.SetRecordValidator(new ValidatorBuilder().CreateValidator(configuration.GetSection("custom")));
+            fileCabinetService.SetRecordValidator(new ValidatorBuilder().CreateCustom());
+            ValidatorsAgregator.SetCustomValidators();
             Console.WriteLine("Using custom validation rules.");
-        }
-
-        private static void SetStopwatch()
-        {
-            fileCabinetService = new ServiceMeter(fileCabinetService);
-            Console.WriteLine("Using stopwatch.");
-        }
-
-        private static void SetLogger()
-        {
-            fileCabinetService = new ServiceLogger(fileCabinetService);
-            Console.WriteLine("Using logger.");
         }
 
         private static void IsRunning(bool state)
