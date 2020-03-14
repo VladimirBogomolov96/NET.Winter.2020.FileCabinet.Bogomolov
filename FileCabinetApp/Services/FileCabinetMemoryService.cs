@@ -147,14 +147,15 @@ namespace FileCabinetApp
         /// </summary>
         /// <param name="firstName">First name to match with.</param>
         /// <returns>Array of matching records.</returns>
-        public ReadOnlyCollection<FileCabinetRecord> FindByFirstName(string firstName)
+        public IEnumerable<FileCabinetRecord> FindByFirstName(string firstName)
         {
-            if (!this.firstNameDictionary.TryGetValue(firstName, out List<FileCabinetRecord> records))
+            if (this.firstNameDictionary.TryGetValue(firstName, out List<FileCabinetRecord> records))
             {
-                return new ReadOnlyCollection<FileCabinetRecord>(Array.Empty<FileCabinetRecord>());
+                foreach (FileCabinetRecord record in records)
+                {
+                    yield return record;
+                }
             }
-
-            return new ReadOnlyCollection<FileCabinetRecord>(records);
         }
 
         /// <summary>
@@ -162,14 +163,15 @@ namespace FileCabinetApp
         /// </summary>
         /// <param name="lastName">Last name to match with.</param>
         /// <returns>Array of matching records.</returns>
-        public ReadOnlyCollection<FileCabinetRecord> FindByLastName(string lastName)
+        public IEnumerable<FileCabinetRecord> FindByLastName(string lastName)
         {
-            if (!this.lastNameDictionary.TryGetValue(lastName, out List<FileCabinetRecord> records))
+            if (this.lastNameDictionary.TryGetValue(lastName, out List<FileCabinetRecord> records))
             {
-                return new ReadOnlyCollection<FileCabinetRecord>(Array.Empty<FileCabinetRecord>());
+                foreach (FileCabinetRecord record in records)
+                {
+                    yield return record;
+                }
             }
-
-            return new ReadOnlyCollection<FileCabinetRecord>(records);
         }
 
         /// <summary>
@@ -177,14 +179,15 @@ namespace FileCabinetApp
         /// </summary>
         /// <param name="dateOfBirth">Date of birth to match with.</param>
         /// <returns>Array of matching records.</returns>
-        public ReadOnlyCollection<FileCabinetRecord> FindByDateOfbirth(DateTime dateOfBirth)
+        public IEnumerable<FileCabinetRecord> FindByDateOfbirth(DateTime dateOfBirth)
         {
-            if (!this.dateOfBirthDictionary.TryGetValue(dateOfBirth, out List<FileCabinetRecord> records))
+            if (this.dateOfBirthDictionary.TryGetValue(dateOfBirth, out List<FileCabinetRecord> records))
             {
-                return new ReadOnlyCollection<FileCabinetRecord>(Array.Empty<FileCabinetRecord>());
+                foreach (FileCabinetRecord record in records)
+                {
+                    yield return record;
+                }
             }
-
-            return new ReadOnlyCollection<FileCabinetRecord>(records);
         }
 
         /// <summary>
