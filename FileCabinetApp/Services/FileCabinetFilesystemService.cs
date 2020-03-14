@@ -153,18 +153,15 @@ namespace FileCabinetApp
         /// </summary>
         /// <param name="dateOfBirth">Date of birth name to match with.</param>
         /// <returns>Array of matching records.</returns>
-        public ReadOnlyCollection<FileCabinetRecord> FindByDateOfbirth(DateTime dateOfBirth)
+        public IEnumerable<FileCabinetRecord> FindByDateOfbirth(DateTime dateOfBirth)
         {
-            List<FileCabinetRecord> fileCabinetRecords = new List<FileCabinetRecord>();
             if (this.dateOfBirthDictionary.TryGetValue(dateOfBirth, out List<int> offsets))
             {
                 foreach (int offset in offsets)
                 {
-                    fileCabinetRecords.Add(this.GetRecord(offset));
+                    yield return this.GetRecord(offset);
                 }
             }
-
-            return fileCabinetRecords.AsReadOnly();
         }
 
         /// <summary>
@@ -172,18 +169,15 @@ namespace FileCabinetApp
         /// </summary>
         /// <param name="firstName">First name to match with.</param>
         /// <returns>Array of matching records.</returns>
-        public ReadOnlyCollection<FileCabinetRecord> FindByFirstName(string firstName)
+        public IEnumerable<FileCabinetRecord> FindByFirstName(string firstName)
         {
-            List<FileCabinetRecord> fileCabinetRecords = new List<FileCabinetRecord>();
             if (this.firstNameDictionary.TryGetValue(firstName, out List<int> offsets))
             {
                 foreach (int offset in offsets)
                 {
-                    fileCabinetRecords.Add(this.GetRecord(offset));
+                    yield return this.GetRecord(offset);
                 }
             }
-
-            return fileCabinetRecords.AsReadOnly();
         }
 
         /// <summary>
@@ -191,18 +185,15 @@ namespace FileCabinetApp
         /// </summary>
         /// <param name="lastName">Last name to match with.</param>
         /// <returns>Array of matching records.</returns>
-        public ReadOnlyCollection<FileCabinetRecord> FindByLastName(string lastName)
+        public IEnumerable<FileCabinetRecord> FindByLastName(string lastName)
         {
-            List<FileCabinetRecord> fileCabinetRecords = new List<FileCabinetRecord>();
             if (this.lastNameDictionary.TryGetValue(lastName, out List<int> offsets))
             {
                 foreach (int offset in offsets)
                 {
-                    fileCabinetRecords.Add(this.GetRecord(offset));
+                    yield return this.GetRecord(offset);
                 }
             }
-
-            return fileCabinetRecords.AsReadOnly();
         }
 
         /// <summary>

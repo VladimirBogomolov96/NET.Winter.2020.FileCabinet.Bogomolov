@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Globalization;
+using System.Linq;
 using System.Text;
 using FileCabinetApp.Printers;
 
@@ -70,8 +71,8 @@ namespace FileCabinetApp.CommandHandlers
                 switch (parametersArr[propertyIndex])
                 {
                     case "FIRSTNAME":
-                        ReadOnlyCollection<FileCabinetRecord> recordsFirstName = this.Service.FindByFirstName(parametersArr[searchValueIndex]);
-                        if (recordsFirstName.Count == 0)
+                        IEnumerable<FileCabinetRecord> recordsFirstName = this.Service.FindByFirstName(parametersArr[searchValueIndex]);
+                        if (!recordsFirstName.Any())
                         {
                             Console.WriteLine("Such records don't exist.");
                             break;
@@ -80,8 +81,8 @@ namespace FileCabinetApp.CommandHandlers
                         this.printer.Invoke(recordsFirstName);
                         break;
                     case "LASTNAME":
-                        ReadOnlyCollection<FileCabinetRecord> recordsLastName = this.Service.FindByLastName(parametersArr[searchValueIndex]);
-                        if (recordsLastName.Count == 0)
+                        IEnumerable<FileCabinetRecord> recordsLastName = this.Service.FindByLastName(parametersArr[searchValueIndex]);
+                        if (!recordsLastName.Any())
                         {
                             Console.WriteLine("Such records don't exist.");
                             break;
@@ -101,8 +102,8 @@ namespace FileCabinetApp.CommandHandlers
                             break;
                         }
 
-                        ReadOnlyCollection<FileCabinetRecord> recordsDateOfBirth = this.Service.FindByDateOfbirth(dateOfBirth);
-                        if (recordsDateOfBirth.Count == 0)
+                        IEnumerable<FileCabinetRecord> recordsDateOfBirth = this.Service.FindByDateOfbirth(dateOfBirth);
+                        if (!recordsDateOfBirth.Any())
                         {
                             Console.WriteLine("Such records don't exist.");
                             break;

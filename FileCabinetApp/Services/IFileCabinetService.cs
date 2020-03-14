@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 
 namespace FileCabinetApp
@@ -39,21 +40,21 @@ namespace FileCabinetApp
         /// </summary>
         /// <param name="dateOfBirth">Date of birth to match with.</param>
         /// <returns>Array of matching records.</returns>
-        ReadOnlyCollection<FileCabinetRecord> FindByDateOfbirth(DateTime dateOfBirth);
+        IEnumerable<FileCabinetRecord> FindByDateOfbirth(DateTime dateOfBirth);
 
         /// <summary>
         /// Finds all records with given first name.
         /// </summary>
         /// <param name="firstName">First name to match with.</param>
         /// <returns>Array of matching records.</returns>
-        ReadOnlyCollection<FileCabinetRecord> FindByFirstName(string firstName);
+        IEnumerable<FileCabinetRecord> FindByFirstName(string firstName);
 
         /// <summary>
         /// Finds all records with given last name.
         /// </summary>
         /// <param name="lastName">Last name to match with.</param>
         /// <returns>Array of matching records.</returns>
-        ReadOnlyCollection<FileCabinetRecord> FindByLastName(string lastName);
+        IEnumerable<FileCabinetRecord> FindByLastName(string lastName);
 
         /// <summary>
         /// Gets all existing records.
