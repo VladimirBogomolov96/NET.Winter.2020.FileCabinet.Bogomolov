@@ -115,6 +115,19 @@ namespace FileCabinetApp.Services
         }
 
         /// <summary>
+        /// Inserts new record and measure execution time.
+        /// </summary>
+        /// <param name="record">Record to insert.</param>
+        /// <returns>Id of inserted record.</returns>
+        public int Insert(FileCabinetRecord record)
+        {
+            var stopWatch = Stopwatch.StartNew();
+            var result = this.service.Insert(record);
+            Console.WriteLine($"Insert method execution duration is {stopWatch.ElapsedTicks} ticks.");
+            return result;
+        }
+
+        /// <summary>
         /// Creates a snapshot of all records in current moment and measure execution time.
         /// </summary>
         /// <returns>Snapshot of records.</returns>

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Globalization;
+using System.Linq;
 using System.Text;
 
 namespace FileCabinetApp
@@ -14,6 +15,7 @@ namespace FileCabinetApp
         private readonly Dictionary<string, List<FileCabinetRecord>> firstNameDictionary = new Dictionary<string, List<FileCabinetRecord>>();
         private readonly Dictionary<string, List<FileCabinetRecord>> lastNameDictionary = new Dictionary<string, List<FileCabinetRecord>>();
         private readonly Dictionary<DateTime, List<FileCabinetRecord>> dateOfBirthDictionary = new Dictionary<DateTime, List<FileCabinetRecord>>();
+        private readonly List<int> ids = new List<int>();
         private IRecordValidator recordValidator;
         private List<FileCabinetRecord> list = new List<FileCabinetRecord>();
 
@@ -68,10 +70,11 @@ namespace FileCabinetApp
             }
             else
             {
-                record.Id = this.list[this.list.Count - 1].Id + 1;
+                record.Id = this.ids.Max() + 1;
             }
 
             this.list.Add(record);
+            this.ids.Add(record.Id);
             this.FillDictionaries(transfer, record);
             return record.Id;
         }
@@ -212,11 +215,40 @@ namespace FileCabinetApp
                 {
                     this.list.Remove(record);
                     this.RemoveFromDictionaries(record);
+                    this.ids.Remove(id);
                     return true;
                 }
             }
 
             return false;
+        }
+
+        /// <summary>
+        /// Inserts new record.
+        /// </summary>
+        /// <param name="record">Record to insert.</param>
+        /// <returns>Id of inserted record.</returns>
+        public int Insert(FileCabinetRecord record)
+        {
+            if (record is null)
+            {
+                throw new ArgumentNullException(nameof(record), "Record must be not null.");
+            }
+
+            if (!this.recordValidator.ValidateParameters(record).Item1)
+            {
+                throw new ArgumentException(this.recordValidator.ValidateParameters(record).Item2, nameof(record));
+            }
+
+            if (this.ids.Contains(record.Id))
+            {
+                throw new ArgumentException("Record with given id already exists.", nameof(record));
+            }
+
+            this.list.Add(record);
+            this.ids.Add(record.Id);
+            this.FillDictionaries(record);
+            return record.Id;
         }
 
         /// <summary>
@@ -386,6 +418,39 @@ namespace FileCabinetApp
             {
                 this.dateOfBirthDictionary.Add(transfer.DateOfBirth, new List<FileCabinetRecord>());
                 this.dateOfBirthDictionary[transfer.DateOfBirth].Add(record);
+            }
+        }
+
+        private void FillDictionaries(FileCabinetRecord record)
+        {
+            if (this.firstNameDictionary.ContainsKey(record.FirstName))
+            {
+                this.firstNameDictionary[record.FirstName].Add(record);
+            }
+            else
+            {
+                this.firstNameDictionary.Add(record.FirstName, new List<FileCabinetRecord>());
+                this.firstNameDictionary[record.FirstName].Add(record);
+            }
+
+            if (this.lastNameDictionary.ContainsKey(record.LastName))
+            {
+                this.lastNameDictionary[record.LastName].Add(record);
+            }
+            else
+            {
+                this.lastNameDictionary.Add(record.LastName, new List<FileCabinetRecord>());
+                this.lastNameDictionary[record.LastName].Add(record);
+            }
+
+            if (this.dateOfBirthDictionary.ContainsKey(record.DateOfBirth))
+            {
+                this.dateOfBirthDictionary[record.DateOfBirth].Add(record);
+            }
+            else
+            {
+                this.dateOfBirthDictionary.Add(record.DateOfBirth, new List<FileCabinetRecord>());
+                this.dateOfBirthDictionary[record.DateOfBirth].Add(record);
             }
         }
 

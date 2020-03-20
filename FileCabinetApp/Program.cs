@@ -181,6 +181,7 @@ namespace FileCabinetApp
         private static ICommandHandler CreateCommandHandlers()
         {
             ICommandHandler createHandler = new CreateCommandHandler(fileCabinetService);
+            ICommandHandler insertHandler = new InsertCommandHandler(fileCabinetService);
             ICommandHandler editHandler = new EditCommandHandler(fileCabinetService);
             ICommandHandler exitHandler = new ExitCommandHandler(IsRunning);
             ICommandHandler exportHandler = new ExportCommandHandler(fileCabinetService);
@@ -192,6 +193,7 @@ namespace FileCabinetApp
             ICommandHandler removeHandler = new RemoveCommandHandler(fileCabinetService);
             ICommandHandler statHandler = new StatCommandHandler(fileCabinetService);
             helpHandler.SetNext(createHandler).
+                SetNext(insertHandler).
                 SetNext(importHandler).
                 SetNext(exportHandler).
                 SetNext(editHandler).

@@ -178,6 +178,23 @@
             </summary>
             <param name="commandRequest">Command line request.</param>
         </member>
+        <member name="T:FileCabinetApp.CommandHandlers.InsertCommandHandler">
+            <summary>
+            Command handler to create method.
+            </summary>
+        </member>
+        <member name="M:FileCabinetApp.CommandHandlers.InsertCommandHandler.#ctor(FileCabinetApp.IFileCabinetService)">
+            <summary>
+            Initializes a new instance of the <see cref="T:FileCabinetApp.CommandHandlers.InsertCommandHandler"/> class.
+            </summary>
+            <param name="fileCabinetService">File cabinet service to call.</param>
+        </member>
+        <member name="M:FileCabinetApp.CommandHandlers.InsertCommandHandler.Handle(FileCabinetApp.CommandHandlers.AppCommandRequest)">
+            <summary>
+            Handles command line request.
+            </summary>
+            <param name="commandRequest">Command line request.</param>
+        </member>
         <member name="T:FileCabinetApp.CommandHandlers.ListCommandHandler">
             <summary>
             Command handler to list method.
@@ -299,6 +316,13 @@
         <member name="M:FileCabinetApp.Converter.ConvertStringToChar(System.String)">
             <summary>
             Converts string to char.
+            </summary>
+            <param name="input">String to convert.</param>
+            <returns>Whether convertion was succesfull, reason of fail and result.</returns>
+        </member>
+        <member name="M:FileCabinetApp.Converter.ConvertStringToInt(System.String)">
+            <summary>
+            Converts string to int.
             </summary>
             <param name="input">String to convert.</param>
             <returns>Whether convertion was succesfull, reason of fail and result.</returns>
@@ -656,6 +680,13 @@
             <returns>ID of created record.</returns>
             <exception cref="T:System.ArgumentNullException">Thrown when transfer parameters is null.</exception>
         </member>
+        <member name="M:FileCabinetApp.FileCabinetFilesystemService.Insert(FileCabinetApp.FileCabinetRecord)">
+            <summary>
+            Inserts new record.
+            </summary>
+            <param name="record">Record to insert.</param>
+            <returns>Id of inserted record.</returns>
+        </member>
         <member name="M:FileCabinetApp.FileCabinetFilesystemService.EditRecord(System.Int32,FileCabinetApp.RecordParametersTransfer)">
             <summary>
             Edits existing record.
@@ -820,6 +851,13 @@
             <param name="id">ID of record to remove.</param>
             <returns>Whether record existed or not.</returns>
         </member>
+        <member name="M:FileCabinetApp.FileCabinetMemoryService.Insert(FileCabinetApp.FileCabinetRecord)">
+            <summary>
+            Inserts new record.
+            </summary>
+            <param name="record">Record to insert.</param>
+            <returns>Id of inserted record.</returns>
+        </member>
         <member name="M:FileCabinetApp.FileCabinetMemoryService.Restore(FileCabinetApp.FileCabinetServiceSnapshot)">
             <summary>
             Restores statement from snapshot.
@@ -923,6 +961,13 @@
             </summary>
             <returns>Amount of purged records.</returns>
         </member>
+        <member name="M:FileCabinetApp.IFileCabinetService.Insert(FileCabinetApp.FileCabinetRecord)">
+            <summary>
+            Inserts new record.
+            </summary>
+            <param name="record">Record to insert.</param>
+            <returns>Id of inserted record.</returns>
+        </member>
         <member name="T:FileCabinetApp.Services.ServiceLogger">
             <summary>
             Provides methods to interact with records and writes info to log file.
@@ -1011,6 +1056,13 @@
             <param name="snapshot">Snapshot that represent statement to restore.</param>
             <returns>Amount of new records added.</returns>
         </member>
+        <member name="M:FileCabinetApp.Services.ServiceLogger.Insert(FileCabinetApp.FileCabinetRecord)">
+            <summary>
+            Inserts new record and writes info to log file.
+            </summary>
+            <param name="record">Record to insert.</param>
+            <returns>Id of inserted record.</returns>
+        </member>
         <member name="M:FileCabinetApp.Services.ServiceLogger.Dispose">
             <summary>
             Closes streamwriter.
@@ -1083,6 +1135,13 @@
             Counts amount of existing records and measure execution time.
             </summary>
             <returns>Amount of existing records.</returns>
+        </member>
+        <member name="M:FileCabinetApp.Services.ServiceMeter.Insert(FileCabinetApp.FileCabinetRecord)">
+            <summary>
+            Inserts new record and measure execution time.
+            </summary>
+            <param name="record">Record to insert.</param>
+            <returns>Id of inserted record.</returns>
         </member>
         <member name="M:FileCabinetApp.Services.ServiceMeter.MakeSnapshot">
             <summary>

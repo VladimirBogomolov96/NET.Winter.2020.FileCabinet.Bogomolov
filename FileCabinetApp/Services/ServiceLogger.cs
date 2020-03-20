@@ -182,6 +182,19 @@ namespace FileCabinetApp.Services
         }
 
         /// <summary>
+        /// Inserts new record and writes info to log file.
+        /// </summary>
+        /// <param name="record">Record to insert.</param>
+        /// <returns>Id of inserted record.</returns>
+        public int Insert(FileCabinetRecord record)
+        {
+            this.writer.WriteLine($"{DateTime.Now} Calling Insert().");
+            var result = this.service.Insert(record);
+            this.writer.WriteLine($"{DateTime.Now} Insert() inserted record #{result}.");
+            return result;
+        }
+
+        /// <summary>
         /// Closes streamwriter.
         /// </summary>
         public void Dispose()

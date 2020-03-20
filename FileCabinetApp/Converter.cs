@@ -83,6 +83,24 @@ namespace FileCabinetApp
         }
 
         /// <summary>
+        /// Converts string to int.
+        /// </summary>
+        /// <param name="input">String to convert.</param>
+        /// <returns>Whether convertion was succesfull, reason of fail and result.</returns>
+        public static Tuple<bool, string, int> ConvertStringToInt(string input)
+        {
+            bool isConverted = int.TryParse(input, out int id);
+            if (isConverted)
+            {
+                return new Tuple<bool, string, int>(isConverted, string.Empty, id);
+            }
+            else
+            {
+                return new Tuple<bool, string, int>(isConverted, "Int must be from -2147483648 to 2147483647.", int.MinValue);
+            }
+        }
+
+        /// <summary>
         /// Converts string to string.
         /// </summary>
         /// <param name="input">String to convert.</param>
