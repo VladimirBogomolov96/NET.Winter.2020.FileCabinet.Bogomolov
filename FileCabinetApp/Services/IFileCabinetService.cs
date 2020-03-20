@@ -94,5 +94,12 @@ namespace FileCabinetApp
         /// <param name="record">Record to insert.</param>
         /// <returns>Id of inserted record.</returns>
         int Insert(FileCabinetRecord record);
+
+        /// <summary>
+        /// Deletes records.
+        /// </summary>
+        /// <param name="records">Records to delete.</param>
+        /// <returns>IDs of deleted records.</returns>
+        IEnumerable<int> Delete(IEnumerable<FileCabinetRecord> records);
     }
 }

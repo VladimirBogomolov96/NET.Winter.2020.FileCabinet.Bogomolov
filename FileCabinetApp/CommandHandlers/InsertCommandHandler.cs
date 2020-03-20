@@ -9,7 +9,7 @@ using FileCabinetApp.Validators;
 namespace FileCabinetApp.CommandHandlers
 {
     /// <summary>
-    /// Command handler to create method.
+    /// Command handler to insert method.
     /// </summary>
     public class InsertCommandHandler : ServiceCommandHandlerBase
     {

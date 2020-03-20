@@ -152,6 +152,19 @@ namespace FileCabinetApp.Services
         }
 
         /// <summary>
+        /// Deletes records and measure execution time.
+        /// </summary>
+        /// <param name="records">Records to delete.</param>
+        /// <returns>IDs of deleted records.</returns>
+        public IEnumerable<int> Delete(IEnumerable<FileCabinetRecord> records)
+        {
+            var stopWatch = Stopwatch.StartNew();
+            var result = this.service.Delete(records);
+            Console.WriteLine($"Delete method execution duration is {stopWatch.ElapsedTicks} ticks.");
+            return result;
+        }
+
+        /// <summary>
         /// Removes record by given id and measure execution time.
         /// </summary>
         /// <param name="id">ID of record to remove.</param>

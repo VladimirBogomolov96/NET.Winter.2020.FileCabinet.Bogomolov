@@ -203,6 +203,25 @@ namespace FileCabinetApp
         }
 
         /// <summary>
+        /// Deletes records.
+        /// </summary>
+        /// <param name="records">Records to delete.</param>
+        /// <returns>IDs of deleted records.</returns>
+        public IEnumerable<int> Delete(IEnumerable<FileCabinetRecord> records)
+        {
+            if (records is null)
+            {
+                throw new ArgumentNullException(nameof(records), "Records must be not null.");
+            }
+
+            foreach (FileCabinetRecord record in records)
+            {
+                this.Remove(record.Id);
+                yield return record.Id;
+            }
+        }
+
+        /// <summary>
         /// Removes record by given id.
         /// </summary>
         /// <param name="id">ID of record to remove.</param>

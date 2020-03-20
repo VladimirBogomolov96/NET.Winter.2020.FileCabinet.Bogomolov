@@ -151,7 +151,26 @@ namespace FileCabinetApp.Services
         {
             this.writer.WriteLine($"{DateTime.Now} Calling Purge().");
             var result = this.service.Purge();
-            this.writer.WriteLine($"{DateTime.Now} Purge() defragmrnt {result} records.");
+            this.writer.WriteLine($"{DateTime.Now} Purge() defragment {result} records.");
+            return result;
+        }
+
+        /// <summary>
+        /// Deletes records and writes info to log file.
+        /// </summary>
+        /// <param name="records">Records to delete.</param>
+        /// <returns>IDs of deleted records.</returns>
+        public IEnumerable<int> Delete(IEnumerable<FileCabinetRecord> records)
+        {
+            this.writer.WriteLine($"{DateTime.Now} Calling Delete() for {records.Count()}.");
+            var result = this.service.Delete(records);
+            StringBuilder stringBuilder = new StringBuilder();
+            foreach (int id in result)
+            {
+                stringBuilder.Append(id).Append(' ');
+            }
+
+            this.writer.WriteLine($"{DateTime.Now} Delete() deleted records by ids {stringBuilder}");
             return result;
         }
 
