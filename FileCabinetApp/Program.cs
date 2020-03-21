@@ -193,11 +193,13 @@ namespace FileCabinetApp
             ICommandHandler removeHandler = new RemoveCommandHandler(fileCabinetService);
             ICommandHandler statHandler = new StatCommandHandler(fileCabinetService);
             ICommandHandler deleteHandler = new DeleteCommandHandler(fileCabinetService);
+            ICommandHandler updateHandler = new UpdateCommandHandler(fileCabinetService);
             helpHandler.SetNext(createHandler).
                 SetNext(insertHandler).
                 SetNext(importHandler).
                 SetNext(exportHandler).
                 SetNext(editHandler).
+                SetNext(updateHandler).
                 SetNext(listHandler).
                 SetNext(statHandler).
                 SetNext(findHandler).

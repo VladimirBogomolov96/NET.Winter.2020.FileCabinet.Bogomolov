@@ -27,6 +27,7 @@ namespace FileCabinetApp.CommandHandlers
             new string[] { "purge", "defragments file", "The 'purge' command defragments file." },
             new string[] { "insert", "inserts new record with entered data by given id", "The 'insert' command inserts new record with entered data by given id." },
             new string[] { "delete", "deletes records from service", "The 'delete' command deletes records from service." },
+            new string[] { "update", "updates records with given values", "The 'update' command updates records with given values." },
         };
 
         /// <summary>

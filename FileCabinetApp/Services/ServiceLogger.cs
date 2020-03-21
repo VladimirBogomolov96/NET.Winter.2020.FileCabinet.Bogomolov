@@ -214,6 +214,20 @@ namespace FileCabinetApp.Services
         }
 
         /// <summary>
+        /// Updates records.
+        /// </summary>
+        /// <param name="records">Records to update.</param>
+        /// <param name="fieldsAndValuesToSet">Fields and values to set.</param>
+        /// <returns>Amount of updated records.</returns>
+        public int Update(IEnumerable<FileCabinetRecord> records, IEnumerable<IEnumerable<string>> fieldsAndValuesToSet)
+        {
+            this.writer.WriteLine($"{DateTime.Now} Calling Update().");
+            var result = this.service.Update(records, fieldsAndValuesToSet);
+            this.writer.WriteLine($"{DateTime.Now} Update() updated {result} records.");
+            return result;
+        }
+
+        /// <summary>
         /// Closes streamwriter.
         /// </summary>
         public void Dispose()

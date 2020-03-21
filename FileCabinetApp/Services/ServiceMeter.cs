@@ -191,6 +191,20 @@ namespace FileCabinetApp.Services
         }
 
         /// <summary>
+        /// Updates records.
+        /// </summary>
+        /// <param name="records">Records to update.</param>
+        /// <param name="fieldsAndValuesToSet">Fields and values to set.</param>
+        /// <returns>Amount of updated records.</returns>
+        public int Update(IEnumerable<FileCabinetRecord> records, IEnumerable<IEnumerable<string>> fieldsAndValuesToSet)
+        {
+            var stopWatch = Stopwatch.StartNew();
+            var result = this.service.Update(records, fieldsAndValuesToSet);
+            Console.WriteLine($"Update method execution duration is {stopWatch.ElapsedTicks} ticks.");
+            return result;
+        }
+
+        /// <summary>
         /// Sets record validator.
         /// </summary>
         /// <param name="recordValidator">Rules of validation.</param>

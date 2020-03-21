@@ -304,6 +304,23 @@
             </summary>
             <param name="commandRequest">Command line request.</param>
         </member>
+        <member name="T:FileCabinetApp.CommandHandlers.UpdateCommandHandler">
+            <summary>
+            Command handler to update method.
+            </summary>
+        </member>
+        <member name="M:FileCabinetApp.CommandHandlers.UpdateCommandHandler.#ctor(FileCabinetApp.IFileCabinetService)">
+            <summary>
+            Initializes a new instance of the <see cref="T:FileCabinetApp.CommandHandlers.UpdateCommandHandler"/> class.
+            </summary>
+            <param name="fileCabinetService">File cabinet service to call.</param>
+        </member>
+        <member name="M:FileCabinetApp.CommandHandlers.UpdateCommandHandler.Handle(FileCabinetApp.CommandHandlers.AppCommandRequest)">
+            <summary>
+            Handles command line request.
+            </summary>
+            <param name="commandRequest">Command line request.</param>
+        </member>
         <member name="T:FileCabinetApp.Converter">
             <summary>
             Converter to values.
@@ -789,6 +806,14 @@
             </summary>
             <returns>Amount of purged records.</returns>
         </member>
+        <member name="M:FileCabinetApp.FileCabinetFilesystemService.Update(System.Collections.Generic.IEnumerable{FileCabinetApp.FileCabinetRecord},System.Collections.Generic.IEnumerable{System.Collections.Generic.IEnumerable{System.String}})">
+            <summary>
+            Updates records.
+            </summary>
+            <param name="records">Records to update.</param>
+            <param name="fieldsAndValuesToSet">Fields and values to set.</param>
+            <returns>Amount of updated records.</returns>
+        </member>
         <member name="M:FileCabinetApp.FileCabinetFilesystemService.Dispose(System.Boolean)">
             <summary>
             If service is disposing, close streams.
@@ -908,6 +933,14 @@
             </summary>
             <returns>Amount of purged records.</returns>
         </member>
+        <member name="M:FileCabinetApp.FileCabinetMemoryService.Update(System.Collections.Generic.IEnumerable{FileCabinetApp.FileCabinetRecord},System.Collections.Generic.IEnumerable{System.Collections.Generic.IEnumerable{System.String}})">
+            <summary>
+            Updates records.
+            </summary>
+            <param name="records">Records to update.</param>
+            <param name="fieldsAndValuesToSet">Fields and values to set.</param>
+            <returns>Amount of updated records.</returns>
+        </member>
         <member name="T:FileCabinetApp.IFileCabinetService">
             <summary>
             Provides methods to interact with records.
@@ -1005,6 +1038,14 @@
             </summary>
             <param name="records">Records to delete.</param>
             <returns>IDs of deleted records.</returns>
+        </member>
+        <member name="M:FileCabinetApp.IFileCabinetService.Update(System.Collections.Generic.IEnumerable{FileCabinetApp.FileCabinetRecord},System.Collections.Generic.IEnumerable{System.Collections.Generic.IEnumerable{System.String}})">
+            <summary>
+            Updates records.
+            </summary>
+            <param name="records">Records to update.</param>
+            <param name="fieldsAndValuesToSet">Fields and values to set.</param>
+            <returns>Amount of updated records.</returns>
         </member>
         <member name="T:FileCabinetApp.Services.ServiceLogger">
             <summary>
@@ -1107,6 +1148,14 @@
             </summary>
             <param name="record">Record to insert.</param>
             <returns>Id of inserted record.</returns>
+        </member>
+        <member name="M:FileCabinetApp.Services.ServiceLogger.Update(System.Collections.Generic.IEnumerable{FileCabinetApp.FileCabinetRecord},System.Collections.Generic.IEnumerable{System.Collections.Generic.IEnumerable{System.String}})">
+            <summary>
+            Updates records.
+            </summary>
+            <param name="records">Records to update.</param>
+            <param name="fieldsAndValuesToSet">Fields and values to set.</param>
+            <returns>Amount of updated records.</returns>
         </member>
         <member name="M:FileCabinetApp.Services.ServiceLogger.Dispose">
             <summary>
@@ -1220,6 +1269,14 @@
             </summary>
             <param name="snapshot">Snapshot that represent statement to restore.</param>
             <returns>Amount of new records added.</returns>
+        </member>
+        <member name="M:FileCabinetApp.Services.ServiceMeter.Update(System.Collections.Generic.IEnumerable{FileCabinetApp.FileCabinetRecord},System.Collections.Generic.IEnumerable{System.Collections.Generic.IEnumerable{System.String}})">
+            <summary>
+            Updates records.
+            </summary>
+            <param name="records">Records to update.</param>
+            <param name="fieldsAndValuesToSet">Fields and values to set.</param>
+            <returns>Amount of updated records.</returns>
         </member>
         <member name="M:FileCabinetApp.Services.ServiceMeter.SetRecordValidator(FileCabinetApp.IRecordValidator)">
             <summary>

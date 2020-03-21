@@ -101,5 +101,13 @@ namespace FileCabinetApp
         /// <param name="records">Records to delete.</param>
         /// <returns>IDs of deleted records.</returns>
         IEnumerable<int> Delete(IEnumerable<FileCabinetRecord> records);
+
+        /// <summary>
+        /// Updates records.
+        /// </summary>
+        /// <param name="records">Records to update.</param>
+        /// <param name="fieldsAndValuesToSet">Fields and values to set.</param>
+        /// <returns>Amount of updated records.</returns>
+        int Update(IEnumerable<FileCabinetRecord> records, IEnumerable<IEnumerable<string>> fieldsAndValuesToSet);
     }
 }
