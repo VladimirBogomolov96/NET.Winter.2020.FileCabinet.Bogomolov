@@ -63,18 +63,18 @@
             </summary>
             <param name="commandRequest">Command line request.</param>
         </member>
-        <member name="T:FileCabinetApp.CommandHandlers.EditCommandHandler">
+        <member name="T:FileCabinetApp.CommandHandlers.DeleteCommandHandler">
             <summary>
-            Command handler to edit method.
+            Command handler to delete method.
             </summary>
         </member>
-        <member name="M:FileCabinetApp.CommandHandlers.EditCommandHandler.#ctor(FileCabinetApp.IFileCabinetService)">
+        <member name="M:FileCabinetApp.CommandHandlers.DeleteCommandHandler.#ctor(FileCabinetApp.IFileCabinetService)">
             <summary>
-            Initializes a new instance of the <see cref="T:FileCabinetApp.CommandHandlers.EditCommandHandler"/> class.
+            Initializes a new instance of the <see cref="T:FileCabinetApp.CommandHandlers.DeleteCommandHandler"/> class.
             </summary>
             <param name="fileCabinetService">File cabinet service to call.</param>
         </member>
-        <member name="M:FileCabinetApp.CommandHandlers.EditCommandHandler.Handle(FileCabinetApp.CommandHandlers.AppCommandRequest)">
+        <member name="M:FileCabinetApp.CommandHandlers.DeleteCommandHandler.Handle(FileCabinetApp.CommandHandlers.AppCommandRequest)">
             <summary>
             Handles command line request.
             </summary>
@@ -178,6 +178,23 @@
             </summary>
             <param name="commandRequest">Command line request.</param>
         </member>
+        <member name="T:FileCabinetApp.CommandHandlers.InsertCommandHandler">
+            <summary>
+            Command handler to insert method.
+            </summary>
+        </member>
+        <member name="M:FileCabinetApp.CommandHandlers.InsertCommandHandler.#ctor(FileCabinetApp.IFileCabinetService)">
+            <summary>
+            Initializes a new instance of the <see cref="T:FileCabinetApp.CommandHandlers.InsertCommandHandler"/> class.
+            </summary>
+            <param name="fileCabinetService">File cabinet service to call.</param>
+        </member>
+        <member name="M:FileCabinetApp.CommandHandlers.InsertCommandHandler.Handle(FileCabinetApp.CommandHandlers.AppCommandRequest)">
+            <summary>
+            Handles command line request.
+            </summary>
+            <param name="commandRequest">Command line request.</param>
+        </member>
         <member name="T:FileCabinetApp.CommandHandlers.ListCommandHandler">
             <summary>
             Command handler to list method.
@@ -208,23 +225,6 @@
             <param name="fileCabinetService">File cabinet service to call.</param>
         </member>
         <member name="M:FileCabinetApp.CommandHandlers.PurgeCommandHandler.Handle(FileCabinetApp.CommandHandlers.AppCommandRequest)">
-            <summary>
-            Handles command line request.
-            </summary>
-            <param name="commandRequest">Command line request.</param>
-        </member>
-        <member name="T:FileCabinetApp.CommandHandlers.RemoveCommandHandler">
-            <summary>
-            Command handler to remove method.
-            </summary>
-        </member>
-        <member name="M:FileCabinetApp.CommandHandlers.RemoveCommandHandler.#ctor(FileCabinetApp.IFileCabinetService)">
-            <summary>
-            Initializes a new instance of the <see cref="T:FileCabinetApp.CommandHandlers.RemoveCommandHandler"/> class.
-            </summary>
-            <param name="fileCabinetService">File cabinet service to call.</param>
-        </member>
-        <member name="M:FileCabinetApp.CommandHandlers.RemoveCommandHandler.Handle(FileCabinetApp.CommandHandlers.AppCommandRequest)">
             <summary>
             Handles command line request.
             </summary>
@@ -270,6 +270,23 @@
             </summary>
             <param name="commandRequest">Command line request.</param>
         </member>
+        <member name="T:FileCabinetApp.CommandHandlers.UpdateCommandHandler">
+            <summary>
+            Command handler to update method.
+            </summary>
+        </member>
+        <member name="M:FileCabinetApp.CommandHandlers.UpdateCommandHandler.#ctor(FileCabinetApp.IFileCabinetService)">
+            <summary>
+            Initializes a new instance of the <see cref="T:FileCabinetApp.CommandHandlers.UpdateCommandHandler"/> class.
+            </summary>
+            <param name="fileCabinetService">File cabinet service to call.</param>
+        </member>
+        <member name="M:FileCabinetApp.CommandHandlers.UpdateCommandHandler.Handle(FileCabinetApp.CommandHandlers.AppCommandRequest)">
+            <summary>
+            Handles command line request.
+            </summary>
+            <param name="commandRequest">Command line request.</param>
+        </member>
         <member name="T:FileCabinetApp.Converter">
             <summary>
             Converter to values.
@@ -299,6 +316,13 @@
         <member name="M:FileCabinetApp.Converter.ConvertStringToChar(System.String)">
             <summary>
             Converts string to char.
+            </summary>
+            <param name="input">String to convert.</param>
+            <returns>Whether convertion was succesfull, reason of fail and result.</returns>
+        </member>
+        <member name="M:FileCabinetApp.Converter.ConvertStringToInt(System.String)">
+            <summary>
+            Converts string to int.
             </summary>
             <param name="input">String to convert.</param>
             <returns>Whether convertion was succesfull, reason of fail and result.</returns>
@@ -656,6 +680,13 @@
             <returns>ID of created record.</returns>
             <exception cref="T:System.ArgumentNullException">Thrown when transfer parameters is null.</exception>
         </member>
+        <member name="M:FileCabinetApp.FileCabinetFilesystemService.Insert(FileCabinetApp.FileCabinetRecord)">
+            <summary>
+            Inserts new record.
+            </summary>
+            <param name="record">Record to insert.</param>
+            <returns>Id of inserted record.</returns>
+        </member>
         <member name="M:FileCabinetApp.FileCabinetFilesystemService.EditRecord(System.Int32,FileCabinetApp.RecordParametersTransfer)">
             <summary>
             Edits existing record.
@@ -721,6 +752,13 @@
             </summary>
             <param name="recordValidator">Rules of validation.</param>
         </member>
+        <member name="M:FileCabinetApp.FileCabinetFilesystemService.Delete(System.Collections.Generic.IEnumerable{FileCabinetApp.FileCabinetRecord})">
+            <summary>
+            Deletes records.
+            </summary>
+            <param name="records">Records to delete.</param>
+            <returns>IDs of deleted records.</returns>
+        </member>
         <member name="M:FileCabinetApp.FileCabinetFilesystemService.Remove(System.Int32)">
             <summary>
             Removes record by given id.
@@ -733,6 +771,14 @@
             Defragments file.
             </summary>
             <returns>Amount of purged records.</returns>
+        </member>
+        <member name="M:FileCabinetApp.FileCabinetFilesystemService.Update(System.Collections.Generic.IEnumerable{FileCabinetApp.FileCabinetRecord},System.Collections.Generic.IEnumerable{System.Collections.Generic.IEnumerable{System.String}})">
+            <summary>
+            Updates records.
+            </summary>
+            <param name="records">Records to update.</param>
+            <param name="fieldsAndValuesToSet">Fields and values to set.</param>
+            <returns>Amount of updated records.</returns>
         </member>
         <member name="M:FileCabinetApp.FileCabinetFilesystemService.Dispose(System.Boolean)">
             <summary>
@@ -813,12 +859,26 @@
             </summary>
             <returns>Snapshot of records.</returns>
         </member>
+        <member name="M:FileCabinetApp.FileCabinetMemoryService.Delete(System.Collections.Generic.IEnumerable{FileCabinetApp.FileCabinetRecord})">
+            <summary>
+            Deletes records.
+            </summary>
+            <param name="records">Records to delete.</param>
+            <returns>IDs of deleted records.</returns>
+        </member>
         <member name="M:FileCabinetApp.FileCabinetMemoryService.Remove(System.Int32)">
             <summary>
             Removes record by given id.
             </summary>
             <param name="id">ID of record to remove.</param>
             <returns>Whether record existed or not.</returns>
+        </member>
+        <member name="M:FileCabinetApp.FileCabinetMemoryService.Insert(FileCabinetApp.FileCabinetRecord)">
+            <summary>
+            Inserts new record.
+            </summary>
+            <param name="record">Record to insert.</param>
+            <returns>Id of inserted record.</returns>
         </member>
         <member name="M:FileCabinetApp.FileCabinetMemoryService.Restore(FileCabinetApp.FileCabinetServiceSnapshot)">
             <summary>
@@ -838,6 +898,14 @@
             Defragments file.
             </summary>
             <returns>Amount of purged records.</returns>
+        </member>
+        <member name="M:FileCabinetApp.FileCabinetMemoryService.Update(System.Collections.Generic.IEnumerable{FileCabinetApp.FileCabinetRecord},System.Collections.Generic.IEnumerable{System.Collections.Generic.IEnumerable{System.String}})">
+            <summary>
+            Updates records.
+            </summary>
+            <param name="records">Records to update.</param>
+            <param name="fieldsAndValuesToSet">Fields and values to set.</param>
+            <returns>Amount of updated records.</returns>
         </member>
         <member name="T:FileCabinetApp.IFileCabinetService">
             <summary>
@@ -923,6 +991,28 @@
             </summary>
             <returns>Amount of purged records.</returns>
         </member>
+        <member name="M:FileCabinetApp.IFileCabinetService.Insert(FileCabinetApp.FileCabinetRecord)">
+            <summary>
+            Inserts new record.
+            </summary>
+            <param name="record">Record to insert.</param>
+            <returns>Id of inserted record.</returns>
+        </member>
+        <member name="M:FileCabinetApp.IFileCabinetService.Delete(System.Collections.Generic.IEnumerable{FileCabinetApp.FileCabinetRecord})">
+            <summary>
+            Deletes records.
+            </summary>
+            <param name="records">Records to delete.</param>
+            <returns>IDs of deleted records.</returns>
+        </member>
+        <member name="M:FileCabinetApp.IFileCabinetService.Update(System.Collections.Generic.IEnumerable{FileCabinetApp.FileCabinetRecord},System.Collections.Generic.IEnumerable{System.Collections.Generic.IEnumerable{System.String}})">
+            <summary>
+            Updates records.
+            </summary>
+            <param name="records">Records to update.</param>
+            <param name="fieldsAndValuesToSet">Fields and values to set.</param>
+            <returns>Amount of updated records.</returns>
+        </member>
         <member name="T:FileCabinetApp.Services.ServiceLogger">
             <summary>
             Provides methods to interact with records and writes info to log file.
@@ -997,6 +1087,13 @@
             </summary>
             <returns>Amount of purged records.</returns>
         </member>
+        <member name="M:FileCabinetApp.Services.ServiceLogger.Delete(System.Collections.Generic.IEnumerable{FileCabinetApp.FileCabinetRecord})">
+            <summary>
+            Deletes records and writes info to log file.
+            </summary>
+            <param name="records">Records to delete.</param>
+            <returns>IDs of deleted records.</returns>
+        </member>
         <member name="M:FileCabinetApp.Services.ServiceLogger.Remove(System.Int32)">
             <summary>
             Removes record by given id and writes info to log file.
@@ -1010,6 +1107,21 @@
             </summary>
             <param name="snapshot">Snapshot that represent statement to restore.</param>
             <returns>Amount of new records added.</returns>
+        </member>
+        <member name="M:FileCabinetApp.Services.ServiceLogger.Insert(FileCabinetApp.FileCabinetRecord)">
+            <summary>
+            Inserts new record and writes info to log file.
+            </summary>
+            <param name="record">Record to insert.</param>
+            <returns>Id of inserted record.</returns>
+        </member>
+        <member name="M:FileCabinetApp.Services.ServiceLogger.Update(System.Collections.Generic.IEnumerable{FileCabinetApp.FileCabinetRecord},System.Collections.Generic.IEnumerable{System.Collections.Generic.IEnumerable{System.String}})">
+            <summary>
+            Updates records.
+            </summary>
+            <param name="records">Records to update.</param>
+            <param name="fieldsAndValuesToSet">Fields and values to set.</param>
+            <returns>Amount of updated records.</returns>
         </member>
         <member name="M:FileCabinetApp.Services.ServiceLogger.Dispose">
             <summary>
@@ -1084,6 +1196,13 @@
             </summary>
             <returns>Amount of existing records.</returns>
         </member>
+        <member name="M:FileCabinetApp.Services.ServiceMeter.Insert(FileCabinetApp.FileCabinetRecord)">
+            <summary>
+            Inserts new record and measure execution time.
+            </summary>
+            <param name="record">Record to insert.</param>
+            <returns>Id of inserted record.</returns>
+        </member>
         <member name="M:FileCabinetApp.Services.ServiceMeter.MakeSnapshot">
             <summary>
             Creates a snapshot of all records in current moment and measure execution time.
@@ -1095,6 +1214,13 @@
             Defragments file and measure execution time.
             </summary>
             <returns>Amount of purged records.</returns>
+        </member>
+        <member name="M:FileCabinetApp.Services.ServiceMeter.Delete(System.Collections.Generic.IEnumerable{FileCabinetApp.FileCabinetRecord})">
+            <summary>
+            Deletes records and measure execution time.
+            </summary>
+            <param name="records">Records to delete.</param>
+            <returns>IDs of deleted records.</returns>
         </member>
         <member name="M:FileCabinetApp.Services.ServiceMeter.Remove(System.Int32)">
             <summary>
@@ -1109,6 +1235,14 @@
             </summary>
             <param name="snapshot">Snapshot that represent statement to restore.</param>
             <returns>Amount of new records added.</returns>
+        </member>
+        <member name="M:FileCabinetApp.Services.ServiceMeter.Update(System.Collections.Generic.IEnumerable{FileCabinetApp.FileCabinetRecord},System.Collections.Generic.IEnumerable{System.Collections.Generic.IEnumerable{System.String}})">
+            <summary>
+            Updates records.
+            </summary>
+            <param name="records">Records to update.</param>
+            <param name="fieldsAndValuesToSet">Fields and values to set.</param>
+            <returns>Amount of updated records.</returns>
         </member>
         <member name="M:FileCabinetApp.Services.ServiceMeter.SetRecordValidator(FileCabinetApp.IRecordValidator)">
             <summary>

@@ -115,6 +115,19 @@ namespace FileCabinetApp.Services
         }
 
         /// <summary>
+        /// Inserts new record and measure execution time.
+        /// </summary>
+        /// <param name="record">Record to insert.</param>
+        /// <returns>Id of inserted record.</returns>
+        public int Insert(FileCabinetRecord record)
+        {
+            var stopWatch = Stopwatch.StartNew();
+            var result = this.service.Insert(record);
+            Console.WriteLine($"Insert method execution duration is {stopWatch.ElapsedTicks} ticks.");
+            return result;
+        }
+
+        /// <summary>
         /// Creates a snapshot of all records in current moment and measure execution time.
         /// </summary>
         /// <returns>Snapshot of records.</returns>
@@ -135,6 +148,19 @@ namespace FileCabinetApp.Services
             var stopWatch = Stopwatch.StartNew();
             var result = this.service.Purge();
             Console.WriteLine($"Purge method execution duration is {stopWatch.ElapsedTicks} ticks.");
+            return result;
+        }
+
+        /// <summary>
+        /// Deletes records and measure execution time.
+        /// </summary>
+        /// <param name="records">Records to delete.</param>
+        /// <returns>IDs of deleted records.</returns>
+        public IEnumerable<int> Delete(IEnumerable<FileCabinetRecord> records)
+        {
+            var stopWatch = Stopwatch.StartNew();
+            var result = this.service.Delete(records);
+            Console.WriteLine($"Delete method execution duration is {stopWatch.ElapsedTicks} ticks.");
             return result;
         }
 
@@ -161,6 +187,20 @@ namespace FileCabinetApp.Services
             var stopWatch = Stopwatch.StartNew();
             var result = this.service.Restore(snapshot);
             Console.WriteLine($"Restore method execution duration is {stopWatch.ElapsedTicks} ticks.");
+            return result;
+        }
+
+        /// <summary>
+        /// Updates records.
+        /// </summary>
+        /// <param name="records">Records to update.</param>
+        /// <param name="fieldsAndValuesToSet">Fields and values to set.</param>
+        /// <returns>Amount of updated records.</returns>
+        public int Update(IEnumerable<FileCabinetRecord> records, IEnumerable<IEnumerable<string>> fieldsAndValuesToSet)
+        {
+            var stopWatch = Stopwatch.StartNew();
+            var result = this.service.Update(records, fieldsAndValuesToSet);
+            Console.WriteLine($"Update method execution duration is {stopWatch.ElapsedTicks} ticks.");
             return result;
         }
 

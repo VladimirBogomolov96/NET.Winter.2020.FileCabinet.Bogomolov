@@ -181,7 +181,7 @@ namespace FileCabinetApp
         private static ICommandHandler CreateCommandHandlers()
         {
             ICommandHandler createHandler = new CreateCommandHandler(fileCabinetService);
-            ICommandHandler editHandler = new EditCommandHandler(fileCabinetService);
+            ICommandHandler insertHandler = new InsertCommandHandler(fileCabinetService);
             ICommandHandler exitHandler = new ExitCommandHandler(IsRunning);
             ICommandHandler exportHandler = new ExportCommandHandler(fileCabinetService);
             ICommandHandler findHandler = new FindCommandHandler(fileCabinetService, Print);
@@ -189,16 +189,18 @@ namespace FileCabinetApp
             ICommandHandler importHandler = new ImportCommandHandler(fileCabinetService);
             ICommandHandler listHandler = new ListCommandHandler(fileCabinetService, Print);
             ICommandHandler purgeHandler = new PurgeCommandHandler(fileCabinetService);
-            ICommandHandler removeHandler = new RemoveCommandHandler(fileCabinetService);
             ICommandHandler statHandler = new StatCommandHandler(fileCabinetService);
+            ICommandHandler deleteHandler = new DeleteCommandHandler(fileCabinetService);
+            ICommandHandler updateHandler = new UpdateCommandHandler(fileCabinetService);
             helpHandler.SetNext(createHandler).
+                SetNext(insertHandler).
                 SetNext(importHandler).
                 SetNext(exportHandler).
-                SetNext(editHandler).
+                SetNext(updateHandler).
                 SetNext(listHandler).
                 SetNext(statHandler).
                 SetNext(findHandler).
-                SetNext(removeHandler).
+                SetNext(deleteHandler).
                 SetNext(purgeHandler).
                 SetNext(exitHandler);
             return helpHandler;

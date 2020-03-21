@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Globalization;
+using System.Linq;
 using System.Text;
 
 namespace FileCabinetApp
@@ -14,6 +15,7 @@ namespace FileCabinetApp
         private readonly Dictionary<string, List<FileCabinetRecord>> firstNameDictionary = new Dictionary<string, List<FileCabinetRecord>>();
         private readonly Dictionary<string, List<FileCabinetRecord>> lastNameDictionary = new Dictionary<string, List<FileCabinetRecord>>();
         private readonly Dictionary<DateTime, List<FileCabinetRecord>> dateOfBirthDictionary = new Dictionary<DateTime, List<FileCabinetRecord>>();
+        private readonly List<int> ids = new List<int>();
         private IRecordValidator recordValidator;
         private List<FileCabinetRecord> list = new List<FileCabinetRecord>();
 
@@ -68,10 +70,11 @@ namespace FileCabinetApp
             }
             else
             {
-                record.Id = this.list[this.list.Count - 1].Id + 1;
+                record.Id = this.ids.Max() + 1;
             }
 
             this.list.Add(record);
+            this.ids.Add(record.Id);
             this.FillDictionaries(transfer, record);
             return record.Id;
         }
@@ -200,6 +203,25 @@ namespace FileCabinetApp
         }
 
         /// <summary>
+        /// Deletes records.
+        /// </summary>
+        /// <param name="records">Records to delete.</param>
+        /// <returns>IDs of deleted records.</returns>
+        public IEnumerable<int> Delete(IEnumerable<FileCabinetRecord> records)
+        {
+            if (records is null)
+            {
+                throw new ArgumentNullException(nameof(records), "Records must be not null.");
+            }
+
+            foreach (FileCabinetRecord record in records)
+            {
+                this.Remove(record.Id);
+                yield return record.Id;
+            }
+        }
+
+        /// <summary>
         /// Removes record by given id.
         /// </summary>
         /// <param name="id">ID of record to remove.</param>
@@ -212,11 +234,40 @@ namespace FileCabinetApp
                 {
                     this.list.Remove(record);
                     this.RemoveFromDictionaries(record);
+                    this.ids.Remove(id);
                     return true;
                 }
             }
 
             return false;
+        }
+
+        /// <summary>
+        /// Inserts new record.
+        /// </summary>
+        /// <param name="record">Record to insert.</param>
+        /// <returns>Id of inserted record.</returns>
+        public int Insert(FileCabinetRecord record)
+        {
+            if (record is null)
+            {
+                throw new ArgumentNullException(nameof(record), "Record must be not null.");
+            }
+
+            if (!this.recordValidator.ValidateParameters(record).Item1)
+            {
+                throw new ArgumentException(this.recordValidator.ValidateParameters(record).Item2, nameof(record));
+            }
+
+            if (this.ids.Contains(record.Id))
+            {
+                throw new ArgumentException("Record with given id already exists.", nameof(record));
+            }
+
+            this.list.Add(record);
+            this.ids.Add(record.Id);
+            this.FillDictionaries(record);
+            return record.Id;
         }
 
         /// <summary>
@@ -356,6 +407,191 @@ namespace FileCabinetApp
             throw new InvalidOperationException("Purge command can't be used in memory sevice.");
         }
 
+        /// <summary>
+        /// Updates records.
+        /// </summary>
+        /// <param name="records">Records to update.</param>
+        /// <param name="fieldsAndValuesToSet">Fields and values to set.</param>
+        /// <returns>Amount of updated records.</returns>
+        public int Update(IEnumerable<FileCabinetRecord> records, IEnumerable<IEnumerable<string>> fieldsAndValuesToSet)
+        {
+            if (records is null)
+            {
+                throw new ArgumentNullException(nameof(records), "Records must be not null.");
+            }
+
+            if (fieldsAndValuesToSet is null)
+            {
+                throw new ArgumentNullException(nameof(fieldsAndValuesToSet), "Fields and values to set must be not null.");
+            }
+
+            int result = 0;
+            foreach (var record in records)
+            {
+                for (int i = 0; i < this.list.Count; i++)
+                {
+                    if (record.Id == this.list[i].Id)
+                    {
+                        FileCabinetRecord temp = new FileCabinetRecord()
+                        {
+                            Id = record.Id,
+                            FirstName = record.FirstName,
+                            LastName = record.LastName,
+                            DateOfBirth = record.DateOfBirth,
+                            Height = record.Height,
+                            Income = record.Income,
+                            PatronymicLetter = record.PatronymicLetter,
+                        };
+                        this.RemoveFromDictionaries(record);
+
+                        try
+                        {
+                            this.UpdateRecord(record, fieldsAndValuesToSet);
+                            this.FillDictionaries(record);
+                            result++;
+                        }
+                        catch (ArgumentException ex)
+                        {
+                            record.Id = temp.Id;
+                            record.FirstName = temp.FirstName;
+                            record.LastName = temp.LastName;
+                            record.DateOfBirth = temp.DateOfBirth;
+                            record.Income = temp.Income;
+                            record.Height = temp.Height;
+                            record.PatronymicLetter = temp.PatronymicLetter;
+                            this.FillDictionaries(record);
+                            throw new ArgumentException(ex.Message);
+                        }
+                    }
+                }
+            }
+
+            return result;
+        }
+
+        private void UpdateRecord(FileCabinetRecord record, IEnumerable<IEnumerable<string>> fieldsAndValuesToSet)
+        {
+            foreach (var keyValuePair in fieldsAndValuesToSet)
+            {
+                var key = keyValuePair.First();
+                var value = keyValuePair.Last();
+                if (key.Equals("id", StringComparison.InvariantCultureIgnoreCase))
+                {
+                    throw new ArgumentException("Can't update ID property.", nameof(fieldsAndValuesToSet));
+                }
+
+                if (key.Equals("firstname", StringComparison.InvariantCultureIgnoreCase))
+                {
+                    var legacy = record.FirstName;
+                    record.FirstName = value;
+                    var validationResult = this.recordValidator.ValidateParameters(record);
+                    if (!validationResult.Item1)
+                    {
+                        record.FirstName = legacy;
+                        throw new ArgumentException(validationResult.Item2, nameof(fieldsAndValuesToSet));
+                    }
+
+                    continue;
+                }
+
+                if (key.Equals("lastname", StringComparison.InvariantCultureIgnoreCase))
+                {
+                    var legacy = record.LastName;
+                    record.LastName = value;
+                    var validationResult = this.recordValidator.ValidateParameters(record);
+                    if (!validationResult.Item1)
+                    {
+                        record.LastName = legacy;
+                        throw new ArgumentException(validationResult.Item2, nameof(fieldsAndValuesToSet));
+                    }
+
+                    continue;
+                }
+
+                if (key.Equals("dateofbirth", StringComparison.InvariantCultureIgnoreCase))
+                {
+                    var conversionResult = Converter.ConvertStringToDateTime(value);
+                    if (!conversionResult.Item1)
+                    {
+                        throw new ArgumentException(conversionResult.Item2, nameof(fieldsAndValuesToSet));
+                    }
+
+                    var legacy = record.DateOfBirth;
+                    record.DateOfBirth = conversionResult.Item3;
+                    var validationResult = this.recordValidator.ValidateParameters(record);
+                    if (!validationResult.Item1)
+                    {
+                        record.DateOfBirth = legacy;
+                        throw new ArgumentException(validationResult.Item2, nameof(fieldsAndValuesToSet));
+                    }
+
+                    continue;
+                }
+
+                if (key.Equals("patronymicletter", StringComparison.InvariantCultureIgnoreCase))
+                {
+                    var conversionResult = Converter.ConvertStringToChar(value);
+                    if (!conversionResult.Item1)
+                    {
+                        throw new ArgumentException(conversionResult.Item2, nameof(fieldsAndValuesToSet));
+                    }
+
+                    var legacy = record.PatronymicLetter;
+                    record.PatronymicLetter = conversionResult.Item3;
+                    var validationResult = this.recordValidator.ValidateParameters(record);
+                    if (!validationResult.Item1)
+                    {
+                        record.PatronymicLetter = legacy;
+                        throw new ArgumentException(validationResult.Item2, nameof(fieldsAndValuesToSet));
+                    }
+
+                    continue;
+                }
+
+                if (key.Equals("income", StringComparison.InvariantCultureIgnoreCase))
+                {
+                    var conversionResult = Converter.ConvertStringToDecimal(value);
+                    if (!conversionResult.Item1)
+                    {
+                        throw new ArgumentException(conversionResult.Item2, nameof(fieldsAndValuesToSet));
+                    }
+
+                    var legacy = record.Income;
+                    record.Income = conversionResult.Item3;
+                    var validationResult = this.recordValidator.ValidateParameters(record);
+                    if (!validationResult.Item1)
+                    {
+                        record.Income = legacy;
+                        throw new ArgumentException(validationResult.Item2, nameof(fieldsAndValuesToSet));
+                    }
+
+                    continue;
+                }
+
+                if (key.Equals("height", StringComparison.InvariantCultureIgnoreCase))
+                {
+                    var conversionResult = Converter.ConvertStringToShort(value);
+                    if (!conversionResult.Item1)
+                    {
+                        throw new ArgumentException(conversionResult.Item2, nameof(fieldsAndValuesToSet));
+                    }
+
+                    var legacy = record.Height;
+                    record.Height = conversionResult.Item3;
+                    var validationResult = this.recordValidator.ValidateParameters(record);
+                    if (!validationResult.Item1)
+                    {
+                        record.Height = legacy;
+                        throw new ArgumentException(validationResult.Item2, nameof(fieldsAndValuesToSet));
+                    }
+
+                    continue;
+                }
+
+                throw new ArgumentException("Key not exist.", nameof(fieldsAndValuesToSet));
+            }
+        }
+
         private void FillDictionaries(RecordParametersTransfer transfer, FileCabinetRecord record)
         {
             if (this.firstNameDictionary.ContainsKey(transfer.FirstName))
@@ -386,6 +622,39 @@ namespace FileCabinetApp
             {
                 this.dateOfBirthDictionary.Add(transfer.DateOfBirth, new List<FileCabinetRecord>());
                 this.dateOfBirthDictionary[transfer.DateOfBirth].Add(record);
+            }
+        }
+
+        private void FillDictionaries(FileCabinetRecord record)
+        {
+            if (this.firstNameDictionary.ContainsKey(record.FirstName))
+            {
+                this.firstNameDictionary[record.FirstName].Add(record);
+            }
+            else
+            {
+                this.firstNameDictionary.Add(record.FirstName, new List<FileCabinetRecord>());
+                this.firstNameDictionary[record.FirstName].Add(record);
+            }
+
+            if (this.lastNameDictionary.ContainsKey(record.LastName))
+            {
+                this.lastNameDictionary[record.LastName].Add(record);
+            }
+            else
+            {
+                this.lastNameDictionary.Add(record.LastName, new List<FileCabinetRecord>());
+                this.lastNameDictionary[record.LastName].Add(record);
+            }
+
+            if (this.dateOfBirthDictionary.ContainsKey(record.DateOfBirth))
+            {
+                this.dateOfBirthDictionary[record.DateOfBirth].Add(record);
+            }
+            else
+            {
+                this.dateOfBirthDictionary.Add(record.DateOfBirth, new List<FileCabinetRecord>());
+                this.dateOfBirthDictionary[record.DateOfBirth].Add(record);
             }
         }
 

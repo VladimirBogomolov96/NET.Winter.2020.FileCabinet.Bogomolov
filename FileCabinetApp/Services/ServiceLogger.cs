@@ -151,7 +151,26 @@ namespace FileCabinetApp.Services
         {
             this.writer.WriteLine($"{DateTime.Now} Calling Purge().");
             var result = this.service.Purge();
-            this.writer.WriteLine($"{DateTime.Now} Purge() defragmrnt {result} records.");
+            this.writer.WriteLine($"{DateTime.Now} Purge() defragment {result} records.");
+            return result;
+        }
+
+        /// <summary>
+        /// Deletes records and writes info to log file.
+        /// </summary>
+        /// <param name="records">Records to delete.</param>
+        /// <returns>IDs of deleted records.</returns>
+        public IEnumerable<int> Delete(IEnumerable<FileCabinetRecord> records)
+        {
+            this.writer.WriteLine($"{DateTime.Now} Calling Delete() for {records.Count()}.");
+            var result = this.service.Delete(records);
+            StringBuilder stringBuilder = new StringBuilder();
+            foreach (int id in result)
+            {
+                stringBuilder.Append(id).Append(' ');
+            }
+
+            this.writer.WriteLine($"{DateTime.Now} Delete() deleted records by ids {stringBuilder}");
             return result;
         }
 
@@ -178,6 +197,33 @@ namespace FileCabinetApp.Services
             this.writer.WriteLine($"{DateTime.Now} Calling Restore().");
             var result = this.service.Restore(snapshot);
             this.writer.WriteLine($"{DateTime.Now} Restore() imported {result} records.");
+            return result;
+        }
+
+        /// <summary>
+        /// Inserts new record and writes info to log file.
+        /// </summary>
+        /// <param name="record">Record to insert.</param>
+        /// <returns>Id of inserted record.</returns>
+        public int Insert(FileCabinetRecord record)
+        {
+            this.writer.WriteLine($"{DateTime.Now} Calling Insert().");
+            var result = this.service.Insert(record);
+            this.writer.WriteLine($"{DateTime.Now} Insert() inserted record #{result}.");
+            return result;
+        }
+
+        /// <summary>
+        /// Updates records.
+        /// </summary>
+        /// <param name="records">Records to update.</param>
+        /// <param name="fieldsAndValuesToSet">Fields and values to set.</param>
+        /// <returns>Amount of updated records.</returns>
+        public int Update(IEnumerable<FileCabinetRecord> records, IEnumerable<IEnumerable<string>> fieldsAndValuesToSet)
+        {
+            this.writer.WriteLine($"{DateTime.Now} Calling Update().");
+            var result = this.service.Update(records, fieldsAndValuesToSet);
+            this.writer.WriteLine($"{DateTime.Now} Update() updated {result} records.");
             return result;
         }
 
