@@ -42,6 +42,7 @@ namespace FileCabinetApp.CommandHandlers
                 try
                 {
                     Console.WriteLine("{0} records were updated.", this.Update(commandRequest.Parameters));
+                    this.Service.ClearCache();
                 }
                 catch (ArgumentException ex)
                 {

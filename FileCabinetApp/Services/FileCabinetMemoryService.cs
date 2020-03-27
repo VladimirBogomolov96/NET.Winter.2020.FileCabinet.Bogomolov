@@ -16,6 +16,7 @@ namespace FileCabinetApp
         private readonly Dictionary<string, List<FileCabinetRecord>> lastNameDictionary = new Dictionary<string, List<FileCabinetRecord>>();
         private readonly Dictionary<DateTime, List<FileCabinetRecord>> dateOfBirthDictionary = new Dictionary<DateTime, List<FileCabinetRecord>>();
         private readonly List<int> ids = new List<int>();
+        private readonly Dictionary<string, string> cache = new Dictionary<string, string>();
         private IRecordValidator recordValidator;
         private List<FileCabinetRecord> list = new List<FileCabinetRecord>();
 
@@ -419,6 +420,33 @@ namespace FileCabinetApp
             }
 
             return result;
+        }
+
+        /// <summary>
+        /// Gets cache.
+        /// </summary>
+        /// <returns>Cache.</returns>
+        public Dictionary<string, string> GetCache()
+        {
+            return this.cache;
+        }
+
+        /// <summary>
+        /// Saves condition and result of execution in cache.
+        /// </summary>
+        /// <param name="parameters">Parameters of execution.</param>
+        /// <param name="result">Result of execution.</param>
+        public void SaveInCache(string parameters, string result)
+        {
+            this.cache.Add(parameters, result);
+        }
+
+        /// <summary>
+        /// Clears cache.
+        /// </summary>
+        public void ClearCache()
+        {
+            this.cache.Clear();
         }
 
         private void UpdateRecord(FileCabinetRecord record, IEnumerable<IEnumerable<string>> fieldsAndValuesToSet)

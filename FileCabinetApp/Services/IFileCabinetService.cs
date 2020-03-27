@@ -88,5 +88,23 @@ namespace FileCabinetApp
         /// <param name="fieldsAndValuesToSet">Fields and values to set.</param>
         /// <returns>Amount of updated records.</returns>
         int Update(IEnumerable<FileCabinetRecord> records, IEnumerable<IEnumerable<string>> fieldsAndValuesToSet);
+
+        /// <summary>
+        /// Gets cache.
+        /// </summary>
+        /// <returns>Cache.</returns>
+        Dictionary<string, string> GetCache();
+
+        /// <summary>
+        /// Saves condition and result of execution in cache.
+        /// </summary>
+        /// <param name="parameters">Parameters of execution.</param>
+        /// <param name="result">Result of execution.</param>
+        void SaveInCache(string parameters, string result);
+
+        /// <summary>
+        /// Clears cache.
+        /// </summary>
+        void ClearCache();
     }
 }

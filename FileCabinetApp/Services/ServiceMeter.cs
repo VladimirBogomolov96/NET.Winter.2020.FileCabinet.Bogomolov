@@ -152,7 +152,7 @@ namespace FileCabinetApp.Services
         }
 
         /// <summary>
-        /// Updates records.
+        /// Updates records and measure execution time.
         /// </summary>
         /// <param name="records">Records to update.</param>
         /// <param name="fieldsAndValuesToSet">Fields and values to set.</param>
@@ -172,6 +172,40 @@ namespace FileCabinetApp.Services
         public void SetRecordValidator(IRecordValidator recordValidator)
         {
             this.service.SetRecordValidator(recordValidator);
+        }
+
+        /// <summary>
+        /// Gets cache and measure execution time.
+        /// </summary>
+        /// <returns>Cache.</returns>
+        public Dictionary<string, string> GetCache()
+        {
+            var stopWatch = Stopwatch.StartNew();
+            var result = this.service.GetCache();
+            Console.WriteLine($"GetCache method execution duration is {stopWatch.ElapsedTicks} ticks.");
+            return result;
+        }
+
+        /// <summary>
+        /// Saves condition and result of execution in cache and measure execution time.
+        /// </summary>
+        /// <param name="parameters">Parameters of execution.</param>
+        /// <param name="result">Result of execution.</param>
+        public void SaveInCache(string parameters, string result)
+        {
+            var stopWatch = Stopwatch.StartNew();
+            this.service.SaveInCache(parameters, result);
+            Console.WriteLine($"SaveInCache method execution duration is {stopWatch.ElapsedTicks} ticks.");
+        }
+
+        /// <summary>
+        /// Clears cache and measure execution time.
+        /// </summary>
+        public void ClearCache()
+        {
+            var stopWatch = Stopwatch.StartNew();
+            this.service.ClearCache();
+            Console.WriteLine($"ClearCache method execution duration is {stopWatch.ElapsedTicks} ticks.");
         }
     }
 }

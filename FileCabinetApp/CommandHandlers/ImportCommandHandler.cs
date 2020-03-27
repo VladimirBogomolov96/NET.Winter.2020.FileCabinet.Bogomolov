@@ -42,6 +42,7 @@ namespace FileCabinetApp.CommandHandlers
             if (commandRequest.Command.Equals("import", StringComparison.InvariantCultureIgnoreCase))
             {
                 this.Import(commandRequest.Parameters);
+                this.Service.ClearCache();
             }
             else
             {

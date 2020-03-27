@@ -45,6 +45,7 @@ namespace FileCabinetApp.CommandHandlers
                 try
                 {
                     Console.WriteLine("Record #{0} was inserted succesfully.", this.Service.Insert(this.ParseRecord(commandRequest.Parameters)));
+                    this.Service.ClearCache();
                 }
                 catch (ArgumentException ex)
                 {

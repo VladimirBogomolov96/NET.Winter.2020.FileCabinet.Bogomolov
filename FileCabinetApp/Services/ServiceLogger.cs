@@ -175,7 +175,7 @@ namespace FileCabinetApp.Services
         }
 
         /// <summary>
-        /// Updates records.
+        /// Updates records and writes info to log file.
         /// </summary>
         /// <param name="records">Records to update.</param>
         /// <param name="fieldsAndValuesToSet">Fields and values to set.</param>
@@ -203,6 +203,40 @@ namespace FileCabinetApp.Services
         public void SetRecordValidator(IRecordValidator recordValidator)
         {
             this.service.SetRecordValidator(recordValidator);
+        }
+
+        /// <summary>
+        /// Gets cache and writes info to log file.
+        /// </summary>
+        /// <returns>Cache.</returns>
+        public Dictionary<string, string> GetCache()
+        {
+            this.writer.WriteLine($"{DateTime.Now} Calling GetCache().");
+            var result = this.service.GetCache();
+            this.writer.WriteLine($"{DateTime.Now} GetCache() completed.");
+            return result;
+        }
+
+        /// <summary>
+        /// Saves condition and result of execution in cache and writes info to log file.
+        /// </summary>
+        /// <param name="parameters">Parameters of execution.</param>
+        /// <param name="result">Result of execution.</param>
+        public void SaveInCache(string parameters, string result)
+        {
+            this.writer.WriteLine($"{DateTime.Now} Calling SaveInCache().");
+            this.service.SaveInCache(parameters, result);
+            this.writer.WriteLine($"{DateTime.Now} SaveInCache() completed.");
+        }
+
+        /// <summary>
+        /// Clears cache and writes info to log file.
+        /// </summary>
+        public void ClearCache()
+        {
+            this.writer.WriteLine($"{DateTime.Now} Calling ClearCache().");
+            this.service.ClearCache();
+            this.writer.WriteLine($"{DateTime.Now} ClearCache() completed.");
         }
     }
 }

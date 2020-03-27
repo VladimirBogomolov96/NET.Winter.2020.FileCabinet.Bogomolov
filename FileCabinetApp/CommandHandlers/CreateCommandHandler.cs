@@ -40,6 +40,7 @@ namespace FileCabinetApp.CommandHandlers
             if (commandRequest.Command.Equals("create", StringComparison.InvariantCultureIgnoreCase))
             {
                 this.Create(commandRequest.Parameters);
+                this.Service.ClearCache();
             }
             else
             {

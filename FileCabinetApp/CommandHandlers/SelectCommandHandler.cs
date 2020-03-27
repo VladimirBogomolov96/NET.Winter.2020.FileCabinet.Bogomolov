@@ -40,13 +40,22 @@ namespace FileCabinetApp.CommandHandlers
 
             if (commandRequest.Command.Equals("select", StringComparison.InvariantCultureIgnoreCase))
             {
-                try
+                if (this.Service.GetCache().TryGetValue(commandRequest.Parameters.Replace(" ", string.Empty, StringComparison.InvariantCultureIgnoreCase), out string resultFromCache))
                 {
-                    Console.WriteLine(this.Select(commandRequest.Parameters));
+                    Console.WriteLine(resultFromCache);
                 }
-                catch (ArgumentException)
+                else
                 {
-                    Console.WriteLine("Wrong parameters.");
+                    try
+                    {
+                        string result = this.Select(commandRequest.Parameters);
+                        this.Service.SaveInCache(commandRequest.Parameters.Replace(" ", string.Empty, StringComparison.InvariantCultureIgnoreCase), result);
+                        Console.WriteLine(result);
+                    }
+                    catch (ArgumentException)
+                    {
+                        Console.WriteLine("Wrong parameters.");
+                    }
                 }
             }
             else

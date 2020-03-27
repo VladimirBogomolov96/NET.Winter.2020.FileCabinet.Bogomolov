@@ -23,6 +23,7 @@ namespace FileCabinetApp
         private readonly Dictionary<string, List<int>> lastNameDictionary = new Dictionary<string, List<int>>();
         private readonly Dictionary<DateTime, List<int>> dateOfBirthDictionary = new Dictionary<DateTime, List<int>>();
         private readonly Dictionary<int, int> idDictionary = new Dictionary<int, int>();
+        private readonly Dictionary<string, string> cache = new Dictionary<string, string>();
         private FileStream fileStream;
         private BinaryReader binaryReader;
         private BinaryWriter binaryWriter;
@@ -559,6 +560,33 @@ namespace FileCabinetApp
             }
 
             return result;
+        }
+
+        /// <summary>
+        /// Gets cache.
+        /// </summary>
+        /// <returns>Cache.</returns>
+        public Dictionary<string, string> GetCache()
+        {
+            return this.cache;
+        }
+
+        /// <summary>
+        /// Saves condition and result of execution in cache.
+        /// </summary>
+        /// <param name="parameters">Parameters of execution.</param>
+        /// <param name="result">Result of execution.</param>
+        public void SaveInCache(string parameters, string result)
+        {
+            this.cache.Add(parameters, result);
+        }
+
+        /// <summary>
+        /// Clears cache.
+        /// </summary>
+        public void ClearCache()
+        {
+            this.cache.Clear();
         }
 
         /// <summary>
