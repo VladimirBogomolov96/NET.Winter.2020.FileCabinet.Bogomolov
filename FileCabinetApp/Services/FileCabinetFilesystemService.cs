@@ -23,6 +23,7 @@ namespace FileCabinetApp
         private readonly Dictionary<string, List<int>> lastNameDictionary = new Dictionary<string, List<int>>();
         private readonly Dictionary<DateTime, List<int>> dateOfBirthDictionary = new Dictionary<DateTime, List<int>>();
         private readonly Dictionary<int, int> idDictionary = new Dictionary<int, int>();
+        private readonly Dictionary<string, string> cache = new Dictionary<string, string>();
         private FileStream fileStream;
         private BinaryReader binaryReader;
         private BinaryWriter binaryWriter;
@@ -203,54 +204,6 @@ namespace FileCabinetApp
             this.binaryWriter.Write(transfer.PatronymicLetter);
             this.binaryWriter.Write(transfer.Income);
             this.binaryWriter.Write(transfer.Height);
-        }
-
-        /// <summary>
-        /// Finds all records with given date of birth.
-        /// </summary>
-        /// <param name="dateOfBirth">Date of birth name to match with.</param>
-        /// <returns>Array of matching records.</returns>
-        public IEnumerable<FileCabinetRecord> FindByDateOfbirth(DateTime dateOfBirth)
-        {
-            if (this.dateOfBirthDictionary.TryGetValue(dateOfBirth, out List<int> offsets))
-            {
-                foreach (int offset in offsets)
-                {
-                    yield return this.GetRecord(offset);
-                }
-            }
-        }
-
-        /// <summary>
-        /// Finds all records with given first name.
-        /// </summary>
-        /// <param name="firstName">First name to match with.</param>
-        /// <returns>Array of matching records.</returns>
-        public IEnumerable<FileCabinetRecord> FindByFirstName(string firstName)
-        {
-            if (this.firstNameDictionary.TryGetValue(firstName, out List<int> offsets))
-            {
-                foreach (int offset in offsets)
-                {
-                    yield return this.GetRecord(offset);
-                }
-            }
-        }
-
-        /// <summary>
-        /// Finds all records with given last name.
-        /// </summary>
-        /// <param name="lastName">Last name to match with.</param>
-        /// <returns>Array of matching records.</returns>
-        public IEnumerable<FileCabinetRecord> FindByLastName(string lastName)
-        {
-            if (this.lastNameDictionary.TryGetValue(lastName, out List<int> offsets))
-            {
-                foreach (int offset in offsets)
-                {
-                    yield return this.GetRecord(offset);
-                }
-            }
         }
 
         /// <summary>
@@ -607,6 +560,33 @@ namespace FileCabinetApp
             }
 
             return result;
+        }
+
+        /// <summary>
+        /// Gets cache.
+        /// </summary>
+        /// <returns>Cache.</returns>
+        public Dictionary<string, string> GetCache()
+        {
+            return this.cache;
+        }
+
+        /// <summary>
+        /// Saves condition and result of execution in cache.
+        /// </summary>
+        /// <param name="parameters">Parameters of execution.</param>
+        /// <param name="result">Result of execution.</param>
+        public void SaveInCache(string parameters, string result)
+        {
+            this.cache.Add(parameters, result);
+        }
+
+        /// <summary>
+        /// Clears cache.
+        /// </summary>
+        public void ClearCache()
+        {
+            this.cache.Clear();
         }
 
         /// <summary>

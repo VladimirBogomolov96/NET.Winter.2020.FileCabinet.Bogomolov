@@ -69,45 +69,6 @@ namespace FileCabinetApp.Services
         }
 
         /// <summary>
-        /// Finds all records with given date of birth and writes info to log file.
-        /// </summary>
-        /// <param name="dateOfBirth">Date of birth to match with.</param>
-        /// <returns>Array of matching records.</returns>
-        public IEnumerable<FileCabinetRecord> FindByDateOfbirth(DateTime dateOfBirth)
-        {
-            this.writer.WriteLine($"{DateTime.Now} Calling FindByDateOfbirth() with dateOfBirth = {dateOfBirth.ToString("yyyy-MMM-dd", CultureInfo.InvariantCulture)}.");
-            var result = this.service.FindByDateOfbirth(dateOfBirth);
-            this.writer.WriteLine($"{DateTime.Now} FindByDateOfbirth() return ReadOnlyCollection with {result.Count()} FileCabinetRecords.");
-            return result;
-        }
-
-        /// <summary>
-        /// Finds all records with given first name and writes info to log file.
-        /// </summary>
-        /// <param name="firstName">First name to match with.</param>
-        /// <returns>Array of matching records.</returns>
-        public IEnumerable<FileCabinetRecord> FindByFirstName(string firstName)
-        {
-            this.writer.WriteLine($"{DateTime.Now} Calling FindByFirstName with firstName = {firstName}.");
-            var result = this.service.FindByFirstName(firstName);
-            this.writer.WriteLine($"{DateTime.Now} FindByFirstName() return ReadOnlyCollection with {result.Count()} FileCabinetRecords.");
-            return result;
-        }
-
-        /// <summary>
-        /// Finds all records with given last name and writes info to log file.
-        /// </summary>
-        /// <param name="lastName">Last name to match with.</param>
-        /// <returns>Array of matching records.</returns>
-        public IEnumerable<FileCabinetRecord> FindByLastName(string lastName)
-        {
-            this.writer.WriteLine($"{DateTime.Now} Calling FindByLastName with lastName = {lastName}.");
-            var result = this.service.FindByLastName(lastName);
-            this.writer.WriteLine($"{DateTime.Now} FindByLastName() return ReadOnlyCollection with {result.Count()} FileCabinetRecords.");
-            return result;
-        }
-
-        /// <summary>
         /// Gets all existing records and writes info to log file.
         /// </summary>
         /// <returns>Array of all existing records.</returns>
@@ -214,7 +175,7 @@ namespace FileCabinetApp.Services
         }
 
         /// <summary>
-        /// Updates records.
+        /// Updates records and writes info to log file.
         /// </summary>
         /// <param name="records">Records to update.</param>
         /// <param name="fieldsAndValuesToSet">Fields and values to set.</param>
@@ -242,6 +203,40 @@ namespace FileCabinetApp.Services
         public void SetRecordValidator(IRecordValidator recordValidator)
         {
             this.service.SetRecordValidator(recordValidator);
+        }
+
+        /// <summary>
+        /// Gets cache and writes info to log file.
+        /// </summary>
+        /// <returns>Cache.</returns>
+        public Dictionary<string, string> GetCache()
+        {
+            this.writer.WriteLine($"{DateTime.Now} Calling GetCache().");
+            var result = this.service.GetCache();
+            this.writer.WriteLine($"{DateTime.Now} GetCache() completed.");
+            return result;
+        }
+
+        /// <summary>
+        /// Saves condition and result of execution in cache and writes info to log file.
+        /// </summary>
+        /// <param name="parameters">Parameters of execution.</param>
+        /// <param name="result">Result of execution.</param>
+        public void SaveInCache(string parameters, string result)
+        {
+            this.writer.WriteLine($"{DateTime.Now} Calling SaveInCache().");
+            this.service.SaveInCache(parameters, result);
+            this.writer.WriteLine($"{DateTime.Now} SaveInCache() completed.");
+        }
+
+        /// <summary>
+        /// Clears cache and writes info to log file.
+        /// </summary>
+        public void ClearCache()
+        {
+            this.writer.WriteLine($"{DateTime.Now} Calling ClearCache().");
+            this.service.ClearCache();
+            this.writer.WriteLine($"{DateTime.Now} ClearCache() completed.");
         }
     }
 }

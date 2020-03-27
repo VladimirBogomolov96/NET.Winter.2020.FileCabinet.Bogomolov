@@ -42,6 +42,7 @@ namespace FileCabinetApp.CommandHandlers
                 try
                 {
                     Console.WriteLine("{0} records were updated.", this.Update(commandRequest.Parameters));
+                    this.Service.ClearCache();
                 }
                 catch (ArgumentException ex)
                 {
@@ -112,13 +113,13 @@ namespace FileCabinetApp.CommandHandlers
                     throw new ArgumentException("Set one parameter to fint to one property.", nameof(key));
                 }
 
-                var idConversionResult = Converter.ConvertStringToInt(value);
-                if (!idConversionResult.Item1)
+                var conversionResultOfId = Converter.ConvertStringToInt(value);
+                if (!conversionResultOfId.Item1)
                 {
-                    throw new ArgumentException(idConversionResult.Item2, nameof(value));
+                    throw new ArgumentException(conversionResultOfId.Item2, nameof(value));
                 }
 
-                searchRecordId.Add(idConversionResult.Item3);
+                searchRecordId.Add(conversionResultOfId.Item3);
                 return;
             }
 

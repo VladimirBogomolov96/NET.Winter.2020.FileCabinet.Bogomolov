@@ -54,27 +54,6 @@ namespace FileCabinetApp
             while (isRunning);
         }
 
-        private static void Print(IEnumerable<FileCabinetRecord> records)
-        {
-            if (records is null)
-            {
-                throw new ArgumentNullException(nameof(records), "Sequence of records must be not null.");
-            }
-
-            foreach (var record in records)
-            {
-                Console.WriteLine(
-                        "#{0}, {1}, {2}., {3}, {4}, {5} cm, {6}$",
-                        record.Id,
-                        record.FirstName,
-                        record.PatronymicLetter,
-                        record.LastName,
-                        record.DateOfBirth.ToString("yyyy-MMM-dd", CultureInfo.InvariantCulture),
-                        record.Height,
-                        record.Income);
-            }
-        }
-
         private static void SetCommandLineSettings(string[] args)
         {
             if (!File.Exists("D:\\EPAM\\internship\\FileCabinet\\FileCabinetApp\\Validators\\validation-rules.json"))
@@ -184,22 +163,20 @@ namespace FileCabinetApp
             ICommandHandler insertHandler = new InsertCommandHandler(fileCabinetService);
             ICommandHandler exitHandler = new ExitCommandHandler(IsRunning);
             ICommandHandler exportHandler = new ExportCommandHandler(fileCabinetService);
-            ICommandHandler findHandler = new FindCommandHandler(fileCabinetService, Print);
             ICommandHandler helpHandler = new HelpCommandHandler();
             ICommandHandler importHandler = new ImportCommandHandler(fileCabinetService);
-            ICommandHandler listHandler = new ListCommandHandler(fileCabinetService, Print);
             ICommandHandler purgeHandler = new PurgeCommandHandler(fileCabinetService);
             ICommandHandler statHandler = new StatCommandHandler(fileCabinetService);
             ICommandHandler deleteHandler = new DeleteCommandHandler(fileCabinetService);
             ICommandHandler updateHandler = new UpdateCommandHandler(fileCabinetService);
+            ICommandHandler selectHandler = new SelectCommandHandler(fileCabinetService);
             helpHandler.SetNext(createHandler).
                 SetNext(insertHandler).
                 SetNext(importHandler).
                 SetNext(exportHandler).
                 SetNext(updateHandler).
-                SetNext(listHandler).
                 SetNext(statHandler).
-                SetNext(findHandler).
+                SetNext(selectHandler).
                 SetNext(deleteHandler).
                 SetNext(purgeHandler).
                 SetNext(exitHandler);

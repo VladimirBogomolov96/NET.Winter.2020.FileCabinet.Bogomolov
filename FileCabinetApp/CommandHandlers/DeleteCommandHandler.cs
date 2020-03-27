@@ -57,6 +57,7 @@ namespace FileCabinetApp.CommandHandlers
                         }
 
                         Console.WriteLine("Records by index of {0}were deleted", stringBuilder);
+                        this.Service.ClearCache();
                     }
                 }
                 catch (ArgumentException ex)

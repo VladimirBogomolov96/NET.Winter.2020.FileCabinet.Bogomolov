@@ -52,45 +52,6 @@ namespace FileCabinetApp.Services
         }
 
         /// <summary>
-        /// Finds all records with given date of birth and measure execution time.
-        /// </summary>
-        /// <param name="dateOfBirth">Date of birth to match with.</param>
-        /// <returns>Array of matching records.</returns>
-        public IEnumerable<FileCabinetRecord> FindByDateOfbirth(DateTime dateOfBirth)
-        {
-            var stopWatch = Stopwatch.StartNew();
-            var result = this.service.FindByDateOfbirth(dateOfBirth);
-            Console.WriteLine($"FindByDateOfbirth method execution duration is {stopWatch.ElapsedTicks} ticks.");
-            return result;
-        }
-
-        /// <summary>
-        /// Finds all records with given first name and measure execution time.
-        /// </summary>
-        /// <param name="firstName">First name to match with.</param>
-        /// <returns>Array of matching records.</returns>
-        public IEnumerable<FileCabinetRecord> FindByFirstName(string firstName)
-        {
-            var stopWatch = Stopwatch.StartNew();
-            var result = this.service.FindByFirstName(firstName);
-            Console.WriteLine($"FindByFirstName method execution duration is {stopWatch.ElapsedTicks} ticks.");
-            return result;
-        }
-
-        /// <summary>
-        /// Finds all records with given last name and measure execution time.
-        /// </summary>
-        /// <param name="lastName">Last name to match with.</param>
-        /// <returns>Array of matching records.</returns>
-        public IEnumerable<FileCabinetRecord> FindByLastName(string lastName)
-        {
-            var stopWatch = Stopwatch.StartNew();
-            var result = this.service.FindByLastName(lastName);
-            Console.WriteLine($"FindByLastName method execution duration is {stopWatch.ElapsedTicks} ticks.");
-            return result;
-        }
-
-        /// <summary>
         /// Gets all existing records and measure execution time.
         /// </summary>
         /// <returns>Array of all existing records.</returns>
@@ -191,7 +152,7 @@ namespace FileCabinetApp.Services
         }
 
         /// <summary>
-        /// Updates records.
+        /// Updates records and measure execution time.
         /// </summary>
         /// <param name="records">Records to update.</param>
         /// <param name="fieldsAndValuesToSet">Fields and values to set.</param>
@@ -211,6 +172,40 @@ namespace FileCabinetApp.Services
         public void SetRecordValidator(IRecordValidator recordValidator)
         {
             this.service.SetRecordValidator(recordValidator);
+        }
+
+        /// <summary>
+        /// Gets cache and measure execution time.
+        /// </summary>
+        /// <returns>Cache.</returns>
+        public Dictionary<string, string> GetCache()
+        {
+            var stopWatch = Stopwatch.StartNew();
+            var result = this.service.GetCache();
+            Console.WriteLine($"GetCache method execution duration is {stopWatch.ElapsedTicks} ticks.");
+            return result;
+        }
+
+        /// <summary>
+        /// Saves condition and result of execution in cache and measure execution time.
+        /// </summary>
+        /// <param name="parameters">Parameters of execution.</param>
+        /// <param name="result">Result of execution.</param>
+        public void SaveInCache(string parameters, string result)
+        {
+            var stopWatch = Stopwatch.StartNew();
+            this.service.SaveInCache(parameters, result);
+            Console.WriteLine($"SaveInCache method execution duration is {stopWatch.ElapsedTicks} ticks.");
+        }
+
+        /// <summary>
+        /// Clears cache and measure execution time.
+        /// </summary>
+        public void ClearCache()
+        {
+            var stopWatch = Stopwatch.StartNew();
+            this.service.ClearCache();
+            Console.WriteLine($"ClearCache method execution duration is {stopWatch.ElapsedTicks} ticks.");
         }
     }
 }
