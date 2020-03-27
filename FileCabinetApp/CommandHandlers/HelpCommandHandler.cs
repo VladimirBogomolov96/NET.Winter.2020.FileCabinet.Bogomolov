@@ -26,6 +26,7 @@ namespace FileCabinetApp.CommandHandlers
             new string[] { "insert", "inserts new record with entered data by given id", "The 'insert' command inserts new record with entered data by given id." },
             new string[] { "delete", "deletes records from service", "The 'delete' command deletes records from service." },
             new string[] { "update", "updates records with given values", "The 'update' command updates records with given values." },
+            new string[] { "select", "finds records by the given conditions", "The 'select' command finds records by the given conditions." },
         };
 
         /// <summary>

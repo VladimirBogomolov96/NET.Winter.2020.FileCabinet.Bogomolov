@@ -96,10 +96,10 @@ namespace FileCabinetApp.CommandHandlers
                     throw new ArgumentException("Wrong amount of values.", nameof(parameters));
                 }
 
-                var idConversionResult = Converter.ConvertStringToInt(values[fields.FindIndex(x => x.Equals("id", StringComparison.InvariantCultureIgnoreCase))]);
-                if (!idConversionResult.Item1)
+                var conversionResultOfId = Converter.ConvertStringToInt(values[fields.FindIndex(x => x.Equals("id", StringComparison.InvariantCultureIgnoreCase))]);
+                if (!conversionResultOfId.Item1)
                 {
-                    throw new ArgumentException(idConversionResult.Item2, nameof(parameters));
+                    throw new ArgumentException(conversionResultOfId.Item2, nameof(parameters));
                 }
 
                 string firstName = values[fields.FindIndex(x => x.Equals("firstname", StringComparison.InvariantCultureIgnoreCase))];
@@ -130,7 +130,7 @@ namespace FileCabinetApp.CommandHandlers
 
                 return new FileCabinetRecord()
                 {
-                    Id = idConversionResult.Item3,
+                    Id = conversionResultOfId.Item3,
                     FirstName = firstName,
                     LastName = lastName,
                     DateOfBirth = dateOfBirthConversionResult.Item3,
