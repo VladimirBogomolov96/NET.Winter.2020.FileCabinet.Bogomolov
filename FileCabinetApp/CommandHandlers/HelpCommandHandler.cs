@@ -18,8 +18,6 @@ namespace FileCabinetApp.CommandHandlers
             new string[] { "exit", "exits the application", "The 'exit' command exits the application." },
             new string[] { "stat", "returns amount of stored records", "The 'stat' command returns amount of stored records." },
             new string[] { "create", "creates new record with entered data", "The 'create' command creates new record with entered data." },
-            new string[] { "list", "returns all stored records", "The 'list' command returns all stored records." },
-            new string[] { "find", "finds records by the given condition", "The 'find' command finds records by the given condition." },
             new string[] { "export", "exports current records into file of given format", "The 'export' command exports current records into file of given format." },
             new string[] { "import", "imports records from given file", "The 'import' command imports records from given file." },
             new string[] { "purge", "defragments file", "The 'purge' command defragments file." },

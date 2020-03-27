@@ -146,54 +146,6 @@ namespace FileCabinetApp
         }
 
         /// <summary>
-        /// Finds all records with given first name.
-        /// </summary>
-        /// <param name="firstName">First name to match with.</param>
-        /// <returns>Array of matching records.</returns>
-        public IEnumerable<FileCabinetRecord> FindByFirstName(string firstName)
-        {
-            if (this.firstNameDictionary.TryGetValue(firstName, out List<FileCabinetRecord> records))
-            {
-                foreach (FileCabinetRecord record in records)
-                {
-                    yield return record;
-                }
-            }
-        }
-
-        /// <summary>
-        /// Finds all records with given last name.
-        /// </summary>
-        /// <param name="lastName">Last name to match with.</param>
-        /// <returns>Array of matching records.</returns>
-        public IEnumerable<FileCabinetRecord> FindByLastName(string lastName)
-        {
-            if (this.lastNameDictionary.TryGetValue(lastName, out List<FileCabinetRecord> records))
-            {
-                foreach (FileCabinetRecord record in records)
-                {
-                    yield return record;
-                }
-            }
-        }
-
-        /// <summary>
-        /// Finds all records with given date of birth.
-        /// </summary>
-        /// <param name="dateOfBirth">Date of birth to match with.</param>
-        /// <returns>Array of matching records.</returns>
-        public IEnumerable<FileCabinetRecord> FindByDateOfbirth(DateTime dateOfBirth)
-        {
-            if (this.dateOfBirthDictionary.TryGetValue(dateOfBirth, out List<FileCabinetRecord> records))
-            {
-                foreach (FileCabinetRecord record in records)
-                {
-                    yield return record;
-                }
-            }
-        }
-
-        /// <summary>
         /// Creates a snapshot of all records in current moment.
         /// </summary>
         /// <returns>Snapshot of records.</returns>

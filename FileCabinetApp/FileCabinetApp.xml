@@ -114,24 +114,6 @@
             </summary>
             <param name="commandRequest">Command line request.</param>
         </member>
-        <member name="T:FileCabinetApp.CommandHandlers.FindCommandHandler">
-            <summary>
-            Command handler to find method.
-            </summary>
-        </member>
-        <member name="M:FileCabinetApp.CommandHandlers.FindCommandHandler.#ctor(FileCabinetApp.IFileCabinetService,System.Action{System.Collections.Generic.IEnumerable{FileCabinetApp.FileCabinetRecord}})">
-            <summary>
-            Initializes a new instance of the <see cref="T:FileCabinetApp.CommandHandlers.FindCommandHandler"/> class.
-            </summary>
-            <param name="fileCabinetService">File cabinet service to call.</param>
-            <param name="printer">Printer to records.</param>
-        </member>
-        <member name="M:FileCabinetApp.CommandHandlers.FindCommandHandler.Handle(FileCabinetApp.CommandHandlers.AppCommandRequest)">
-            <summary>
-            Handles command line request.
-            </summary>
-            <param name="commandRequest">Command line request.</param>
-        </member>
         <member name="T:FileCabinetApp.CommandHandlers.HelpCommandHandler">
             <summary>
             Command handler to help method.
@@ -190,24 +172,6 @@
             <param name="fileCabinetService">File cabinet service to call.</param>
         </member>
         <member name="M:FileCabinetApp.CommandHandlers.InsertCommandHandler.Handle(FileCabinetApp.CommandHandlers.AppCommandRequest)">
-            <summary>
-            Handles command line request.
-            </summary>
-            <param name="commandRequest">Command line request.</param>
-        </member>
-        <member name="T:FileCabinetApp.CommandHandlers.ListCommandHandler">
-            <summary>
-            Command handler to list method.
-            </summary>
-        </member>
-        <member name="M:FileCabinetApp.CommandHandlers.ListCommandHandler.#ctor(FileCabinetApp.IFileCabinetService,System.Action{System.Collections.Generic.IEnumerable{FileCabinetApp.FileCabinetRecord}})">
-            <summary>
-            Initializes a new instance of the <see cref="T:FileCabinetApp.CommandHandlers.ListCommandHandler"/> class.
-            </summary>
-            <param name="fileCabinetService">File cabinet service to call.</param>
-            <param name="printer">Printer to records.</param>
-        </member>
-        <member name="M:FileCabinetApp.CommandHandlers.ListCommandHandler.Handle(FileCabinetApp.CommandHandlers.AppCommandRequest)">
             <summary>
             Handles command line request.
             </summary>
@@ -712,27 +676,6 @@
             <param name="transfer">Object to transfer new parameters to existing record.</param>
             <exception cref="T:System.ArgumentNullException">Thrown when transfer parameters is null.</exception>
         </member>
-        <member name="M:FileCabinetApp.FileCabinetFilesystemService.FindByDateOfbirth(System.DateTime)">
-            <summary>
-            Finds all records with given date of birth.
-            </summary>
-            <param name="dateOfBirth">Date of birth name to match with.</param>
-            <returns>Array of matching records.</returns>
-        </member>
-        <member name="M:FileCabinetApp.FileCabinetFilesystemService.FindByFirstName(System.String)">
-            <summary>
-            Finds all records with given first name.
-            </summary>
-            <param name="firstName">First name to match with.</param>
-            <returns>Array of matching records.</returns>
-        </member>
-        <member name="M:FileCabinetApp.FileCabinetFilesystemService.FindByLastName(System.String)">
-            <summary>
-            Finds all records with given last name.
-            </summary>
-            <param name="lastName">Last name to match with.</param>
-            <returns>Array of matching records.</returns>
-        </member>
         <member name="M:FileCabinetApp.FileCabinetFilesystemService.GetRecords">
             <summary>
             Gets all existing records.
@@ -849,27 +792,6 @@
             </summary>
             <returns>Amount of existing records.</returns>
         </member>
-        <member name="M:FileCabinetApp.FileCabinetMemoryService.FindByFirstName(System.String)">
-            <summary>
-            Finds all records with given first name.
-            </summary>
-            <param name="firstName">First name to match with.</param>
-            <returns>Array of matching records.</returns>
-        </member>
-        <member name="M:FileCabinetApp.FileCabinetMemoryService.FindByLastName(System.String)">
-            <summary>
-            Finds all records with given last name.
-            </summary>
-            <param name="lastName">Last name to match with.</param>
-            <returns>Array of matching records.</returns>
-        </member>
-        <member name="M:FileCabinetApp.FileCabinetMemoryService.FindByDateOfbirth(System.DateTime)">
-            <summary>
-            Finds all records with given date of birth.
-            </summary>
-            <param name="dateOfBirth">Date of birth to match with.</param>
-            <returns>Array of matching records.</returns>
-        </member>
         <member name="M:FileCabinetApp.FileCabinetMemoryService.MakeSnapshot">
             <summary>
             Creates a snapshot of all records in current moment.
@@ -955,27 +877,6 @@
             </summary>
             <returns>Snapshot of records.</returns>
         </member>
-        <member name="M:FileCabinetApp.IFileCabinetService.FindByDateOfbirth(System.DateTime)">
-            <summary>
-            Finds all records with given date of birth.
-            </summary>
-            <param name="dateOfBirth">Date of birth to match with.</param>
-            <returns>Array of matching records.</returns>
-        </member>
-        <member name="M:FileCabinetApp.IFileCabinetService.FindByFirstName(System.String)">
-            <summary>
-            Finds all records with given first name.
-            </summary>
-            <param name="firstName">First name to match with.</param>
-            <returns>Array of matching records.</returns>
-        </member>
-        <member name="M:FileCabinetApp.IFileCabinetService.FindByLastName(System.String)">
-            <summary>
-            Finds all records with given last name.
-            </summary>
-            <param name="lastName">Last name to match with.</param>
-            <returns>Array of matching records.</returns>
-        </member>
         <member name="M:FileCabinetApp.IFileCabinetService.GetRecords">
             <summary>
             Gets all existing records.
@@ -1058,27 +959,6 @@
             <param name="transfer">Object to transfer new parameters to existing record.</param>
             <exception cref="T:System.ArgumentNullException">Throw when first name or last name is null, when transfer object is null.</exception>
             <exception cref="T:System.ArgumentException">Thrown when firs name or last name length is out of 2 and 60 chars or contains only whitespaces, when date of birth out of 01-Jan-1950 and current date, when height is out of 1 and 300 cm, when income is negative, when patronymic letter is not a latin uppercase letter.</exception>
-        </member>
-        <member name="M:FileCabinetApp.Services.ServiceLogger.FindByDateOfbirth(System.DateTime)">
-            <summary>
-            Finds all records with given date of birth and writes info to log file.
-            </summary>
-            <param name="dateOfBirth">Date of birth to match with.</param>
-            <returns>Array of matching records.</returns>
-        </member>
-        <member name="M:FileCabinetApp.Services.ServiceLogger.FindByFirstName(System.String)">
-            <summary>
-            Finds all records with given first name and writes info to log file.
-            </summary>
-            <param name="firstName">First name to match with.</param>
-            <returns>Array of matching records.</returns>
-        </member>
-        <member name="M:FileCabinetApp.Services.ServiceLogger.FindByLastName(System.String)">
-            <summary>
-            Finds all records with given last name and writes info to log file.
-            </summary>
-            <param name="lastName">Last name to match with.</param>
-            <returns>Array of matching records.</returns>
         </member>
         <member name="M:FileCabinetApp.Services.ServiceLogger.GetRecords">
             <summary>
@@ -1179,27 +1059,6 @@
             <param name="transfer">Object to transfer new parameters to existing record.</param>
             <exception cref="T:System.ArgumentNullException">Throw when first name or last name is null, when transfer object is null.</exception>
             <exception cref="T:System.ArgumentException">Thrown when firs name or last name length is out of 2 and 60 chars or contains only whitespaces, when date of birth out of 01-Jan-1950 and current date, when height is out of 1 and 300 cm, when income is negative, when patronymic letter is not a latin uppercase letter.</exception>
-        </member>
-        <member name="M:FileCabinetApp.Services.ServiceMeter.FindByDateOfbirth(System.DateTime)">
-            <summary>
-            Finds all records with given date of birth and measure execution time.
-            </summary>
-            <param name="dateOfBirth">Date of birth to match with.</param>
-            <returns>Array of matching records.</returns>
-        </member>
-        <member name="M:FileCabinetApp.Services.ServiceMeter.FindByFirstName(System.String)">
-            <summary>
-            Finds all records with given first name and measure execution time.
-            </summary>
-            <param name="firstName">First name to match with.</param>
-            <returns>Array of matching records.</returns>
-        </member>
-        <member name="M:FileCabinetApp.Services.ServiceMeter.FindByLastName(System.String)">
-            <summary>
-            Finds all records with given last name and measure execution time.
-            </summary>
-            <param name="lastName">Last name to match with.</param>
-            <returns>Array of matching records.</returns>
         </member>
         <member name="M:FileCabinetApp.Services.ServiceMeter.GetRecords">
             <summary>
