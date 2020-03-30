@@ -12,9 +12,6 @@ namespace FileCabinetApp
     /// </summary>
     public class FileCabinetMemoryService : IFileCabinetService
     {
-        private readonly Dictionary<string, List<FileCabinetRecord>> firstNameDictionary = new Dictionary<string, List<FileCabinetRecord>>();
-        private readonly Dictionary<string, List<FileCabinetRecord>> lastNameDictionary = new Dictionary<string, List<FileCabinetRecord>>();
-        private readonly Dictionary<DateTime, List<FileCabinetRecord>> dateOfBirthDictionary = new Dictionary<DateTime, List<FileCabinetRecord>>();
         private readonly List<int> ids = new List<int>();
         private readonly Dictionary<string, string> cache = new Dictionary<string, string>();
         private IRecordValidator recordValidator;
@@ -76,7 +73,6 @@ namespace FileCabinetApp
 
             this.list.Add(record);
             this.ids.Add(record.Id);
-            this.FillDictionaries(transfer, record);
             return record.Id;
         }
 
@@ -113,7 +109,6 @@ namespace FileCabinetApp
             {
                 if (this.list[i].Id == id)
                 {
-                    this.RemoveFromDictionaries(this.list[i]);
                     this.list[i] = editedRecord;
                     break;
                 }
@@ -124,7 +119,6 @@ namespace FileCabinetApp
                 }
             }
 
-            this.FillDictionaries(transfer, editedRecord);
             Console.WriteLine($"Record #{id} is updated.");
         }
 
@@ -186,7 +180,6 @@ namespace FileCabinetApp
                 if (record.Id == id)
                 {
                     this.list.Remove(record);
-                    this.RemoveFromDictionaries(record);
                     this.ids.Remove(id);
                     return true;
                 }
@@ -219,7 +212,6 @@ namespace FileCabinetApp
 
             this.list.Add(record);
             this.ids.Add(record.Id);
-            this.FillDictionaries(record);
             return record.Id;
         }
 
@@ -235,111 +227,36 @@ namespace FileCabinetApp
                 throw new ArgumentNullException(nameof(snapshot), "Snapshot must be not null.");
             }
 
-            List<FileCabinetRecord> resultRecords = new List<FileCabinetRecord>();
-            ReadOnlyCollection<FileCabinetRecord> importData = snapshot.GetRecords;
-            int sourceIndex = 0;
-            int importIndex = 0;
-
-            for (; sourceIndex < this.list.Count && importIndex < importData.Count;)
+            int count = 0;
+            foreach (FileCabinetRecord record in snapshot.GetRecords)
             {
-                if (this.list[sourceIndex].Id < importData[importIndex].Id)
+                var validationResult = this.recordValidator.ValidateParameters(record);
+                if (!validationResult.Item1)
                 {
-                    resultRecords.Add(this.list[sourceIndex]);
-                    sourceIndex++;
+                    Console.WriteLine($"Invalid values in #{record.Id} record. {validationResult.Item2}");
+                    continue;
                 }
-                else if (this.list[sourceIndex].Id == importData[importIndex].Id)
-                {
-                    try
-                    {
-                        RecordParametersTransfer transfer = new RecordParametersTransfer(
-                            importData[importIndex].FirstName,
-                            importData[importIndex].LastName,
-                            importData[importIndex].DateOfBirth,
-                            importData[importIndex].Height,
-                            importData[importIndex].Income,
-                            importData[importIndex].PatronymicLetter);
-                        if (!this.recordValidator.ValidateParameters(transfer.RecordSimulation()).Item1)
-                        {
-                            throw new ArgumentException(this.recordValidator.ValidateParameters(transfer.RecordSimulation()).Item2);
-                        }
 
-                        this.RemoveFromDictionaries(this.list[sourceIndex]);
-                        this.FillDictionaries(transfer, importData[importIndex]);
-                        resultRecords.Add(importData[importIndex]);
-                        importIndex++;
-                        sourceIndex++;
-                    }
-                    catch (ArgumentException ex)
-                    {
-                        Console.WriteLine(string.Format(CultureInfo.InvariantCulture, "Wrong data in record #{0} : {1}", importData[importIndex].Id, ex.Message));
-                        importIndex++;
-                        sourceIndex++;
-                        continue;
-                    }
+                if (this.ids.Contains(record.Id))
+                {
+                    var temp = this.list.Find(x => x.Id == record.Id);
+                    temp.FirstName = record.FirstName;
+                    temp.LastName = record.LastName;
+                    temp.DateOfBirth = record.DateOfBirth;
+                    temp.Height = record.Height;
+                    temp.Income = record.Income;
+                    temp.PatronymicLetter = record.PatronymicLetter;
+                    count++;
                 }
                 else
                 {
-                    try
-                    {
-                        RecordParametersTransfer transfer = new RecordParametersTransfer(
-                            importData[importIndex].FirstName,
-                            importData[importIndex].LastName,
-                            importData[importIndex].DateOfBirth,
-                            importData[importIndex].Height,
-                            importData[importIndex].Income,
-                            importData[importIndex].PatronymicLetter);
-                        if (!this.recordValidator.ValidateParameters(transfer.RecordSimulation()).Item1)
-                        {
-                            throw new ArgumentException(this.recordValidator.ValidateParameters(transfer.RecordSimulation()).Item2);
-                        }
-
-                        resultRecords.Add(importData[importIndex]);
-                        this.FillDictionaries(transfer, importData[importIndex]);
-                        importIndex++;
-                    }
-                    catch (ArgumentException ex)
-                    {
-                        Console.WriteLine(string.Format(CultureInfo.InvariantCulture, "Wrong data in record #{0} : {1}", importData[importIndex].Id, ex.Message));
-                        importIndex++;
-                        continue;
-                    }
+                    this.list.Add(record);
+                    this.ids.Add(record.Id);
+                    count++;
                 }
             }
 
-            for (; importIndex < importData.Count; importIndex++)
-            {
-                try
-                {
-                    RecordParametersTransfer transfer = new RecordParametersTransfer(
-                        importData[importIndex].FirstName,
-                        importData[importIndex].LastName,
-                        importData[importIndex].DateOfBirth,
-                        importData[importIndex].Height,
-                        importData[importIndex].Income,
-                        importData[importIndex].PatronymicLetter);
-                    if (!this.recordValidator.ValidateParameters(transfer.RecordSimulation()).Item1)
-                    {
-                        throw new ArgumentException(this.recordValidator.ValidateParameters(transfer.RecordSimulation()).Item2);
-                    }
-
-                    resultRecords.Add(importData[importIndex]);
-                    this.FillDictionaries(transfer, importData[importIndex]);
-                }
-                catch (ArgumentException ex)
-                {
-                    Console.WriteLine(string.Format(CultureInfo.InvariantCulture, "Wrong data in record #{0} : {1}", importData[importIndex].Id, ex.Message));
-                    continue;
-                }
-            }
-
-            for (; sourceIndex < this.list.Count; sourceIndex++)
-            {
-                resultRecords.Add(this.list[sourceIndex]);
-            }
-
-            this.list = resultRecords;
-
-            return importIndex;
+            return count;
         }
 
         /// <summary>
@@ -395,12 +312,10 @@ namespace FileCabinetApp
                             Income = record.Income,
                             PatronymicLetter = record.PatronymicLetter,
                         };
-                        this.RemoveFromDictionaries(record);
 
                         try
                         {
                             this.UpdateRecord(record, fieldsAndValuesToSet);
-                            this.FillDictionaries(record);
                             result++;
                         }
                         catch (ArgumentException ex)
@@ -412,7 +327,6 @@ namespace FileCabinetApp
                             record.Income = temp.Income;
                             record.Height = temp.Height;
                             record.PatronymicLetter = temp.PatronymicLetter;
-                            this.FillDictionaries(record);
                             throw new ArgumentException(ex.Message);
                         }
                     }
@@ -569,93 +483,6 @@ namespace FileCabinetApp
                 }
 
                 throw new ArgumentException("Key not exist.", nameof(fieldsAndValuesToSet));
-            }
-        }
-
-        private void FillDictionaries(RecordParametersTransfer transfer, FileCabinetRecord record)
-        {
-            if (this.firstNameDictionary.ContainsKey(transfer.FirstName))
-            {
-                this.firstNameDictionary[transfer.FirstName].Add(record);
-            }
-            else
-            {
-                this.firstNameDictionary.Add(transfer.FirstName, new List<FileCabinetRecord>());
-                this.firstNameDictionary[transfer.FirstName].Add(record);
-            }
-
-            if (this.lastNameDictionary.ContainsKey(transfer.LastName))
-            {
-                this.lastNameDictionary[transfer.LastName].Add(record);
-            }
-            else
-            {
-                this.lastNameDictionary.Add(transfer.LastName, new List<FileCabinetRecord>());
-                this.lastNameDictionary[transfer.LastName].Add(record);
-            }
-
-            if (this.dateOfBirthDictionary.ContainsKey(transfer.DateOfBirth))
-            {
-                this.dateOfBirthDictionary[transfer.DateOfBirth].Add(record);
-            }
-            else
-            {
-                this.dateOfBirthDictionary.Add(transfer.DateOfBirth, new List<FileCabinetRecord>());
-                this.dateOfBirthDictionary[transfer.DateOfBirth].Add(record);
-            }
-        }
-
-        private void FillDictionaries(FileCabinetRecord record)
-        {
-            if (this.firstNameDictionary.ContainsKey(record.FirstName))
-            {
-                this.firstNameDictionary[record.FirstName].Add(record);
-            }
-            else
-            {
-                this.firstNameDictionary.Add(record.FirstName, new List<FileCabinetRecord>());
-                this.firstNameDictionary[record.FirstName].Add(record);
-            }
-
-            if (this.lastNameDictionary.ContainsKey(record.LastName))
-            {
-                this.lastNameDictionary[record.LastName].Add(record);
-            }
-            else
-            {
-                this.lastNameDictionary.Add(record.LastName, new List<FileCabinetRecord>());
-                this.lastNameDictionary[record.LastName].Add(record);
-            }
-
-            if (this.dateOfBirthDictionary.ContainsKey(record.DateOfBirth))
-            {
-                this.dateOfBirthDictionary[record.DateOfBirth].Add(record);
-            }
-            else
-            {
-                this.dateOfBirthDictionary.Add(record.DateOfBirth, new List<FileCabinetRecord>());
-                this.dateOfBirthDictionary[record.DateOfBirth].Add(record);
-            }
-        }
-
-        private void RemoveFromDictionaries(FileCabinetRecord record)
-        {
-            this.firstNameDictionary[record.FirstName].Remove(record);
-            if (this.firstNameDictionary[record.FirstName].Count is 0)
-            {
-                this.firstNameDictionary.Remove(record.FirstName);
-            }
-
-            this.lastNameDictionary[record.LastName].Remove(record);
-            if (this.lastNameDictionary[record.LastName].Count is 0)
-            {
-                this.lastNameDictionary.Remove(record.LastName);
-            }
-
-            this.dateOfBirthDictionary[record.DateOfBirth].Remove(record);
-            if (this.dateOfBirthDictionary[record.DateOfBirth].Count is 0)
-            {
-                this.dateOfBirthDictionary.Remove(record.DateOfBirth);
             }
         }
     }
