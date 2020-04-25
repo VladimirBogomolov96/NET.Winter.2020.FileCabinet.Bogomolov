@@ -38,7 +38,7 @@ namespace FileCabinetApp.CommandHandlers
 
             if (commandRequest.Command.Equals("stat", StringComparison.InvariantCultureIgnoreCase))
             {
-                this.Stat(commandRequest.Parameters);
+                this.Stat();
             }
             else
             {
@@ -46,7 +46,7 @@ namespace FileCabinetApp.CommandHandlers
             }
         }
 
-        private void Stat(string parameters)
+        private void Stat()
         {
             var recordsCount = this.Service.GetStat();
             Console.WriteLine($"{recordsCount.Item1} record(s). {recordsCount.Item2} removed record(s).");

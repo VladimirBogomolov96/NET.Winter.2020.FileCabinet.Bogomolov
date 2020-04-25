@@ -9,7 +9,7 @@ namespace FileCabinetApp.CommandHandlers
     /// </summary>
     public class ExitCommandHandler : CommandHandlerBase
     {
-        private Action<bool> action;
+        private readonly Action<bool> action;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="ExitCommandHandler"/> class.
@@ -40,7 +40,7 @@ namespace FileCabinetApp.CommandHandlers
 
             if (commandRequest.Command.Equals("exit", StringComparison.InvariantCultureIgnoreCase))
             {
-                this.Exit(commandRequest.Parameters);
+                this.Exit();
             }
             else
             {
@@ -48,7 +48,7 @@ namespace FileCabinetApp.CommandHandlers
             }
         }
 
-        private void Exit(string parameters)
+        private void Exit()
         {
             Console.WriteLine("Exiting an application...");
             this.action(false);

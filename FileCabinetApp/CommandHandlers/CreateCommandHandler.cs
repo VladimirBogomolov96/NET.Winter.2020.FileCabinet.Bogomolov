@@ -1,7 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using FileCabinetApp.Validators;
 
 namespace FileCabinetApp.CommandHandlers
 {
@@ -27,19 +24,19 @@ namespace FileCabinetApp.CommandHandlers
         {
             if (commandRequest is null)
             {
-                Console.WriteLine("Wrong command line parameter.");
+                Console.WriteLine("Wrong command.");
                 return;
             }
 
             if (commandRequest.Command is null)
             {
-                Console.WriteLine("Wrong command line parameter.");
+                Console.WriteLine("Wrong command.");
                 return;
             }
 
             if (commandRequest.Command.Equals("create", StringComparison.InvariantCultureIgnoreCase))
             {
-                this.Create(commandRequest.Parameters);
+                this.Create();
                 this.Service.ClearCache();
             }
             else
@@ -69,7 +66,7 @@ namespace FileCabinetApp.CommandHandlers
             while (true);
         }
 
-        private void Create(string parameters)
+        private void Create()
         {
             Console.Write("First name: ");
             string firstName = ReadInput<string>(Converter.ConvertStringToString);
@@ -89,9 +86,9 @@ namespace FileCabinetApp.CommandHandlers
                 int index = this.Service.CreateRecord(transfer);
                 Console.WriteLine($"Record #{index} is created.");
             }
-            catch (ArgumentException ex)
+            catch (ArgumentException)
             {
-                Console.WriteLine(ex.Message);
+                Console.WriteLine("Invalid input data. Fix your input in order to meet validation rules.");
             }
         }
     }

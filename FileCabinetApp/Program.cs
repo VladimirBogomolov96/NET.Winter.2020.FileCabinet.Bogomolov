@@ -1,13 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Globalization;
 using System.IO;
-using System.Reflection;
-using System.Xml;
 using CommandLine;
 using FileCabinetApp.CommandHandlers;
-using FileCabinetApp.Printers;
 using FileCabinetApp.Services;
 using FileCabinetApp.Validators;
 using Microsoft.Extensions.Configuration;
@@ -88,7 +82,8 @@ namespace FileCabinetApp
             }
             else
             {
-                throw new ArgumentException("Wrong command line argument.", nameof(args));
+                Console.WriteLine($"Wrong command line argument {options.Storage}.");
+                Environment.Exit(-1);
             }
 
             if (options.Rule.Equals("custom", StringComparison.InvariantCultureIgnoreCase))
@@ -101,7 +96,8 @@ namespace FileCabinetApp
             }
             else
             {
-                throw new ArgumentException("Wrong command line argument.", nameof(args));
+                Console.WriteLine($"Wrong command line argument {options.Rule}.");
+                Environment.Exit(-1);
             }
 
             if (options.Logger)
@@ -152,7 +148,7 @@ namespace FileCabinetApp
             Console.WriteLine("Using logger.");
         }
 
-        private static void IsRunning(bool state)
+        private static void ChangeProgramState(bool state)
         {
             isRunning = state;
         }
@@ -161,7 +157,7 @@ namespace FileCabinetApp
         {
             ICommandHandler createHandler = new CreateCommandHandler(fileCabinetService);
             ICommandHandler insertHandler = new InsertCommandHandler(fileCabinetService);
-            ICommandHandler exitHandler = new ExitCommandHandler(IsRunning);
+            ICommandHandler exitHandler = new ExitCommandHandler(ChangeProgramState);
             ICommandHandler exportHandler = new ExportCommandHandler(fileCabinetService);
             ICommandHandler helpHandler = new HelpCommandHandler();
             ICommandHandler importHandler = new ImportCommandHandler(fileCabinetService);

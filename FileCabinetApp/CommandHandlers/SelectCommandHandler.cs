@@ -54,7 +54,7 @@ namespace FileCabinetApp.CommandHandlers
                     }
                     catch (ArgumentException)
                     {
-                        Console.WriteLine("Wrong parameters.");
+                        Console.WriteLine("Invalid parameters, fix your input.");
                     }
                 }
             }
@@ -64,189 +64,7 @@ namespace FileCabinetApp.CommandHandlers
             }
         }
 
-        private string Select(string parameters)
-        {
-            if (parameters is null)
-            {
-                throw new ArgumentNullException(nameof(parameters), "Parameters must be not null.");
-            }
-
-            var temp = parameters.Split("where");
-            var fieldsToShow = temp[0].Split(',');
-            for (int i = 0; i < fieldsToShow.Length; i++)
-            {
-                fieldsToShow[i] = fieldsToShow[i].Trim();
-            }
-
-            IEnumerable<FileCabinetRecord> recordsToShow;
-            Func<List<int>, List<string>, List<string>, List<DateTime>, List<char>, List<decimal>, List<short>, IEnumerable<FileCabinetRecord>> func;
-            IEnumerable<string> searchParams;
-            if (temp.Length == 1)
-            {
-                recordsToShow = this.Service.GetRecords();
-            }
-            else if (temp.Length > 2)
-            {
-                throw new ArgumentException("Wrong parameters.", nameof(parameters));
-            }
-            else
-            {
-                var orSearchParams = temp[1].Split("or");
-                var andSearchParams = temp[1].Split("and");
-                bool isSamePropertiesPossible;
-
-                if (orSearchParams.Length > andSearchParams.Length)
-                {
-                    func = this.SelectOr;
-                    searchParams = orSearchParams;
-                    isSamePropertiesPossible = true;
-                }
-                else
-                {
-                    func = this.SelectAnd;
-                    searchParams = andSearchParams;
-                    isSamePropertiesPossible = false;
-                }
-
-                if (searchParams.Count() < 2)
-                {
-                    throw new ArgumentException("Must be at least 2 search conditions.", nameof(parameters));
-                }
-
-                IEnumerable<IEnumerable<string>> fieldsAndValuesToFind = searchParams.Select(x => x.Split('=').Select(y => y.Trim()));
-                List<int> searchRecordId = new List<int>();
-                List<string> searchRecordFirstName = new List<string>();
-                List<string> searchRecordLastName = new List<string>();
-                List<DateTime> searchRecordDateOfBirth = new List<DateTime>();
-                List<char> searchRecordPatronymicLetter = new List<char>();
-                List<decimal> searchRecordIncome = new List<decimal>();
-                List<short> searchRecordHeight = new List<short>();
-                if (isSamePropertiesPossible)
-                {
-                    foreach (var pair in fieldsAndValuesToFind)
-                    {
-                        this.SetSearchParametersOr(searchRecordId, searchRecordFirstName, searchRecordLastName, searchRecordDateOfBirth, searchRecordPatronymicLetter, searchRecordIncome, searchRecordHeight, pair.First(), pair.Last());
-                    }
-                }
-                else
-                {
-                    foreach (var pair in fieldsAndValuesToFind)
-                    {
-                        this.SetSearchParametersAnd(searchRecordId, searchRecordFirstName, searchRecordLastName, searchRecordDateOfBirth, searchRecordPatronymicLetter, searchRecordIncome, searchRecordHeight, pair.First(), pair.Last());
-                    }
-                }
-
-                recordsToShow = func.Invoke(searchRecordId, searchRecordFirstName, searchRecordLastName, searchRecordDateOfBirth, searchRecordPatronymicLetter, searchRecordIncome, searchRecordHeight);
-            }
-
-            return this.CreateTable(recordsToShow, fieldsToShow);
-        }
-
-        private IEnumerable<FileCabinetRecord> SelectAnd(List<int> searchRecordId, List<string> searchRecordFirstName, List<string> searchRecordLastName, List<DateTime> searchRecordDateOfBirth, List<char> searchRecordPatronymicLetter, List<decimal> searchRecordIncome, List<short> searchRecordHeight)
-        {
-            List<FileCabinetRecord> records = new List<FileCabinetRecord>(this.Service.GetRecords());
-            if (searchRecordId.Count == 1)
-            {
-                records.RemoveAll(x => x.Id != searchRecordId[0]);
-            }
-
-            if (searchRecordFirstName.Count == 1)
-            {
-                records.RemoveAll(x => x.FirstName != searchRecordFirstName[0]);
-            }
-
-            if (searchRecordLastName.Count == 1)
-            {
-                records.RemoveAll(x => x.LastName != searchRecordLastName[0]);
-            }
-
-            if (searchRecordDateOfBirth.Count == 1)
-            {
-                records.RemoveAll(x => (x.DateOfBirth.Year != searchRecordDateOfBirth[0].Year) || (x.DateOfBirth.Month != searchRecordDateOfBirth[0].Month) || (x.DateOfBirth.Day != searchRecordDateOfBirth[0].Day));
-            }
-
-            if (searchRecordPatronymicLetter.Count == 1)
-            {
-                records.RemoveAll(x => x.PatronymicLetter != searchRecordPatronymicLetter[0]);
-            }
-
-            if (searchRecordIncome.Count == 1)
-            {
-                records.RemoveAll(x => x.Income != searchRecordIncome[0]);
-            }
-
-            if (searchRecordHeight.Count == 1)
-            {
-                records.RemoveAll(x => x.Height != searchRecordHeight[0]);
-            }
-
-            return records;
-        }
-
-        private IEnumerable<FileCabinetRecord> SelectOr(List<int> searchRecordId, List<string> searchRecordFirstName, List<string> searchRecordLastName, List<DateTime> searchRecordDateOfBirth, List<char> searchRecordPatronymicLetter, List<decimal> searchRecordIncome, List<short> searchRecordHeight)
-        {
-            List<FileCabinetRecord> result = new List<FileCabinetRecord>();
-            IEnumerable<FileCabinetRecord> records = this.Service.GetRecords();
-            if (searchRecordId.Count > 0)
-            {
-                foreach (int id in searchRecordId)
-                {
-                    result.AddRange(records.Where(x => x.Id == id));
-                }
-            }
-
-            if (searchRecordFirstName.Count > 0)
-            {
-                foreach (string firstName in searchRecordFirstName)
-                {
-                    result.AddRange(records.Where(x => x.FirstName == firstName));
-                }
-            }
-
-            if (searchRecordLastName.Count > 0)
-            {
-                foreach (string lastName in searchRecordLastName)
-                {
-                    result.AddRange(records.Where(x => x.LastName == lastName));
-                }
-            }
-
-            if (searchRecordDateOfBirth.Count > 0)
-            {
-                foreach (DateTime dateOfBirth in searchRecordDateOfBirth)
-                {
-                    result.AddRange(records.Where(x => x.DateOfBirth.Year == dateOfBirth.Year && x.DateOfBirth.Month == dateOfBirth.Month && x.DateOfBirth.Day == dateOfBirth.Day));
-                }
-            }
-
-            if (searchRecordPatronymicLetter.Count > 0)
-            {
-                foreach (char patronymicLetter in searchRecordPatronymicLetter)
-                {
-                    result.AddRange(records.Where(x => x.PatronymicLetter == patronymicLetter));
-                }
-            }
-
-            if (searchRecordIncome.Count > 0)
-            {
-                foreach (decimal income in searchRecordIncome)
-                {
-                    result.AddRange(records.Where(x => x.Income == income));
-                }
-            }
-
-            if (searchRecordHeight.Count > 0)
-            {
-                foreach (short height in searchRecordHeight)
-                {
-                    result.AddRange(records.Where(x => x.Height == height));
-                }
-            }
-
-            return result.Distinct();
-        }
-
-        private void SetSearchParametersAnd(List<int> searchRecordId, List<string> searchRecordFirstName, List<string> searchRecordLastName, List<DateTime> searchRecordDateOfBirth, List<char> searchRecordPatronymicLetter, List<decimal> searchRecordIncome, List<short> searchRecordHeight, string key, string value)
+        private static void SetSearchParametersAnd(List<int> searchRecordId, List<string> searchRecordFirstName, List<string> searchRecordLastName, List<DateTime> searchRecordDateOfBirth, List<char> searchRecordPatronymicLetter, List<decimal> searchRecordIncome, List<short> searchRecordHeight, string key, string value)
         {
             if (key.Equals("id", StringComparison.InvariantCultureIgnoreCase))
             {
@@ -358,7 +176,7 @@ namespace FileCabinetApp.CommandHandlers
             throw new ArgumentException("Wrong property name.", nameof(key));
         }
 
-        private void SetSearchParametersOr(List<int> searchRecordId, List<string> searchRecordFirstName, List<string> searchRecordLastName, List<DateTime> searchRecordDateOfBirth, List<char> searchRecordPatronymicLetter, List<decimal> searchRecordIncome, List<short> searchRecordHeight, string key, string value)
+        private static void SetSearchParametersOr(List<int> searchRecordId, List<string> searchRecordFirstName, List<string> searchRecordLastName, List<DateTime> searchRecordDateOfBirth, List<char> searchRecordPatronymicLetter, List<decimal> searchRecordIncome, List<short> searchRecordHeight, string key, string value)
         {
             if (key.Equals("id", StringComparison.InvariantCultureIgnoreCase))
             {
@@ -435,56 +253,7 @@ namespace FileCabinetApp.CommandHandlers
             throw new ArgumentException("Wrong property name.", nameof(key));
         }
 
-        private string CreateTable(IEnumerable<FileCabinetRecord> records, IEnumerable<string> fieldsToShow)
-        {
-            if (!records.Any())
-            {
-                return "No records with such conditions.";
-            }
-
-            if (!fieldsToShow.Any())
-            {
-                throw new ArgumentException("Wrong parameters.", nameof(fieldsToShow));
-            }
-
-            PropertyInfo[] properties = typeof(FileCabinetRecord).GetProperties();
-            foreach (string field in fieldsToShow)
-            {
-                if (!properties.Any(x => x.Name.Equals(field, StringComparison.InvariantCultureIgnoreCase)))
-                {
-                    throw new ArgumentException("Wrong property name.");
-                }
-            }
-
-            IEnumerable<PropertyInfo> selectedProperties = properties.Where(x => fieldsToShow.Any(y => y.Equals(x.Name, StringComparison.InvariantCultureIgnoreCase)));
-            IEnumerable<int> columnsLengths = this.GetTableColumnLengths(selectedProperties, records);
-            StringBuilder table = new StringBuilder();
-            StringBuilder separator = new StringBuilder();
-            foreach (int length in columnsLengths)
-            {
-                separator.Append('+');
-                for (int i = 0; i < length; i++)
-                {
-                    separator.Append('-');
-                }
-
-                separator.Append('+');
-            }
-
-            separator.Append("\n");
-            table.Append(separator);
-            table.Append(this.GetTableColumnsNames(selectedProperties, columnsLengths));
-            table.Append(separator);
-            foreach (FileCabinetRecord record in records)
-            {
-                table.Append(this.GetValuesString(record, columnsLengths, selectedProperties));
-                table.Append(separator);
-            }
-
-            return table.ToString();
-        }
-
-        private IEnumerable<int> GetTableColumnLengths(IEnumerable<PropertyInfo> properties, IEnumerable<FileCabinetRecord> records)
+        private static IEnumerable<int> GetTableColumnLengths(IEnumerable<PropertyInfo> properties, IEnumerable<FileCabinetRecord> records)
         {
             int maxLength;
             int newMaxLength;
@@ -503,7 +272,7 @@ namespace FileCabinetApp.CommandHandlers
             }
         }
 
-        private string GetTableColumnsNames(IEnumerable<PropertyInfo> properties, IEnumerable<int> lengths)
+        private static string GetTableColumnsNames(IEnumerable<PropertyInfo> properties, IEnumerable<int> lengths)
         {
             StringBuilder result = new StringBuilder(lengths.Sum() + (properties.Count() * 2));
             int[] lengthsArr = lengths.ToArray();
@@ -534,7 +303,7 @@ namespace FileCabinetApp.CommandHandlers
             return result.ToString();
         }
 
-        private string GetValuesString(FileCabinetRecord record, IEnumerable<int> lengths, IEnumerable<PropertyInfo> propertyInfos)
+        private static string GetValuesString(FileCabinetRecord record, IEnumerable<int> lengths, IEnumerable<PropertyInfo> propertyInfos)
         {
             StringBuilder result = new StringBuilder(lengths.Sum() + (propertyInfos.Count() * 2));
             int[] lengthsArr = lengths.ToArray();
@@ -580,6 +349,237 @@ namespace FileCabinetApp.CommandHandlers
 
             result.Append("\n");
             return result.ToString();
+        }
+
+        private static string CreateTable(IEnumerable<FileCabinetRecord> records, IEnumerable<string> fieldsToShow)
+        {
+            if (!records.Any())
+            {
+                return "No records with such conditions.";
+            }
+
+            if (!fieldsToShow.Any())
+            {
+                throw new ArgumentException("Wrong parameters.", nameof(fieldsToShow));
+            }
+
+            PropertyInfo[] properties = typeof(FileCabinetRecord).GetProperties();
+            foreach (string field in fieldsToShow)
+            {
+                if (!properties.Any(x => x.Name.Equals(field, StringComparison.InvariantCultureIgnoreCase)))
+                {
+                    throw new ArgumentException("Wrong property name.");
+                }
+            }
+
+            IEnumerable<PropertyInfo> selectedProperties = properties.Where(x => fieldsToShow.Any(y => y.Equals(x.Name, StringComparison.InvariantCultureIgnoreCase)));
+            IEnumerable<int> columnsLengths = GetTableColumnLengths(selectedProperties, records);
+            StringBuilder table = new StringBuilder();
+            StringBuilder separator = new StringBuilder();
+            foreach (int length in columnsLengths)
+            {
+                separator.Append('+');
+                for (int i = 0; i < length; i++)
+                {
+                    separator.Append('-');
+                }
+
+                separator.Append('+');
+            }
+
+            separator.Append("\n");
+            table.Append(separator);
+            table.Append(GetTableColumnsNames(selectedProperties, columnsLengths));
+            table.Append(separator);
+            foreach (FileCabinetRecord record in records)
+            {
+                table.Append(GetValuesString(record, columnsLengths, selectedProperties));
+                table.Append(separator);
+            }
+
+            return table.ToString();
+        }
+
+        private string Select(string parameters)
+        {
+            if (parameters is null)
+            {
+                throw new ArgumentNullException(nameof(parameters), "Parameters must be not null.");
+            }
+
+            var temp = parameters.Split("where");
+            var fieldsToShow = temp[0].Split(',');
+            for (int i = 0; i < fieldsToShow.Length; i++)
+            {
+                fieldsToShow[i] = fieldsToShow[i].Trim();
+            }
+
+            IEnumerable<FileCabinetRecord> recordsToShow;
+            Func<List<int>, List<string>, List<string>, List<DateTime>, List<char>, List<decimal>, List<short>, IEnumerable<FileCabinetRecord>> func;
+            IEnumerable<string> searchParams;
+            if (temp.Length == 1)
+            {
+                recordsToShow = this.Service.GetRecords();
+            }
+            else if (temp.Length > 2)
+            {
+                throw new ArgumentException("Wrong parameters.", nameof(parameters));
+            }
+            else
+            {
+                var orSearchParams = temp[1].Split("or");
+                var andSearchParams = temp[1].Split("and");
+                bool isSamePropertiesPossible;
+
+                if (orSearchParams.Length > andSearchParams.Length)
+                {
+                    func = this.SelectOr;
+                    searchParams = orSearchParams;
+                    isSamePropertiesPossible = true;
+                }
+                else
+                {
+                    func = this.SelectAnd;
+                    searchParams = andSearchParams;
+                    isSamePropertiesPossible = false;
+                }
+
+                if (searchParams.Count() < 2)
+                {
+                    throw new ArgumentException("Must be at least 2 search conditions.", nameof(parameters));
+                }
+
+                IEnumerable<IEnumerable<string>> fieldsAndValuesToFind = searchParams.Select(x => x.Split('=').Select(y => y.Trim()));
+                List<int> searchRecordId = new List<int>();
+                List<string> searchRecordFirstName = new List<string>();
+                List<string> searchRecordLastName = new List<string>();
+                List<DateTime> searchRecordDateOfBirth = new List<DateTime>();
+                List<char> searchRecordPatronymicLetter = new List<char>();
+                List<decimal> searchRecordIncome = new List<decimal>();
+                List<short> searchRecordHeight = new List<short>();
+                if (isSamePropertiesPossible)
+                {
+                    foreach (var pair in fieldsAndValuesToFind)
+                    {
+                        SetSearchParametersOr(searchRecordId, searchRecordFirstName, searchRecordLastName, searchRecordDateOfBirth, searchRecordPatronymicLetter, searchRecordIncome, searchRecordHeight, pair.First(), pair.Last());
+                    }
+                }
+                else
+                {
+                    foreach (var pair in fieldsAndValuesToFind)
+                    {
+                        SetSearchParametersAnd(searchRecordId, searchRecordFirstName, searchRecordLastName, searchRecordDateOfBirth, searchRecordPatronymicLetter, searchRecordIncome, searchRecordHeight, pair.First(), pair.Last());
+                    }
+                }
+
+                recordsToShow = func.Invoke(searchRecordId, searchRecordFirstName, searchRecordLastName, searchRecordDateOfBirth, searchRecordPatronymicLetter, searchRecordIncome, searchRecordHeight);
+            }
+
+            return CreateTable(recordsToShow, fieldsToShow);
+        }
+
+        private IEnumerable<FileCabinetRecord> SelectAnd(List<int> searchRecordId, List<string> searchRecordFirstName, List<string> searchRecordLastName, List<DateTime> searchRecordDateOfBirth, List<char> searchRecordPatronymicLetter, List<decimal> searchRecordIncome, List<short> searchRecordHeight)
+        {
+            List<FileCabinetRecord> records = new List<FileCabinetRecord>(this.Service.GetRecords());
+            if (searchRecordId.Count == 1)
+            {
+                records.RemoveAll(x => x.Id != searchRecordId[0]);
+            }
+
+            if (searchRecordFirstName.Count == 1)
+            {
+                records.RemoveAll(x => x.FirstName != searchRecordFirstName[0]);
+            }
+
+            if (searchRecordLastName.Count == 1)
+            {
+                records.RemoveAll(x => x.LastName != searchRecordLastName[0]);
+            }
+
+            if (searchRecordDateOfBirth.Count == 1)
+            {
+                records.RemoveAll(x => (x.DateOfBirth.Year != searchRecordDateOfBirth[0].Year) || (x.DateOfBirth.Month != searchRecordDateOfBirth[0].Month) || (x.DateOfBirth.Day != searchRecordDateOfBirth[0].Day));
+            }
+
+            if (searchRecordPatronymicLetter.Count == 1)
+            {
+                records.RemoveAll(x => x.PatronymicLetter != searchRecordPatronymicLetter[0]);
+            }
+
+            if (searchRecordIncome.Count == 1)
+            {
+                records.RemoveAll(x => x.Income != searchRecordIncome[0]);
+            }
+
+            if (searchRecordHeight.Count == 1)
+            {
+                records.RemoveAll(x => x.Height != searchRecordHeight[0]);
+            }
+
+            return records;
+        }
+
+        private IEnumerable<FileCabinetRecord> SelectOr(List<int> searchRecordId, List<string> searchRecordFirstName, List<string> searchRecordLastName, List<DateTime> searchRecordDateOfBirth, List<char> searchRecordPatronymicLetter, List<decimal> searchRecordIncome, List<short> searchRecordHeight)
+        {
+            List<FileCabinetRecord> result = new List<FileCabinetRecord>();
+            IEnumerable<FileCabinetRecord> records = this.Service.GetRecords();
+            if (searchRecordId.Count > 0)
+            {
+                foreach (int id in searchRecordId)
+                {
+                    result.AddRange(records.Where(x => x.Id == id));
+                }
+            }
+
+            if (searchRecordFirstName.Count > 0)
+            {
+                foreach (string firstName in searchRecordFirstName)
+                {
+                    result.AddRange(records.Where(x => x.FirstName == firstName));
+                }
+            }
+
+            if (searchRecordLastName.Count > 0)
+            {
+                foreach (string lastName in searchRecordLastName)
+                {
+                    result.AddRange(records.Where(x => x.LastName == lastName));
+                }
+            }
+
+            if (searchRecordDateOfBirth.Count > 0)
+            {
+                foreach (DateTime dateOfBirth in searchRecordDateOfBirth)
+                {
+                    result.AddRange(records.Where(x => x.DateOfBirth.Year == dateOfBirth.Year && x.DateOfBirth.Month == dateOfBirth.Month && x.DateOfBirth.Day == dateOfBirth.Day));
+                }
+            }
+
+            if (searchRecordPatronymicLetter.Count > 0)
+            {
+                foreach (char patronymicLetter in searchRecordPatronymicLetter)
+                {
+                    result.AddRange(records.Where(x => x.PatronymicLetter == patronymicLetter));
+                }
+            }
+
+            if (searchRecordIncome.Count > 0)
+            {
+                foreach (decimal income in searchRecordIncome)
+                {
+                    result.AddRange(records.Where(x => x.Income == income));
+                }
+            }
+
+            if (searchRecordHeight.Count > 0)
+            {
+                foreach (short height in searchRecordHeight)
+                {
+                    result.AddRange(records.Where(x => x.Height == height));
+                }
+            }
+
+            return result.Distinct();
         }
     }
 }

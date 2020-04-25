@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace FileCabinetApp.Validators
 {
@@ -9,8 +7,8 @@ namespace FileCabinetApp.Validators
     /// </summary>
     public class IncomeValidator : IRecordValidator
     {
-        private decimal from;
-        private decimal to;
+        private readonly decimal from;
+        private readonly decimal to;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="IncomeValidator"/> class.

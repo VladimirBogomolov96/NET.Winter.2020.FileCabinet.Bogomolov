@@ -16,6 +16,8 @@ namespace FileCabinetApp
         /// </summary>
         /// <value>Array of records.</value>
         [XmlElement("record")]
+#pragma warning disable CA1819 // Properties should not return arrays
         public FileCabinetRecordXmlModel[] Records { get; set; }
+#pragma warning restore CA1819 // Properties should not return arrays
     }
 }

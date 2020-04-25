@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 
 namespace FileCabinetApp.CommandHandlers
 {
@@ -44,15 +43,127 @@ namespace FileCabinetApp.CommandHandlers
                     Console.WriteLine("{0} records were updated.", this.Update(commandRequest.Parameters));
                     this.Service.ClearCache();
                 }
-                catch (ArgumentException ex)
+                catch (ArgumentException)
                 {
-                    Console.WriteLine(ex.Message);
+                    Console.WriteLine("Invalid parameters, fix your input.");
                 }
             }
             else
             {
                 base.Handle(commandRequest);
             }
+        }
+
+        private static void SetSearchParameters(List<int> searchRecordId, List<string> searchRecordFirstName, List<string> searchRecordLastName, List<DateTime> searchRecordDateOfBirth, List<char> searchRecordPatronymicLetter, List<decimal> searchRecordIncome, List<short> searchRecordHeight, string key, string value)
+        {
+            if (key.Equals("id", StringComparison.InvariantCultureIgnoreCase))
+            {
+                if (searchRecordId.Count > 0)
+                {
+                    throw new ArgumentException("Set one parameter to find to one property.", nameof(key));
+                }
+
+                var conversionResultOfId = Converter.ConvertStringToInt(value);
+                if (!conversionResultOfId.Item1)
+                {
+                    throw new ArgumentException(conversionResultOfId.Item2, nameof(value));
+                }
+
+                searchRecordId.Add(conversionResultOfId.Item3);
+                return;
+            }
+
+            if (key.Equals("firstname", StringComparison.InvariantCultureIgnoreCase))
+            {
+                if (searchRecordFirstName.Count > 0)
+                {
+                    throw new ArgumentException("Set one parameter to find to one property.", nameof(key));
+                }
+
+                searchRecordFirstName.Add(value);
+                return;
+            }
+
+            if (key.Equals("lastname", StringComparison.InvariantCultureIgnoreCase))
+            {
+                if (searchRecordLastName.Count > 0)
+                {
+                    throw new ArgumentException("Set one parameter to find to one property.", nameof(key));
+                }
+
+                searchRecordLastName.Add(value);
+                return;
+            }
+
+            if (key.Equals("dateofbirth", StringComparison.InvariantCultureIgnoreCase))
+            {
+                if (searchRecordDateOfBirth.Count > 0)
+                {
+                    throw new ArgumentException("Set one parameter to find to one property.", nameof(key));
+                }
+
+                var dateOfBirthConversionResult = Converter.ConvertStringToDateTime(value);
+                if (!dateOfBirthConversionResult.Item1)
+                {
+                    throw new ArgumentException(dateOfBirthConversionResult.Item2, nameof(value));
+                }
+
+                searchRecordDateOfBirth.Add(dateOfBirthConversionResult.Item3);
+                return;
+            }
+
+            if (key.Equals("patronymicletter", StringComparison.InvariantCultureIgnoreCase))
+            {
+                if (searchRecordPatronymicLetter.Count > 0)
+                {
+                    throw new ArgumentException("Set one parameter to find to one property.", nameof(key));
+                }
+
+                var patronymicLetterConversionResult = Converter.ConvertStringToChar(value);
+                if (!patronymicLetterConversionResult.Item1)
+                {
+                    throw new ArgumentException(patronymicLetterConversionResult.Item2, nameof(value));
+                }
+
+                searchRecordPatronymicLetter.Add(patronymicLetterConversionResult.Item3);
+                return;
+            }
+
+            if (key.Equals("income", StringComparison.InvariantCultureIgnoreCase))
+            {
+                if (searchRecordIncome.Count > 0)
+                {
+                    throw new ArgumentException("Set one parameter to find to one property.", nameof(key));
+                }
+
+                var incomeConversionResult = Converter.ConvertStringToDecimal(value);
+                if (!incomeConversionResult.Item1)
+                {
+                    throw new ArgumentException(incomeConversionResult.Item2, nameof(value));
+                }
+
+                searchRecordIncome.Add(incomeConversionResult.Item3);
+                return;
+            }
+
+            if (key.Equals("height", StringComparison.InvariantCultureIgnoreCase))
+            {
+                if (searchRecordHeight.Count > 0)
+                {
+                    throw new ArgumentException("Set one parameter to find to one property.", nameof(key));
+                }
+
+                var heightConversionResult = Converter.ConvertStringToShort(value);
+                if (!heightConversionResult.Item1)
+                {
+                    throw new ArgumentException(heightConversionResult.Item2, nameof(value));
+                }
+
+                searchRecordHeight.Add(heightConversionResult.Item3);
+                return;
+            }
+
+            throw new ArgumentException("Wrong property name.", nameof(key));
         }
 
         private int Update(string parameters)
@@ -90,7 +201,7 @@ namespace FileCabinetApp.CommandHandlers
             List<short> searchRecordHeight = new List<short>(1);
             foreach (var pair in fieldsAndValuesToFind)
             {
-                this.SetSearchParameters(searchRecordId, searchRecordFirstName, searchRecordLastName, searchRecordDateOfBirth, searchRecordPatronymicLetter, searchRecordIncome, searchRecordHeight, pair.First(), pair.Last());
+                SetSearchParameters(searchRecordId, searchRecordFirstName, searchRecordLastName, searchRecordDateOfBirth, searchRecordPatronymicLetter, searchRecordIncome, searchRecordHeight, pair.First(), pair.Last());
             }
 
             IEnumerable<FileCabinetRecord> recordsToUpdate = this.FindRecordsToUpdate(searchRecordId, searchRecordFirstName, searchRecordLastName, searchRecordDateOfBirth, searchRecordPatronymicLetter, searchRecordIncome, searchRecordHeight);
@@ -102,118 +213,6 @@ namespace FileCabinetApp.CommandHandlers
             {
                 return this.Service.Update(recordsToUpdate, fieldsAndValuesToSet);
             }
-        }
-
-        private void SetSearchParameters(List<int> searchRecordId, List<string> searchRecordFirstName, List<string> searchRecordLastName, List<DateTime> searchRecordDateOfBirth, List<char> searchRecordPatronymicLetter, List<decimal> searchRecordIncome, List<short> searchRecordHeight, string key, string value)
-        {
-            if (key.Equals("id", StringComparison.InvariantCultureIgnoreCase))
-            {
-                if (searchRecordId.Count > 0)
-                {
-                    throw new ArgumentException("Set one parameter to fint to one property.", nameof(key));
-                }
-
-                var conversionResultOfId = Converter.ConvertStringToInt(value);
-                if (!conversionResultOfId.Item1)
-                {
-                    throw new ArgumentException(conversionResultOfId.Item2, nameof(value));
-                }
-
-                searchRecordId.Add(conversionResultOfId.Item3);
-                return;
-            }
-
-            if (key.Equals("firstname", StringComparison.InvariantCultureIgnoreCase))
-            {
-                if (searchRecordFirstName.Count > 0)
-                {
-                    throw new ArgumentException("Set one parameter to fint to one property.", nameof(key));
-                }
-
-                searchRecordFirstName.Add(value);
-                return;
-            }
-
-            if (key.Equals("lastname", StringComparison.InvariantCultureIgnoreCase))
-            {
-                if (searchRecordLastName.Count > 0)
-                {
-                    throw new ArgumentException("Set one parameter to fint to one property.", nameof(key));
-                }
-
-                searchRecordLastName.Add(value);
-                return;
-            }
-
-            if (key.Equals("dateofbirth", StringComparison.InvariantCultureIgnoreCase))
-            {
-                if (searchRecordDateOfBirth.Count > 0)
-                {
-                    throw new ArgumentException("Set one parameter to fint to one property.", nameof(key));
-                }
-
-                var dateOfBirthConversionResult = Converter.ConvertStringToDateTime(value);
-                if (!dateOfBirthConversionResult.Item1)
-                {
-                    throw new ArgumentException(dateOfBirthConversionResult.Item2, nameof(value));
-                }
-
-                searchRecordDateOfBirth.Add(dateOfBirthConversionResult.Item3);
-                return;
-            }
-
-            if (key.Equals("patronymicletter", StringComparison.InvariantCultureIgnoreCase))
-            {
-                if (searchRecordPatronymicLetter.Count > 0)
-                {
-                    throw new ArgumentException("Set one parameter to fint to one property.", nameof(key));
-                }
-
-                var patronymicLetterConversionResult = Converter.ConvertStringToChar(value);
-                if (!patronymicLetterConversionResult.Item1)
-                {
-                    throw new ArgumentException(patronymicLetterConversionResult.Item2, nameof(value));
-                }
-
-                searchRecordPatronymicLetter.Add(patronymicLetterConversionResult.Item3);
-                return;
-            }
-
-            if (key.Equals("income", StringComparison.InvariantCultureIgnoreCase))
-            {
-                if (searchRecordIncome.Count > 0)
-                {
-                    throw new ArgumentException("Set one parameter to fint to one property.", nameof(key));
-                }
-
-                var incomeConversionResult = Converter.ConvertStringToDecimal(value);
-                if (!incomeConversionResult.Item1)
-                {
-                    throw new ArgumentException(incomeConversionResult.Item2, nameof(value));
-                }
-
-                searchRecordIncome.Add(incomeConversionResult.Item3);
-                return;
-            }
-
-            if (key.Equals("height", StringComparison.InvariantCultureIgnoreCase))
-            {
-                if (searchRecordHeight.Count > 0)
-                {
-                    throw new ArgumentException("Set one parameter to fint to one property.", nameof(key));
-                }
-
-                var heightConversionResult = Converter.ConvertStringToShort(value);
-                if (!heightConversionResult.Item1)
-                {
-                    throw new ArgumentException(heightConversionResult.Item2, nameof(value));
-                }
-
-                searchRecordHeight.Add(heightConversionResult.Item3);
-                return;
-            }
-
-            throw new ArgumentException("Wrong property name.", nameof(key));
         }
 
         private IEnumerable<FileCabinetRecord> FindRecordsToUpdate(List<int> searchRecordId, List<string> searchRecordFirstName, List<string> searchRecordLastName, List<DateTime> searchRecordDateOfBirth, List<char> searchRecordPatronymicLetter, List<decimal> searchRecordIncome, List<short> searchRecordHeight)

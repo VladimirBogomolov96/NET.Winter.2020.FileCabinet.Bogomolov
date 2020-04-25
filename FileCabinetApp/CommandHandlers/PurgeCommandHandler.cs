@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace FileCabinetApp.CommandHandlers
 {
@@ -38,7 +36,7 @@ namespace FileCabinetApp.CommandHandlers
 
             if (commandRequest.Command.Equals("purge", StringComparison.InvariantCultureIgnoreCase))
             {
-                this.Purge(commandRequest.Parameters);
+                this.Purge();
             }
             else
             {
@@ -46,16 +44,16 @@ namespace FileCabinetApp.CommandHandlers
             }
         }
 
-        private void Purge(string parameters)
+        private void Purge()
         {
             try
             {
                 int purgedRecords = this.Service.Purge();
                 Console.WriteLine("Data file processing is completed: {0} of {1} records were purged.", purgedRecords, purgedRecords + this.Service.GetStat().Item1);
             }
-            catch (InvalidOperationException ex)
+            catch (InvalidOperationException)
             {
-                Console.WriteLine(ex.Message);
+                Console.WriteLine("Defragmentation can be completed only with filesystem service.");
             }
         }
     }

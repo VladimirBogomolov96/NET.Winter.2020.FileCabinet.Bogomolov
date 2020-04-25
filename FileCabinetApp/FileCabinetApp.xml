@@ -518,6 +518,7 @@
             Prints records.
             </summary>
             <param name="records">Records to print.</param>
+            <exception cref="T:System.ArgumentNullException">Thrown when given records are null.</exception>
         </member>
         <member name="T:FileCabinetApp.Printers.IRecordPrinter">
             <summary>
@@ -574,6 +575,8 @@
             Reads all strings from xml file.
             </summary>
             <returns>List of records.</returns>
+            <exception cref="T:System.InvalidOperationException">Thrown when serializer can't deserialize data.</exception>
+            <exception cref="T:System.InvalidCastException">Thrown when given data can't be casted to FileCabinetRecordsXmlModel.</exception>
         </member>
         <member name="T:FileCabinetApp.RecordParametersTransfer">
             <summary>
@@ -659,7 +662,8 @@
             </summary>
             <param name="transfer">Object to transfer parameters of new record.</param>
             <returns>ID of created record.</returns>
-            <exception cref="T:System.ArgumentNullException">Thrown when transfer parameters is null.</exception>
+            <exception cref="T:System.ArgumentNullException">Throw when transfer object is null.</exception>
+            <exception cref="T:System.ArgumentException">Thrown when transfer data is invalid.</exception>
         </member>
         <member name="M:FileCabinetApp.FileCabinetFilesystemService.Insert(FileCabinetApp.FileCabinetRecord)">
             <summary>
@@ -667,14 +671,8 @@
             </summary>
             <param name="record">Record to insert.</param>
             <returns>Id of inserted record.</returns>
-        </member>
-        <member name="M:FileCabinetApp.FileCabinetFilesystemService.EditRecord(System.Int32,FileCabinetApp.RecordParametersTransfer)">
-            <summary>
-            Edits existing record.
-            </summary>
-            <param name="id">ID of a record to edit.</param>
-            <param name="transfer">Object to transfer new parameters to existing record.</param>
-            <exception cref="T:System.ArgumentNullException">Thrown when transfer parameters is null.</exception>
+            <exception cref="T:System.ArgumentNullException">Thrown when record is null.</exception>
+            <exception cref="T:System.ArgumentException">Thrown when records data is invalid or when record with given id is already exists.</exception>
         </member>
         <member name="M:FileCabinetApp.FileCabinetFilesystemService.GetRecords">
             <summary>
@@ -705,6 +703,7 @@
             </summary>
             <param name="snapshot">Snapshot that represent statement to restore.</param>
             <returns>Amount of new records added.</returns>
+            <exception cref="T:System.ArgumentNullException">Thrown when snapshot is null.</exception>
         </member>
         <member name="M:FileCabinetApp.FileCabinetFilesystemService.SetRecordValidator(FileCabinetApp.IRecordValidator)">
             <summary>
@@ -718,6 +717,7 @@
             </summary>
             <param name="records">Records to delete.</param>
             <returns>IDs of deleted records.</returns>
+            <exception cref="T:System.ArgumentNullException">Thrown when recors is null.</exception>
         </member>
         <member name="M:FileCabinetApp.FileCabinetFilesystemService.Remove(System.Int32)">
             <summary>
@@ -739,6 +739,8 @@
             <param name="records">Records to update.</param>
             <param name="fieldsAndValuesToSet">Fields and values to set.</param>
             <returns>Amount of updated records.</returns>
+            <exception cref="T:System.ArgumentNullException">Thrown when records or fields and values to set is null.</exception>
+            <exception cref="T:System.ArgumentException">Thrown when data is invalid.</exception>
         </member>
         <member name="M:FileCabinetApp.FileCabinetFilesystemService.GetCache">
             <summary>
@@ -786,17 +788,8 @@
             </summary>
             <param name="transfer">Object to transfer parameters of new record.</param>
             <returns>ID of created record.</returns>
-            <exception cref="T:System.ArgumentNullException">Throw when first name or last name is null, when transfer object is null.</exception>
-            <exception cref="T:System.ArgumentException">Thrown when firs name or last name length is out of 2 and 60 chars or contains only whitespaces, when date of birth out of 01-Jan-1950 and current date, when height is out of 1 and 300 cm, when income is negative, when patronymic letter is not a latin uppercase letter.</exception>
-        </member>
-        <member name="M:FileCabinetApp.FileCabinetMemoryService.EditRecord(System.Int32,FileCabinetApp.RecordParametersTransfer)">
-            <summary>
-            Edits existing record.
-            </summary>
-            <param name="id">ID of a record to edit.</param>
-            <param name="transfer">Object to transfer new parameters to existing record.</param>
-            <exception cref="T:System.ArgumentNullException">Throw when first name or last name is null, when transfer object is null.</exception>
-            <exception cref="T:System.ArgumentException">Thrown when firs name or last name length is out of 2 and 60 chars or contains only whitespaces, when date of birth out of 01-Jan-1950 and current date, when height is out of 1 and 300 cm, when income is negative, when patronymic letter is not a latin uppercase letter.</exception>
+            <exception cref="T:System.ArgumentNullException">Throw when transfer object is null.</exception>
+            <exception cref="T:System.ArgumentException">Thrown when transfer data is invalid.</exception>
         </member>
         <member name="M:FileCabinetApp.FileCabinetMemoryService.GetRecords">
             <summary>
@@ -822,6 +815,7 @@
             </summary>
             <param name="records">Records to delete.</param>
             <returns>IDs of deleted records.</returns>
+            <exception cref="T:System.ArgumentNullException">Thrown when records is null.</exception>
         </member>
         <member name="M:FileCabinetApp.FileCabinetMemoryService.Remove(System.Int32)">
             <summary>
@@ -836,6 +830,9 @@
             </summary>
             <param name="record">Record to insert.</param>
             <returns>Id of inserted record.</returns>
+            <exception cref="T:System.ArgumentNullException">Thrown when record is null.</exception>
+            <exception cref="T:System.ArgumentException">Thrown when records data is invalid.</exception>
+            <exception cref="T:System.ArgumentOutOfRangeException">Thrown when record with given id is already exists.</exception>
         </member>
         <member name="M:FileCabinetApp.FileCabinetMemoryService.Restore(FileCabinetApp.FileCabinetServiceSnapshot)">
             <summary>
@@ -843,6 +840,7 @@
             </summary>
             <param name="snapshot">Snapshot that represent statement to restore.</param>
             <returns>Amount of new records added.</returns>
+            <exception cref="T:System.ArgumentNullException">Thrown when snapshot is null.</exception>
         </member>
         <member name="M:FileCabinetApp.FileCabinetMemoryService.SetRecordValidator(FileCabinetApp.IRecordValidator)">
             <summary>
@@ -855,6 +853,7 @@
             Defragments file.
             </summary>
             <returns>Amount of purged records.</returns>
+            <exception cref="T:System.InvalidOperationException">Thrown always, because can't purge in memory service.</exception>
         </member>
         <member name="M:FileCabinetApp.FileCabinetMemoryService.Update(System.Collections.Generic.IEnumerable{FileCabinetApp.FileCabinetRecord},System.Collections.Generic.IEnumerable{System.Collections.Generic.IEnumerable{System.String}})">
             <summary>
@@ -863,6 +862,8 @@
             <param name="records">Records to update.</param>
             <param name="fieldsAndValuesToSet">Fields and values to set.</param>
             <returns>Amount of updated records.</returns>
+            <exception cref="T:System.ArgumentNullException">Thrown when records or fields and values to set is null.</exception>
+            <exception cref="T:System.ArgumentException">Thrown when data is invalid.</exception>
         </member>
         <member name="M:FileCabinetApp.FileCabinetMemoryService.GetCache">
             <summary>
@@ -893,13 +894,6 @@
             </summary>
             <param name="transfer">Object to transfer parameters of new record.</param>
             <returns>ID of created record.</returns>
-        </member>
-        <member name="M:FileCabinetApp.IFileCabinetService.EditRecord(System.Int32,FileCabinetApp.RecordParametersTransfer)">
-            <summary>
-            Edits existing record.
-            </summary>
-            <param name="id">ID of a record to edit.</param>
-            <param name="transfer">Object to transfer new parameters to existing record.</param>
         </member>
         <member name="M:FileCabinetApp.IFileCabinetService.SetRecordValidator(FileCabinetApp.IRecordValidator)">
             <summary>
@@ -1002,17 +996,8 @@
             </summary>
             <param name="transfer">Object to transfer parameters of new record.</param>
             <returns>ID of created record.</returns>
-            <exception cref="T:System.ArgumentNullException">Throw when first name or last name is null, when transfer object is null.</exception>
-            <exception cref="T:System.ArgumentException">Thrown when firs name or last name length is out of 2 and 60 chars or contains only whitespaces, when date of birth out of 01-Jan-1950 and current date, when height is out of 1 and 300 cm, when income is negative, when patronymic letter is not a latin uppercase letter.</exception>
-        </member>
-        <member name="M:FileCabinetApp.Services.ServiceLogger.EditRecord(System.Int32,FileCabinetApp.RecordParametersTransfer)">
-            <summary>
-            Edits existing record and writes info to log file.
-            </summary>
-            <param name="id">ID of a record to edit.</param>
-            <param name="transfer">Object to transfer new parameters to existing record.</param>
-            <exception cref="T:System.ArgumentNullException">Throw when first name or last name is null, when transfer object is null.</exception>
-            <exception cref="T:System.ArgumentException">Thrown when firs name or last name length is out of 2 and 60 chars or contains only whitespaces, when date of birth out of 01-Jan-1950 and current date, when height is out of 1 and 300 cm, when income is negative, when patronymic letter is not a latin uppercase letter.</exception>
+            <exception cref="T:System.ArgumentNullException">Throw when transfer object is null.</exception>
+            <exception cref="T:System.ArgumentException">Thrown when transfer data is invalid.</exception>
         </member>
         <member name="M:FileCabinetApp.Services.ServiceLogger.GetRecords">
             <summary>
@@ -1037,6 +1022,7 @@
             Defragments file and writes info to log file.
             </summary>
             <returns>Amount of purged records.</returns>
+            <exception cref="T:System.InvalidOperationException">Thrown when inner service is memory service.</exception>
         </member>
         <member name="M:FileCabinetApp.Services.ServiceLogger.Delete(System.Collections.Generic.IEnumerable{FileCabinetApp.FileCabinetRecord})">
             <summary>
@@ -1044,6 +1030,7 @@
             </summary>
             <param name="records">Records to delete.</param>
             <returns>IDs of deleted records.</returns>
+            <exception cref="T:System.ArgumentNullException">Thrown when records is null.</exception>
         </member>
         <member name="M:FileCabinetApp.Services.ServiceLogger.Remove(System.Int32)">
             <summary>
@@ -1058,6 +1045,7 @@
             </summary>
             <param name="snapshot">Snapshot that represent statement to restore.</param>
             <returns>Amount of new records added.</returns>
+            <exception cref="T:System.ArgumentNullException">Thrown when snapshot is null.</exception>
         </member>
         <member name="M:FileCabinetApp.Services.ServiceLogger.Insert(FileCabinetApp.FileCabinetRecord)">
             <summary>
@@ -1065,6 +1053,8 @@
             </summary>
             <param name="record">Record to insert.</param>
             <returns>Id of inserted record.</returns>
+            <exception cref="T:System.ArgumentNullException">Thrown when record is null.</exception>
+            <exception cref="T:System.ArgumentException">Thrown when records data is invalid or when record with given id is already exists.</exception>
         </member>
         <member name="M:FileCabinetApp.Services.ServiceLogger.Update(System.Collections.Generic.IEnumerable{FileCabinetApp.FileCabinetRecord},System.Collections.Generic.IEnumerable{System.Collections.Generic.IEnumerable{System.String}})">
             <summary>
@@ -1073,6 +1063,8 @@
             <param name="records">Records to update.</param>
             <param name="fieldsAndValuesToSet">Fields and values to set.</param>
             <returns>Amount of updated records.</returns>
+            <exception cref="T:System.ArgumentNullException">Thrown when records or fields and values to set is null.</exception>
+            <exception cref="T:System.ArgumentException">Thrown when data is invalid.</exception>
         </member>
         <member name="M:FileCabinetApp.Services.ServiceLogger.Dispose">
             <summary>
@@ -1120,17 +1112,8 @@
             </summary>
             <param name="transfer">Object to transfer parameters of new record.</param>
             <returns>ID of created record.</returns>
-            <exception cref="T:System.ArgumentNullException">Throw when first name or last name is null, when transfer object is null.</exception>
-            <exception cref="T:System.ArgumentException">Thrown when firs name or last name length is out of 2 and 60 chars or contains only whitespaces, when date of birth out of 01-Jan-1950 and current date, when height is out of 1 and 300 cm, when income is negative, when patronymic letter is not a latin uppercase letter.</exception>
-        </member>
-        <member name="M:FileCabinetApp.Services.ServiceMeter.EditRecord(System.Int32,FileCabinetApp.RecordParametersTransfer)">
-            <summary>
-            Edits existing record and measure execution time.
-            </summary>
-            <param name="id">ID of a record to edit.</param>
-            <param name="transfer">Object to transfer new parameters to existing record.</param>
-            <exception cref="T:System.ArgumentNullException">Throw when first name or last name is null, when transfer object is null.</exception>
-            <exception cref="T:System.ArgumentException">Thrown when firs name or last name length is out of 2 and 60 chars or contains only whitespaces, when date of birth out of 01-Jan-1950 and current date, when height is out of 1 and 300 cm, when income is negative, when patronymic letter is not a latin uppercase letter.</exception>
+            <exception cref="T:System.ArgumentNullException">Throw when transfer object is null.</exception>
+            <exception cref="T:System.ArgumentException">Thrown when transfer data is invalid.</exception>
         </member>
         <member name="M:FileCabinetApp.Services.ServiceMeter.GetRecords">
             <summary>
@@ -1150,6 +1133,8 @@
             </summary>
             <param name="record">Record to insert.</param>
             <returns>Id of inserted record.</returns>
+            <exception cref="T:System.ArgumentNullException">Thrown when record is null.</exception>
+            <exception cref="T:System.ArgumentException">Thrown when records data is invalid or when record with given id is already exists.</exception>
         </member>
         <member name="M:FileCabinetApp.Services.ServiceMeter.MakeSnapshot">
             <summary>
@@ -1162,6 +1147,7 @@
             Defragments file and measure execution time.
             </summary>
             <returns>Amount of purged records.</returns>
+            <exception cref="T:System.InvalidOperationException">Thrown when inner service is memory service.</exception>
         </member>
         <member name="M:FileCabinetApp.Services.ServiceMeter.Delete(System.Collections.Generic.IEnumerable{FileCabinetApp.FileCabinetRecord})">
             <summary>
@@ -1169,6 +1155,7 @@
             </summary>
             <param name="records">Records to delete.</param>
             <returns>IDs of deleted records.</returns>
+            <exception cref="T:System.ArgumentNullException">Thrown when records is null.</exception>
         </member>
         <member name="M:FileCabinetApp.Services.ServiceMeter.Remove(System.Int32)">
             <summary>
@@ -1183,6 +1170,7 @@
             </summary>
             <param name="snapshot">Snapshot that represent statement to restore.</param>
             <returns>Amount of new records added.</returns>
+            <exception cref="T:System.ArgumentNullException">Thrown when snapshot is null.</exception>
         </member>
         <member name="M:FileCabinetApp.Services.ServiceMeter.Update(System.Collections.Generic.IEnumerable{FileCabinetApp.FileCabinetRecord},System.Collections.Generic.IEnumerable{System.Collections.Generic.IEnumerable{System.String}})">
             <summary>
@@ -1191,6 +1179,8 @@
             <param name="records">Records to update.</param>
             <param name="fieldsAndValuesToSet">Fields and values to set.</param>
             <returns>Amount of updated records.</returns>
+            <exception cref="T:System.ArgumentNullException">Thrown when records or fields and values to set is null.</exception>
+            <exception cref="T:System.ArgumentException">Thrown when data is invalid.</exception>
         </member>
         <member name="M:FileCabinetApp.Services.ServiceMeter.SetRecordValidator(FileCabinetApp.IRecordValidator)">
             <summary>
@@ -1427,7 +1417,7 @@
             <param name="validatorBuilder">Builder to create composite validator.</param>
             <param name="configuration">Configuration to create validator.</param>
             <returns>Composite validator.</returns>
-            <exception cref="T:System.ArgumentNullException">Thrown when validator builder is null.</exception>
+            <exception cref="T:System.ArgumentNullException">Thrown when validator builder or configuration is null.</exception>
         </member>
         <member name="T:FileCabinetApp.IRecordValidator">
             <summary>
@@ -1440,7 +1430,6 @@
             </summary>
             <param name="record">Record to validate.</param>
             <returns>Whether validation was succesful and reason of fail.</returns>
-            <exception cref="T:System.ArgumentNullException">Thrown when record is null.</exception>
         </member>
         <member name="T:FileCabinetApp.FileCabinetRecordCsvWriter">
             <summary>
@@ -1468,6 +1457,7 @@
             Writes a record into current stream.
             </summary>
             <param name="record">Record to write.</param>
+            <exception cref="T:System.ArgumentNullException">Thrown when given record is null.</exception>
         </member>
         <member name="M:FileCabinetApp.FileCabinetRecordCsvWriter.Dispose(System.Boolean)">
             <summary>
@@ -1501,6 +1491,7 @@
             Writes a record into current stream.
             </summary>
             <param name="record">Record to write.</param>
+            <exception cref="T:System.ArgumentNullException">Thrown when given record is null.</exception>
         </member>
         <member name="M:FileCabinetApp.FileCabinetRecordXmlWriter.Dispose(System.Boolean)">
             <summary>

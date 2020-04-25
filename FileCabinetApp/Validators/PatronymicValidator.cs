@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace FileCabinetApp.Validators
 {
@@ -9,8 +7,8 @@ namespace FileCabinetApp.Validators
     /// </summary>
     public class PatronymicValidator : IRecordValidator
     {
-        private char from;
-        private char to;
+        private readonly char from;
+        private readonly char to;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="PatronymicValidator"/> class.

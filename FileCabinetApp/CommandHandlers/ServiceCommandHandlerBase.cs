@@ -1,13 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace FileCabinetApp.CommandHandlers
+﻿namespace FileCabinetApp.CommandHandlers
 {
     /// <summary>
     /// Abstract class for service dependent handlers.
     /// </summary>
-    public abstract class ServiceCommandHandlerBase : CommandHandlerBase
+    public class ServiceCommandHandlerBase : CommandHandlerBase
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="ServiceCommandHandlerBase"/> class.

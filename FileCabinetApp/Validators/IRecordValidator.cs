@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace FileCabinetApp
 {
@@ -14,7 +12,6 @@ namespace FileCabinetApp
         /// </summary>
         /// <param name="record">Record to validate.</param>
         /// <returns>Whether validation was succesful and reason of fail.</returns>
-        /// <exception cref="ArgumentNullException">Thrown when record is null.</exception>
         Tuple<bool, string> ValidateParameters(FileCabinetRecord record);
     }
 }

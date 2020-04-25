@@ -1,9 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Globalization;
 using System.Linq;
-using System.Text;
 
 namespace FileCabinetApp
 {
@@ -14,8 +12,8 @@ namespace FileCabinetApp
     {
         private readonly List<int> ids = new List<int>();
         private readonly Dictionary<string, string> cache = new Dictionary<string, string>();
+        private readonly List<FileCabinetRecord> list = new List<FileCabinetRecord>();
         private IRecordValidator recordValidator;
-        private List<FileCabinetRecord> list = new List<FileCabinetRecord>();
 
         /// <summary>
         /// Initializes a new instance of the <see cref="FileCabinetMemoryService"/> class.
@@ -38,8 +36,8 @@ namespace FileCabinetApp
         /// </summary>
         /// <param name="transfer">Object to transfer parameters of new record.</param>
         /// <returns>ID of created record.</returns>
-        /// <exception cref="ArgumentNullException">Throw when first name or last name is null, when transfer object is null.</exception>
-        /// <exception cref="ArgumentException">Thrown when firs name or last name length is out of 2 and 60 chars or contains only whitespaces, when date of birth out of 01-Jan-1950 and current date, when height is out of 1 and 300 cm, when income is negative, when patronymic letter is not a latin uppercase letter.</exception>
+        /// <exception cref="ArgumentNullException">Throw when transfer object is null.</exception>
+        /// <exception cref="ArgumentException">Thrown when transfer data is invalid.</exception>
         public int CreateRecord(RecordParametersTransfer transfer)
         {
             if (transfer is null)
@@ -77,52 +75,6 @@ namespace FileCabinetApp
         }
 
         /// <summary>
-        /// Edits existing record.
-        /// </summary>
-        /// <param name="id">ID of a record to edit.</param>
-        /// <param name="transfer">Object to transfer new parameters to existing record.</param>
-        /// <exception cref="ArgumentNullException">Throw when first name or last name is null, when transfer object is null.</exception>
-        /// <exception cref="ArgumentException">Thrown when firs name or last name length is out of 2 and 60 chars or contains only whitespaces, when date of birth out of 01-Jan-1950 and current date, when height is out of 1 and 300 cm, when income is negative, when patronymic letter is not a latin uppercase letter.</exception>
-        public void EditRecord(int id, RecordParametersTransfer transfer)
-        {
-            if (transfer is null)
-            {
-                throw new ArgumentNullException(nameof(transfer), "Transfer must be not null.");
-            }
-
-            if (!this.recordValidator.ValidateParameters(transfer.RecordSimulation()).Item1)
-            {
-                throw new ArgumentException(this.recordValidator.ValidateParameters(transfer.RecordSimulation()).Item2);
-            }
-
-            FileCabinetRecord editedRecord = new FileCabinetRecord()
-            {
-                Id = id,
-                FirstName = transfer.FirstName,
-                LastName = transfer.LastName,
-                DateOfBirth = transfer.DateOfBirth,
-                Height = transfer.Height,
-                Income = transfer.Income,
-                PatronymicLetter = transfer.PatronymicLetter,
-            };
-            for (int i = 0; i < this.list.Count; i++)
-            {
-                if (this.list[i].Id == id)
-                {
-                    this.list[i] = editedRecord;
-                    break;
-                }
-
-                if (i == this.list.Count - 1)
-                {
-                    throw new ArgumentException($"#{id} record is not found.", nameof(id));
-                }
-            }
-
-            Console.WriteLine($"Record #{id} is updated.");
-        }
-
-        /// <summary>
         /// Gets all existing records.
         /// </summary>
         /// <returns>Array of all existing records.</returns>
@@ -154,6 +106,7 @@ namespace FileCabinetApp
         /// </summary>
         /// <param name="records">Records to delete.</param>
         /// <returns>IDs of deleted records.</returns>
+        /// <exception cref="ArgumentNullException">Thrown when records is null.</exception>
         public IEnumerable<int> Delete(IEnumerable<FileCabinetRecord> records)
         {
             if (records is null)
@@ -193,6 +146,9 @@ namespace FileCabinetApp
         /// </summary>
         /// <param name="record">Record to insert.</param>
         /// <returns>Id of inserted record.</returns>
+        /// <exception cref="ArgumentNullException">Thrown when record is null.</exception>
+        /// <exception cref="ArgumentException">Thrown when records data is invalid.</exception>
+        /// <exception cref="ArgumentOutOfRangeException">Thrown when record with given id is already exists.</exception>
         public int Insert(FileCabinetRecord record)
         {
             if (record is null)
@@ -207,7 +163,7 @@ namespace FileCabinetApp
 
             if (this.ids.Contains(record.Id))
             {
-                throw new ArgumentException("Record with given id already exists.", nameof(record));
+                throw new ArgumentOutOfRangeException(nameof(record), "Record with given id already exists.");
             }
 
             this.list.Add(record);
@@ -220,6 +176,7 @@ namespace FileCabinetApp
         /// </summary>
         /// <param name="snapshot">Snapshot that represent statement to restore.</param>
         /// <returns>Amount of new records added.</returns>
+        /// <exception cref="ArgumentNullException">Thrown when snapshot is null.</exception>
         public int Restore(FileCabinetServiceSnapshot snapshot)
         {
             if (snapshot is null)
@@ -272,6 +229,7 @@ namespace FileCabinetApp
         /// Defragments file.
         /// </summary>
         /// <returns>Amount of purged records.</returns>
+        /// <exception cref="InvalidOperationException">Thrown always, because can't purge in memory service.</exception>
         public int Purge()
         {
             throw new InvalidOperationException("Purge command can't be used in memory sevice.");
@@ -283,6 +241,8 @@ namespace FileCabinetApp
         /// <param name="records">Records to update.</param>
         /// <param name="fieldsAndValuesToSet">Fields and values to set.</param>
         /// <returns>Amount of updated records.</returns>
+        /// <exception cref="ArgumentNullException">Thrown when records or fields and values to set is null.</exception>
+        /// <exception cref="ArgumentException">Thrown when data is invalid.</exception>
         public int Update(IEnumerable<FileCabinetRecord> records, IEnumerable<IEnumerable<string>> fieldsAndValuesToSet)
         {
             if (records is null)

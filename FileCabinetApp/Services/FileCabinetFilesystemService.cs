@@ -1,10 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Globalization;
 using System.IO;
 using System.Linq;
-using System.Text;
 
 namespace FileCabinetApp
 {
@@ -21,9 +19,9 @@ namespace FileCabinetApp
         private const int SizeOfRecord = 281;
         private readonly Dictionary<int, int> dictionaryIdOffset = new Dictionary<int, int>();
         private readonly Dictionary<string, string> cache = new Dictionary<string, string>();
-        private FileStream fileStream;
-        private BinaryReader binaryReader;
-        private BinaryWriter binaryWriter;
+        private readonly FileStream fileStream;
+        private readonly BinaryReader binaryReader;
+        private readonly BinaryWriter binaryWriter;
         private int currentOffset;
         private IRecordValidator recordValidator;
 
@@ -61,7 +59,8 @@ namespace FileCabinetApp
         /// </summary>
         /// <param name="transfer">Object to transfer parameters of new record.</param>
         /// <returns>ID of created record.</returns>
-        /// <exception cref="ArgumentNullException">Thrown when transfer parameters is null.</exception>
+        /// <exception cref="ArgumentNullException">Throw when transfer object is null.</exception>
+        /// <exception cref="ArgumentException">Thrown when transfer data is invalid.</exception>
         public int CreateRecord(RecordParametersTransfer transfer)
         {
             if (transfer is null)
@@ -115,6 +114,8 @@ namespace FileCabinetApp
         /// </summary>
         /// <param name="record">Record to insert.</param>
         /// <returns>Id of inserted record.</returns>
+        /// <exception cref="ArgumentNullException">Thrown when record is null.</exception>
+        /// <exception cref="ArgumentException">Thrown when records data is invalid or when record with given id is already exists.</exception>
         public int Insert(FileCabinetRecord record)
         {
             if (record is null)
@@ -156,51 +157,6 @@ namespace FileCabinetApp
             this.binaryWriter.Write(record.Height);
             this.currentOffset += SizeOfShort;
             return record.Id;
-        }
-
-        /// <summary>
-        /// Edits existing record.
-        /// </summary>
-        /// <param name="id">ID of a record to edit.</param>
-        /// <param name="transfer">Object to transfer new parameters to existing record.</param>
-        /// <exception cref="ArgumentNullException">Thrown when transfer parameters is null.</exception>
-        public void EditRecord(int id, RecordParametersTransfer transfer)
-        {
-            if (transfer is null)
-            {
-                throw new ArgumentNullException(nameof(transfer), "Transfer must be not null.");
-            }
-
-            if (!this.recordValidator.ValidateParameters(transfer.RecordSimulation()).Item1)
-            {
-                throw new ArgumentException(this.recordValidator.ValidateParameters(transfer.RecordSimulation()).Item2);
-            }
-
-            int tempOffset = this.dictionaryIdOffset[id];
-            this.dictionaryIdOffset.Remove(id);
-            this.binaryWriter.Seek(tempOffset, 0);
-            if (this.binaryReader.ReadBoolean())
-            {
-                return;
-            }
-
-            this.dictionaryIdOffset.Add(id, tempOffset);
-            tempOffset += SizeOfShort;
-            this.binaryWriter.Seek(tempOffset, 0);
-            this.binaryWriter.Write(id);
-            tempOffset += SizeOfInt;
-            this.binaryWriter.Write(transfer.FirstName);
-            tempOffset += SizeOfString;
-            this.binaryWriter.Seek(tempOffset, 0);
-            this.binaryWriter.Write(transfer.LastName);
-            tempOffset += SizeOfString;
-            this.binaryWriter.Seek(tempOffset, 0);
-            this.binaryWriter.Write(transfer.DateOfBirth.Day);
-            this.binaryWriter.Write(transfer.DateOfBirth.Month);
-            this.binaryWriter.Write(transfer.DateOfBirth.Year);
-            this.binaryWriter.Write(transfer.PatronymicLetter);
-            this.binaryWriter.Write(transfer.Income);
-            this.binaryWriter.Write(transfer.Height);
         }
 
         /// <summary>
@@ -296,6 +252,7 @@ namespace FileCabinetApp
         /// </summary>
         /// <param name="snapshot">Snapshot that represent statement to restore.</param>
         /// <returns>Amount of new records added.</returns>
+        /// <exception cref="ArgumentNullException">Thrown when snapshot is null.</exception>
         public int Restore(FileCabinetServiceSnapshot snapshot)
         {
             if (snapshot is null)
@@ -344,6 +301,7 @@ namespace FileCabinetApp
         /// </summary>
         /// <param name="records">Records to delete.</param>
         /// <returns>IDs of deleted records.</returns>
+        /// <exception cref="ArgumentNullException">Thrown when recors is null.</exception>
         public IEnumerable<int> Delete(IEnumerable<FileCabinetRecord> records)
         {
             if (records is null)
@@ -427,6 +385,8 @@ namespace FileCabinetApp
         /// <param name="records">Records to update.</param>
         /// <param name="fieldsAndValuesToSet">Fields and values to set.</param>
         /// <returns>Amount of updated records.</returns>
+        /// <exception cref="ArgumentNullException">Thrown when records or fields and values to set is null.</exception>
+        /// <exception cref="ArgumentException">Thrown when data is invalid.</exception>
         public int Update(IEnumerable<FileCabinetRecord> records, IEnumerable<IEnumerable<string>> fieldsAndValuesToSet)
         {
             if (records is null)

@@ -84,9 +84,9 @@ namespace FileCabinetApp.CommandHandlers
                     snapshot.SaveToCsv(streamWriter);
                     Console.WriteLine($"All records are exported to file {parametersArr[filePathIndex]}");
                 }
-                catch (DirectoryNotFoundException ex)
+                catch (DirectoryNotFoundException)
                 {
-                    Console.WriteLine(ex.Message);
+                    Console.WriteLine("Directory not exist.");
                 }
             }
             else if (parametersArr[exportTypeIndex].Equals("xml", StringComparison.OrdinalIgnoreCase))
@@ -102,9 +102,9 @@ namespace FileCabinetApp.CommandHandlers
                     snapshot.SaveToXml(xmlWriter);
                     Console.WriteLine($"All records are exported to file {parametersArr[filePathIndex]}");
                 }
-                catch (DirectoryNotFoundException ex)
+                catch (DirectoryNotFoundException)
                 {
-                    Console.WriteLine(ex.Message);
+                    Console.WriteLine("Directory not exist.");
                 }
             }
             else

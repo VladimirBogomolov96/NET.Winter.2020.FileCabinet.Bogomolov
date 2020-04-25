@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
-using System.Reflection;
 using System.Text;
 
 namespace FileCabinetApp.CommandHandlers
@@ -56,17 +55,13 @@ namespace FileCabinetApp.CommandHandlers
                             stringBuilder.Append(id).Append(' ');
                         }
 
-                        Console.WriteLine("Records by index of {0}were deleted", stringBuilder);
+                        Console.WriteLine("Record(s) by index(s) of {0}were deleted.", stringBuilder);
                         this.Service.ClearCache();
                     }
                 }
-                catch (ArgumentException ex)
+                catch (ArgumentException)
                 {
-                    Console.WriteLine(ex.Message);
-                }
-                catch (Exception)
-                {
-                    Console.WriteLine("Wrong input format.");
+                    Console.WriteLine("Invalid parameters, fix your input.");
                 }
             }
             else
@@ -77,6 +72,11 @@ namespace FileCabinetApp.CommandHandlers
 
         private IEnumerable<FileCabinetRecord> ParseConditions(string parameters)
         {
+            if (parameters is null)
+            {
+                throw new ArgumentNullException(nameof(parameters), "Parameters must be not null.");
+            }
+
             var temp = parameters.Split("where");
             var arguments = temp[1].Split('=');
             if (arguments.Length != 2)

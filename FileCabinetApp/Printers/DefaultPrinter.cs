@@ -14,6 +14,7 @@ namespace FileCabinetApp.Printers
         /// Prints records.
         /// </summary>
         /// <param name="records">Records to print.</param>
+        /// <exception cref="ArgumentNullException">Thrown when given records are null.</exception>
         public void Print(IEnumerable<FileCabinetRecord> records)
         {
             if (records is null)
@@ -23,6 +24,11 @@ namespace FileCabinetApp.Printers
 
             foreach (var record in records)
             {
+                if (record is null)
+                {
+                    continue;
+                }
+
                 Console.WriteLine(
                         "#{0}, {1}, {2}., {3}, {4}, {5} cm, {6}$",
                         record.Id,

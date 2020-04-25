@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Collections.ObjectModel;
 
 namespace FileCabinetApp
@@ -15,13 +14,6 @@ namespace FileCabinetApp
         /// <param name="transfer">Object to transfer parameters of new record.</param>
         /// <returns>ID of created record.</returns>
         int CreateRecord(RecordParametersTransfer transfer);
-
-        /// <summary>
-        /// Edits existing record.
-        /// </summary>
-        /// <param name="id">ID of a record to edit.</param>
-        /// <param name="transfer">Object to transfer new parameters to existing record.</param>
-        void EditRecord(int id, RecordParametersTransfer transfer);
 
         /// <summary>
         /// Sets record validator.

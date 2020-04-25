@@ -1,9 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
-using System.Text;
 using System.Xml;
 
 namespace FileCabinetApp
@@ -56,9 +54,9 @@ namespace FileCabinetApp
             }
 
             using FileCabinetRecordCsvWriter csvWriter = new FileCabinetRecordCsvWriter(writer);
-            for (int i = 0; i < this.records.Length; i++)
+            foreach (var record in this.records)
             {
-                csvWriter.Write(this.records[i]);
+                csvWriter.Write(record);
             }
         }
 
@@ -76,9 +74,9 @@ namespace FileCabinetApp
 
             writer.WriteStartElement("records");
             using FileCabinetRecordXmlWriter xmlWriter = new FileCabinetRecordXmlWriter(writer);
-            for (int i = 0; i < this.records.Length; i++)
+            foreach (var record in this.records)
             {
-                xmlWriter.Write(this.records[i]);
+                xmlWriter.Write(record);
             }
 
             writer.WriteEndElement();

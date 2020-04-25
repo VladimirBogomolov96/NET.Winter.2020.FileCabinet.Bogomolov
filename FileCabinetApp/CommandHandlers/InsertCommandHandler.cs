@@ -1,10 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Globalization;
 using System.Linq;
-using System.Reflection;
-using System.Text;
-using FileCabinetApp.Validators;
 
 namespace FileCabinetApp.CommandHandlers
 {
@@ -47,9 +42,13 @@ namespace FileCabinetApp.CommandHandlers
                     Console.WriteLine("Record #{0} was inserted succesfully.", this.Service.Insert(this.ParseRecord(commandRequest.Parameters)));
                     this.Service.ClearCache();
                 }
-                catch (ArgumentException ex)
+                catch (ArgumentOutOfRangeException)
                 {
-                    Console.WriteLine(ex.Message);
+                    Console.WriteLine("Record with given id already exists.");
+                }
+                catch (ArgumentException)
+                {
+                    Console.WriteLine("Invalid parameters, fix your input.");
                 }
             }
             else

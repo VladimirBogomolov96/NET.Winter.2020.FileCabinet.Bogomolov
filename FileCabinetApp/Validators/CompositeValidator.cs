@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 
 namespace FileCabinetApp.Validators
 {
@@ -10,7 +9,7 @@ namespace FileCabinetApp.Validators
     /// </summary>
     public class CompositeValidator : IRecordValidator
     {
-        private List<IRecordValidator> validators;
+        private readonly List<IRecordValidator> validators;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="CompositeValidator"/> class.
