@@ -54,11 +54,11 @@ namespace FileCabinetGenerator
                         csvWriter.Write(record);
                     }
 
-                    Console.WriteLine($"All records are exported to file {options.OutputFileName}");
+                    Console.WriteLine($"{records.Count()} records are exported to file {options.OutputFileName}");
                 }
-                catch (DirectoryNotFoundException ex)
+                catch (DirectoryNotFoundException)
                 {
-                    Console.WriteLine(ex.Message);
+                    Console.WriteLine($"Can't find directory {options.OutputFileName}.");
                 }
             }
             else if (options.OutputType.Equals("xml", StringComparison.OrdinalIgnoreCase))
@@ -83,16 +83,16 @@ namespace FileCabinetGenerator
                         xmlWriter.Write();
                     }
 
-                    Console.WriteLine($"All records are exported to file {options.OutputFileName}");
+                    Console.WriteLine($"{records.Count()} records are exported to file {options.OutputFileName}");
                 }
-                catch (DirectoryNotFoundException ex)
+                catch (DirectoryNotFoundException)
                 {
-                    Console.WriteLine(ex.Message);
+                    Console.WriteLine($"Can't find directory {options.OutputFileName}.");
                 }
             }
             else
             {
-                Console.WriteLine("Wrong format type.");
+                Console.WriteLine($"Wrong format type {options.OutputType}.");
             }
         }
 
@@ -114,17 +114,16 @@ namespace FileCabinetGenerator
             Random random = new Random();
             for (int i = 0; i < amount; i++)
             {
-                FileCabinetRecord newRecord = new FileCabinetRecord
+                records[i] = new FileCabinetRecord
                 {
                     Id = start++,
                     FirstName = GetRandomString(Alphabet, random.Next(2, 60), random),
                     LastName = GetRandomString(Alphabet, random.Next(2, 60), random),
                     DateOfBirth = GetRandomDate(new DateTime(1950, 1, 1), random),
                     PatronymicLetter = (char)random.Next((int)'A', (int)'Z'),
-                    Income = random.Next(),
+                    Income = random.Next(0, 1000000),
                     Height = (short)random.Next(1, 300),
                 };
-                records[i] = newRecord;
             }
 
             return records;

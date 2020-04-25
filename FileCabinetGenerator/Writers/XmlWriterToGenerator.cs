@@ -1,8 +1,5 @@
-﻿using System;
-using System.Globalization;
-using System.Xml;
+﻿using System.Xml;
 using System.Xml.Serialization;
-using FileCabinetApp;
 
 namespace FileCabinetGenerator
 {
@@ -11,8 +8,8 @@ namespace FileCabinetGenerator
     /// </summary>
     public class XmlWriterToGenerator
     {
-        private XmlWriter fileStream;
-        private FileCabinetRecords records = new FileCabinetRecords();
+        private readonly XmlWriter fileStream;
+        private readonly FileCabinetRecords records = new FileCabinetRecords();
 
         /// <summary>
         /// Initializes a new instance of the <see cref="XmlWriterToGenerator"/> class.
