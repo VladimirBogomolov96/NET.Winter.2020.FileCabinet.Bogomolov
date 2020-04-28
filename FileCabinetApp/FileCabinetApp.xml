@@ -268,6 +268,30 @@
             </summary>
             <param name="commandRequest">Command line request.</param>
         </member>
+        <member name="T:FileCabinetApp.Configurator">
+            <summary>
+            Provides configuration.
+            </summary>
+        </member>
+        <member name="M:FileCabinetApp.Configurator.#cctor">
+            <summary>
+            Initializes static members of the <see cref="T:FileCabinetApp.Configurator"/> class.
+            </summary>
+        </member>
+        <member name="M:FileCabinetApp.Configurator.GetConstantString(System.String)">
+            <summary>
+            Provides constant strings values by key.
+            </summary>
+            <param name="key">Key to find string.</param>
+            <returns>String by given key.</returns>
+        </member>
+        <member name="M:FileCabinetApp.Configurator.GetSetting(System.String)">
+            <summary>
+            Provides settings values by key.
+            </summary>
+            <param name="key">Key to find setting.</param>
+            <returns>Setting value by given key.</returns>
+        </member>
         <member name="T:FileCabinetApp.Converter">
             <summary>
             Converter to values.

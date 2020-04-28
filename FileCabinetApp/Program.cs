@@ -13,8 +13,6 @@ namespace FileCabinetApp
     /// </summary>
     public static class Program
     {
-        private const string DeveloperName = "Vladimir Bogomolov";
-        private const string HintMessage = "Enter your command, or enter 'help' to get help.";
         private static IFileCabinetService fileCabinetService;
         private static bool isRunning = true;
 
@@ -24,9 +22,9 @@ namespace FileCabinetApp
         /// <param name="args">Command prompt arguments.</param>
         public static void Main(string[] args)
         {
-            Console.WriteLine($"File Cabinet Application, developed by {Program.DeveloperName}");
+            Console.WriteLine(Configurator.GetConstantString("HelloMessage"));
             SetCommandLineSettings(args);
-            Console.WriteLine(Program.HintMessage);
+            Console.WriteLine(Configurator.GetConstantString("HintMessage"));
             Console.WriteLine();
             var commands = CreateCommandHandlers();
             do
@@ -38,7 +36,7 @@ namespace FileCabinetApp
                 var command = inputs[commandIndex];
                 if (string.IsNullOrEmpty(command))
                 {
-                    Console.WriteLine(Program.HintMessage);
+                    Console.WriteLine(Configurator.GetConstantString("HintMessage"));
                     continue;
                 }
 
@@ -50,23 +48,24 @@ namespace FileCabinetApp
 
         private static void SetCommandLineSettings(string[] args)
         {
-            if (!File.Exists("D:\\EPAM\\internship\\FileCabinet\\FileCabinetApp\\Validators\\validation-rules.json"))
-            {
-                Console.WriteLine("Can't find validation-rules.json file.");
-                Environment.Exit(-1);
-            }
-
-            IConfigurationRoot configuration = null;
+            IConfigurationRoot validationRules = null;
             try
             {
-                configuration = new ConfigurationBuilder()
-                   .SetBasePath("D:\\EPAM\\internship\\FileCabinet\\FileCabinetApp\\Validators")
-                   .AddJsonFile("validation-rules.json")
-                   .Build();
+                validationRules = new ConfigurationBuilder()
+                    .SetBasePath(Configurator.GetSetting("ValidationRulesPath"))
+                    .AddJsonFile(Configurator.GetSetting("ValidationRulesFileName"))
+                    .Build();
+            }
+            catch (FileNotFoundException)
+            {
+                Console.WriteLine($"{Configurator.GetConstantString("MissingValidation")} {Configurator.GetSetting("ConstantStringsFileName")}");
+                Console.WriteLine(Configurator.GetConstantString("ClosingProgram"));
+                Environment.Exit(-1);
             }
             catch (FormatException)
             {
-                Console.WriteLine("Invalid data in validation-rules.json file.");
+                Console.WriteLine(Configurator.GetConstantString("InvalidValidationFile"));
+                Console.WriteLine(Configurator.GetConstantString("ClosingProgram"));
                 Environment.Exit(-1);
             }
 
@@ -87,11 +86,11 @@ namespace FileCabinetApp
 
             if (options.Rule.Equals("custom", StringComparison.InvariantCultureIgnoreCase))
             {
-                SetCustomService(configuration);
+                SetCustomService(validationRules);
             }
             else if (options.Rule.Equals("default", StringComparison.InvariantCultureIgnoreCase))
             {
-                SetDefaultService(configuration);
+                SetDefaultService(validationRules);
             }
             else
             {

@@ -1,4 +1,6 @@
 {
+	"HelloMessage": "File Cabinet Application, developed by Vladimir Bogomolov.",
+	"HintMessage": "Enter your command, or enter 'help' to get help.",
 	"NullRecord": "Record must be not null.",
 	"IndexLess1": "Index must be more than 0.",
 	"ArgsIsNull": "Args must be not null.",
