@@ -9,13 +9,13 @@
         /// Gets or sets type of output file.
         /// </summary>
         /// <value>Type of output file.</value>
-        public string OutputType { get; set; } = "csv";
+        public string OutputType { get; set; } = Configurator.GetConstantString("StandartOutputType");
 
         /// <summary>
         /// Gets or sets name of output file.
         /// </summary>
         /// <value>Name of output file.</value>
-        public string OutputFileName { get; set; } = "NewFile";
+        public string OutputFileName { get; set; } = Configurator.GetConstantString("StandartOutputFileName");
 
         /// <summary>
         /// Gets or sets amount of records.

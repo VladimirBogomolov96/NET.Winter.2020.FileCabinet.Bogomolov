@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Xml;
 using FileCabinetApp;
+using Microsoft.Extensions.Configuration;
 
 namespace FileCabinetGenerator
 {
@@ -12,8 +14,6 @@ namespace FileCabinetGenerator
     /// </summary>
     public static class Program
     {
-        private const string Alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
-
         /// <summary>
         /// Point of entrance to program.
         /// </summary>
@@ -21,7 +21,36 @@ namespace FileCabinetGenerator
         public static void Main(string[] args)
         {
             Options options = GetCommandLineArguments(args);
-            FileCabinetRecord[] records = GenerateRandomRecords(options.StartId, options.RecordsAmount);
+            FileCabinetRecord[] records = null;
+            try
+            {
+                records = GenerateRandomRecords(options.StartId, options.RecordsAmount);
+            }
+            catch (ArgumentOutOfRangeException)
+            {
+                Console.WriteLine(Configurator.GetConstantString("IndexLess1"));
+                Console.WriteLine(Configurator.GetConstantString("ClosingProgram"));
+                Environment.Exit(-1);
+            }
+            catch (ArgumentNullException)
+            {
+                Console.WriteLine(Configurator.GetConstantString("InvalidValidationFile"));
+                Console.WriteLine(Configurator.GetConstantString("ClosingProgram"));
+                Environment.Exit(-1);
+            }
+            catch (FormatException)
+            {
+                Console.WriteLine(Configurator.GetConstantString("InvalidValidationFile"));
+                Console.WriteLine(Configurator.GetConstantString("ClosingProgram"));
+                Environment.Exit(-1);
+            }
+            catch (OverflowException)
+            {
+                Console.WriteLine(Configurator.GetConstantString("ValidationOutOfRange"));
+                Console.WriteLine(Configurator.GetConstantString("ClosingProgram"));
+                Environment.Exit(-1);
+            }
+
             Export(options, records);
         }
 
@@ -58,6 +87,7 @@ namespace FileCabinetGenerator
                 catch (DirectoryNotFoundException)
                 {
                     Console.WriteLine($"Can't find directory {options.OutputFileName}.");
+                    Console.WriteLine(Configurator.GetConstantString("ClosingProgram"));
                 }
             }
             else if (options.OutputType.Equals("xml", StringComparison.OrdinalIgnoreCase))
@@ -87,11 +117,13 @@ namespace FileCabinetGenerator
                 catch (DirectoryNotFoundException)
                 {
                     Console.WriteLine($"Can't find directory {options.OutputFileName}.");
+                    Console.WriteLine(Configurator.GetConstantString("ClosingProgram"));
                 }
             }
             else
             {
                 Console.WriteLine($"Wrong format type {options.OutputType}.");
+                Console.WriteLine(Configurator.GetConstantString("ClosingProgram"));
             }
         }
 
@@ -99,7 +131,7 @@ namespace FileCabinetGenerator
         {
             if (args is null)
             {
-                throw new ArgumentNullException(nameof(args), "Args must be not null");
+                throw new ArgumentNullException(nameof(args), Configurator.GetConstantString("ArgsIsNull"));
             }
 
             List<string> singleParams = new List<string>();
@@ -223,8 +255,43 @@ namespace FileCabinetGenerator
         {
             if (start < 1)
             {
-                throw new ArgumentOutOfRangeException(nameof(start), "Index must be more than 0.");
+                throw new ArgumentOutOfRangeException(nameof(start), Configurator.GetConstantString("IndexLess1"));
             }
+
+            IConfigurationRoot validationRules = null;
+            try
+            {
+                validationRules = new ConfigurationBuilder()
+                    .SetBasePath(Configurator.GetSetting("ValidationRulesPath"))
+                    .AddJsonFile(Configurator.GetSetting("ValidationRulesFileName"))
+                    .Build();
+            }
+            catch (FileNotFoundException)
+            {
+                Console.WriteLine($"{Configurator.GetConstantString("MissingValidation")} {Configurator.GetSetting("ConstantStringsFileName")}");
+                Console.WriteLine(Configurator.GetConstantString("ClosingProgram"));
+                Environment.Exit(-1);
+            }
+            catch (FormatException)
+            {
+                Console.WriteLine(Configurator.GetConstantString("InvalidValidationFile"));
+                Console.WriteLine(Configurator.GetConstantString("ClosingProgram"));
+                Environment.Exit(-1);
+            }
+
+            int minFirstNameLength = int.Parse(validationRules.GetSection("default").GetSection("firstName").GetSection("minLength").Value, CultureInfo.InvariantCulture);
+            int maxFirstNameLength = int.Parse(validationRules.GetSection("default").GetSection("firstName").GetSection("maxLength").Value, CultureInfo.InvariantCulture);
+            int minLastNameLength = int.Parse(validationRules.GetSection("default").GetSection("lastName").GetSection("minLength").Value, CultureInfo.InvariantCulture);
+            int maxLastNameLength = int.Parse(validationRules.GetSection("default").GetSection("lastName").GetSection("maxLength").Value, CultureInfo.InvariantCulture);
+            DateTime fromDateOfBirth = DateTime.ParseExact(validationRules.GetSection("default").GetSection("dateOfBirth").GetSection("from").Value, "dd/MM/yyyy", CultureInfo.InvariantCulture);
+            DateTime toDateOfBirth = DateTime.ParseExact(validationRules.GetSection("default").GetSection("dateOfBirth").GetSection("to").Value, "dd/MM/yyyy", CultureInfo.InvariantCulture);
+            char minPatronymicLetter = char.Parse(validationRules.GetSection("default").GetSection("patronymicLetter").GetSection("from").Value);
+            char maxPatronymicLetter = char.Parse(validationRules.GetSection("default").GetSection("patronymicLetter").GetSection("to").Value);
+            decimal minIncome = decimal.Parse(validationRules.GetSection("default").GetSection("income").GetSection("from").Value, CultureInfo.InvariantCulture);
+            decimal maxIncome = decimal.Parse(validationRules.GetSection("default").GetSection("income").GetSection("to").Value, CultureInfo.InvariantCulture);
+            short minHeight = short.Parse(validationRules.GetSection("default").GetSection("height").GetSection("min").Value, CultureInfo.InvariantCulture);
+            short maxHeight = short.Parse(validationRules.GetSection("default").GetSection("height").GetSection("max").Value, CultureInfo.InvariantCulture);
+            string alphabet = Configurator.GetConstantString("Alphabet");
 
             FileCabinetRecord[] records = new FileCabinetRecord[amount];
             Random random = new Random();
@@ -233,12 +300,12 @@ namespace FileCabinetGenerator
                 records[i] = new FileCabinetRecord
                 {
                     Id = start++,
-                    FirstName = GetRandomString(Alphabet, random.Next(2, 60), random),
-                    LastName = GetRandomString(Alphabet, random.Next(2, 60), random),
-                    DateOfBirth = GetRandomDate(new DateTime(1950, 1, 1), random),
-                    PatronymicLetter = (char)random.Next((int)'A', (int)'Z'),
-                    Income = random.Next(0, 1000000),
-                    Height = (short)random.Next(1, 300),
+                    FirstName = GetRandomString(alphabet, random.Next(minFirstNameLength, maxFirstNameLength), random),
+                    LastName = GetRandomString(alphabet, random.Next(minLastNameLength, maxLastNameLength), random),
+                    DateOfBirth = GetRandomDate(fromDateOfBirth, toDateOfBirth, random),
+                    PatronymicLetter = (char)random.Next((int)minPatronymicLetter, (int)maxPatronymicLetter),
+                    Income = random.Next((int)minIncome, (int)maxIncome),
+                    Height = (short)random.Next(minHeight, maxHeight),
                 };
             }
 
@@ -256,10 +323,10 @@ namespace FileCabinetGenerator
             return new string(result);
         }
 
-        private static DateTime GetRandomDate(DateTime minValue, Random random)
+        private static DateTime GetRandomDate(DateTime from, DateTime to, Random random)
         {
-            int range = (DateTime.Today - minValue).Days;
-            return minValue.AddDays(random.Next(range));
+            int range = (to - from).Days;
+            return from.AddDays(random.Next(range));
         }
     }
 }

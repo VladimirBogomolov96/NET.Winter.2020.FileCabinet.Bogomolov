@@ -26,7 +26,7 @@ namespace FileCabinetGenerator
         {
             if (record is null)
             {
-                throw new ArgumentNullException(nameof(record), "Record must be not null.");
+                throw new ArgumentNullException(nameof(record), Configurator.GetConstantString("NullRecord"));
             }
 
             this.Id = record.Id;
@@ -75,7 +75,7 @@ namespace FileCabinetGenerator
                 bool isConverted = DateTime.TryParseExact(value, "MM/dd/yyyy", CultureInfo.InvariantCulture, DateTimeStyles.None, out DateTime dateOfBirth);
                 if (!isConverted)
                 {
-                    throw new ArgumentException("Can't convert given string to date time.", nameof(value));
+                    throw new ArgumentException(Configurator.GetConstantString("FailConversionStringToDate"), nameof(value));
                 }
 
                 this.DateOfBirth = dateOfBirth;
