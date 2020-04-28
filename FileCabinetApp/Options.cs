@@ -1,6 +1,4 @@
-﻿using CommandLine;
-
-namespace FileCabinetApp
+﻿namespace FileCabinetApp
 {
     /// <summary>
     /// Command line options.
@@ -11,28 +9,24 @@ namespace FileCabinetApp
         /// Gets or sets type of validation rules.
         /// </summary>
         /// <value>Type of validation rules.</value>
-        [Option('v', "validation-rules", Default = "default", Required = false)]
-        public string Rule { get; set; }
+        public string Rule { get; set; } = "default";
 
         /// <summary>
         /// Gets or sets type of storage.
         /// </summary>
         /// <value>Type of storage.</value>
-        [Option('s', "storage", Default = "memory", Required = false)]
-        public string Storage { get; set; }
+        public string Storage { get; set; } = "memory";
 
         /// <summary>
         /// Gets or sets a value indicating whether stopwatch is using or not.
         /// </summary>
         /// <value>Whether stopwatch are using or not.</value>
-        [Option("use-stopwatch", Default = false, Required = false)]
-        public bool Stopwatch { get; set; }
+        public bool Stopwatch { get; set; } = false;
 
         /// <summary>
         /// Gets or sets a value indicating whether stopwatch is using or not.
         /// </summary>
         /// <value>Whether stopwatch is using or not.</value>
-        [Option("use-logger", Default = false, Required = false)]
-        public bool Logger { get; set; }
+        public bool Logger { get; set; } = false;
     }
 }

@@ -1,6 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
-using CommandLine;
 using FileCabinetApp.CommandHandlers;
 using FileCabinetApp.Services;
 using FileCabinetApp.Validators;
@@ -70,8 +70,7 @@ namespace FileCabinetApp
                 Environment.Exit(-1);
             }
 
-            Options options = new Options();
-            var result = Parser.Default.ParseArguments<Options>(args).WithParsed(parsed => options = parsed);
+            Options options = GetCommandLineArguments(args);
             if (options.Storage.Equals("file", StringComparison.InvariantCultureIgnoreCase))
             {
                 SetFileService();
@@ -177,6 +176,101 @@ namespace FileCabinetApp
                 SetNext(purgeHandler).
                 SetNext(exitHandler);
             return helpHandler;
+        }
+
+        private static Options GetCommandLineArguments(string[] args)
+        {
+            List<string> singleParams = new List<string>();
+            List<string> doubleParams = new List<string>();
+            List<string> doubleParamsValues = new List<string>();
+            for (int i = 0; i < args.Length; i++)
+            {
+                if (args[i].Substring(0, 2) == "--")
+                {
+                    singleParams.Add(args[i]);
+                    continue;
+                }
+                else if (args[i].Substring(0, 1) == "-")
+                {
+                    if (i == (args.Length - 1))
+                    {
+                        Console.WriteLine($"Invalid command line parameter '{args[i]}'.");
+                        Environment.Exit(-1);
+                    }
+
+                    doubleParams.Add(args[i]);
+                    doubleParamsValues.Add(args[i + 1]);
+                    i++;
+                    continue;
+                }
+                else
+                {
+                    Console.WriteLine($"Invalid command line parameter '{args[i]}'.");
+                    Environment.Exit(-1);
+                }
+            }
+
+            Options options = new Options();
+            foreach (string param in singleParams)
+            {
+                string[] keyValuePair = param.Split('=');
+                if (keyValuePair.Length == 1)
+                {
+                    if (keyValuePair[0] == "--use-stopwatch")
+                    {
+                        options.Stopwatch = true;
+                    }
+                    else if (keyValuePair[0] == "--use-logger")
+                    {
+                        options.Logger = true;
+                    }
+                    else
+                    {
+                        Console.WriteLine($"Invalid command line parameter '{param}'.");
+                        Environment.Exit(-1);
+                    }
+                }
+                else if (keyValuePair.Length == 2)
+                {
+                    if (keyValuePair[0] == "--validation-rules")
+                    {
+                        options.Rule = keyValuePair[1];
+                    }
+                    else if (keyValuePair[0] == "--storage")
+                    {
+                        options.Storage = keyValuePair[1];
+                    }
+                    else
+                    {
+                        Console.WriteLine($"Invalid command line parameter '{param}'.");
+                        Environment.Exit(-1);
+                    }
+                }
+                else
+                {
+                    Console.WriteLine($"Invalid command line parameter '{param}'.");
+                    Environment.Exit(-1);
+                }
+            }
+
+            for (int i = 0; i < doubleParams.Count; i++)
+            {
+                if (doubleParams[i] == "-v")
+                {
+                    options.Rule = doubleParamsValues[i];
+                }
+                else if (doubleParams[i] == "-s")
+                {
+                    options.Storage = doubleParamsValues[i];
+                }
+                else
+                {
+                    Console.WriteLine($"Invalid command line parameter '{doubleParams[i]}'.");
+                    Environment.Exit(-1);
+                }
+            }
+
+            return options;
         }
     }
 }

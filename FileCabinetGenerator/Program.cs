@@ -116,7 +116,7 @@ namespace FileCabinetGenerator
                 {
                     if (i == (args.Length - 1))
                     {
-                        Console.WriteLine($"Invalid command line parameter '{args[i]}'.", nameof(args));
+                        Console.WriteLine($"Invalid command line parameter '{args[i]}'.");
                         Environment.Exit(-1);
                     }
 
@@ -127,7 +127,7 @@ namespace FileCabinetGenerator
                 }
                 else
                 {
-                    Console.WriteLine($"Invalid command line parameter '{args[i]}'.", nameof(args));
+                    Console.WriteLine($"Invalid command line parameter '{args[i]}'.");
                     Environment.Exit(-1);
                 }
             }
@@ -150,7 +150,7 @@ namespace FileCabinetGenerator
                     {
                         if (!int.TryParse(keyValuePair[1], out int amount))
                         {
-                            Console.WriteLine($"Invalid command line parameter '{param}'.", nameof(args));
+                            Console.WriteLine($"Invalid command line parameter '{param}'.");
                             Environment.Exit(-1);
                         }
 
@@ -160,7 +160,7 @@ namespace FileCabinetGenerator
                     {
                         if (!int.TryParse(keyValuePair[1], out int startId))
                         {
-                            Console.WriteLine($"Invalid command line parameter '{param}'.", nameof(args));
+                            Console.WriteLine($"Invalid command line parameter '{param}'.");
                             Environment.Exit(-1);
                         }
 
@@ -168,13 +168,13 @@ namespace FileCabinetGenerator
                     }
                     else
                     {
-                        Console.WriteLine($"Invalid command line parameter '{param}'.", nameof(args));
+                        Console.WriteLine($"Invalid command line parameter '{param}'.");
                         Environment.Exit(-1);
                     }
                 }
                 else
                 {
-                    Console.WriteLine($"Invalid command line parameter '{param}'.", nameof(args));
+                    Console.WriteLine($"Invalid command line parameter '{param}'.");
                     Environment.Exit(-1);
                 }
             }
@@ -193,7 +193,7 @@ namespace FileCabinetGenerator
                 {
                     if (!int.TryParse(doubleParamsValues[i], out int amount))
                     {
-                        Console.WriteLine($"Invalid command line parameter value '{doubleParamsValues[i]}'.", nameof(args));
+                        Console.WriteLine($"Invalid command line parameter value '{doubleParamsValues[i]}'.");
                         Environment.Exit(-1);
                     }
 
@@ -203,7 +203,7 @@ namespace FileCabinetGenerator
                 {
                     if (!int.TryParse(doubleParamsValues[i], out int startId))
                     {
-                        Console.WriteLine($"Invalid command line parameter value '{doubleParamsValues[i]}'.", nameof(args));
+                        Console.WriteLine($"Invalid command line parameter value '{doubleParamsValues[i]}'.");
                         Environment.Exit(-1);
                     }
 
@@ -211,7 +211,7 @@ namespace FileCabinetGenerator
                 }
                 else
                 {
-                    Console.WriteLine($"Invalid command line parameter '{doubleParams[i]}'.", nameof(args));
+                    Console.WriteLine($"Invalid command line parameter '{doubleParams[i]}'.");
                     Environment.Exit(-1);
                 }
             }
