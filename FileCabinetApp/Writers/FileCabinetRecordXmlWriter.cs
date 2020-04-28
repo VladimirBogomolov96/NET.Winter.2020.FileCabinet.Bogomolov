@@ -47,7 +47,7 @@ namespace FileCabinetApp
         {
             if (record is null)
             {
-                throw new ArgumentNullException(nameof(record), "Record must be not null.");
+                throw new ArgumentNullException(nameof(record), Configurator.GetConstantString("NullRecord"));
             }
 
             this.writer.WriteStartElement("record");

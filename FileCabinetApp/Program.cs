@@ -29,7 +29,7 @@ namespace FileCabinetApp
             var commands = CreateCommandHandlers();
             do
             {
-                Console.Write("> ");
+                Console.Write(Configurator.GetConstantString("CommandStartChar"));
                 var inputs = Console.ReadLine().Split(' ', 2);
                 const int commandIndex = 0;
                 const int argumentIndex = 1;
@@ -112,38 +112,38 @@ namespace FileCabinetApp
         private static void SetMemoryService()
         {
             fileCabinetService = new FileCabinetMemoryService();
-            Console.WriteLine("Using memory service.");
+            Console.WriteLine(Configurator.GetConstantString("UseMemory"));
         }
 
         private static void SetFileService()
         {
             FileStream fileStream = new FileStream("cabinet-records.db", FileMode.Create, FileAccess.ReadWrite);
             fileCabinetService = new FileCabinetFilesystemService(fileStream);
-            Console.WriteLine("Using file service.");
+            Console.WriteLine(Configurator.GetConstantString("UseFile"));
         }
 
         private static void SetDefaultService(IConfigurationRoot configuration)
         {
             fileCabinetService.SetRecordValidator(new ValidatorBuilder().CreateValidator(configuration.GetSection("default")));
-            Console.WriteLine("Using default validation rules.");
+            Console.WriteLine(Configurator.GetConstantString("UseDefaultRules"));
         }
 
         private static void SetCustomService(IConfigurationRoot configuration)
         {
             fileCabinetService.SetRecordValidator(new ValidatorBuilder().CreateValidator(configuration.GetSection("custom")));
-            Console.WriteLine("Using custom validation rules.");
+            Console.WriteLine(Configurator.GetConstantString("UseCustomRules"));
         }
 
         private static void SetStopwatch()
         {
             fileCabinetService = new ServiceMeter(fileCabinetService);
-            Console.WriteLine("Using stopwatch.");
+            Console.WriteLine(Configurator.GetConstantString("UseStopwatch"));
         }
 
         private static void SetLogger()
         {
             fileCabinetService = new ServiceLogger(fileCabinetService);
-            Console.WriteLine("Using logger.");
+            Console.WriteLine(Configurator.GetConstantString("UseLogger"));
         }
 
         private static void ChangeProgramState(bool state)

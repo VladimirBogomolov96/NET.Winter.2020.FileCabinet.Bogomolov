@@ -28,13 +28,13 @@ namespace FileCabinetApp.CommandHandlers
         {
             if (commandRequest is null)
             {
-                Console.WriteLine("Wrong command line parameter.");
+                Console.WriteLine(Configurator.GetConstantString("InvalidCommand"));
                 return;
             }
 
             if (commandRequest.Command is null)
             {
-                Console.WriteLine("Wrong command line parameter.");
+                Console.WriteLine(Configurator.GetConstantString("InvalidCommand"));
                 return;
             }
 
@@ -45,7 +45,7 @@ namespace FileCabinetApp.CommandHandlers
                     IEnumerable<int> result = this.Service.Delete(this.ParseConditions(commandRequest.Parameters));
                     if (!result.Any())
                     {
-                        Console.WriteLine("There is no records with such value.");
+                        Console.WriteLine(Configurator.GetConstantString("NoRecordsWithValue"));
                     }
                     else
                     {
@@ -55,13 +55,13 @@ namespace FileCabinetApp.CommandHandlers
                             stringBuilder.Append(id).Append(' ');
                         }
 
-                        Console.WriteLine("Record(s) by index(s) of {0}were deleted.", stringBuilder);
+                        Console.WriteLine($"Record(s) by index(s) of {stringBuilder}were deleted.");
                         this.Service.ClearCache();
                     }
                 }
                 catch (ArgumentException)
                 {
-                    Console.WriteLine("Invalid parameters, fix your input.");
+                    Console.WriteLine(Configurator.GetConstantString("InvalidInput"));
                 }
             }
             else
@@ -74,14 +74,14 @@ namespace FileCabinetApp.CommandHandlers
         {
             if (parameters is null)
             {
-                throw new ArgumentNullException(nameof(parameters), "Parameters must be not null.");
+                throw new ArgumentNullException(nameof(parameters), Configurator.GetConstantString("NullParameters"));
             }
 
             var temp = parameters.Split("where");
             var arguments = temp[1].Split('=');
             if (arguments.Length != 2)
             {
-                throw new ArgumentException("Wrong parameters.", nameof(parameters));
+                throw new ArgumentException(Configurator.GetConstantString("InvalidInput"), nameof(parameters));
             }
 
             for (int i = 0; i < arguments.Length; i++)
@@ -106,7 +106,7 @@ namespace FileCabinetApp.CommandHandlers
                 }
                 else
                 {
-                    throw new ArgumentException("Can't parse parameters.", nameof(parameters));
+                    throw new ArgumentException(Configurator.GetConstantString("CantParseParam"), nameof(parameters));
                 }
             }
             else if (arguments[fieldIndex].Equals("firstname", StringComparison.InvariantCultureIgnoreCase))
@@ -143,7 +143,7 @@ namespace FileCabinetApp.CommandHandlers
                 }
                 else
                 {
-                    throw new ArgumentException("Can't parse parameters.", nameof(parameters));
+                    throw new ArgumentException(Configurator.GetConstantString("CantParseParam"), nameof(parameters));
                 }
             }
             else if (arguments[fieldIndex].Equals("height", StringComparison.InvariantCultureIgnoreCase))
@@ -160,7 +160,7 @@ namespace FileCabinetApp.CommandHandlers
                 }
                 else
                 {
-                    throw new ArgumentException("Can't parse parameters.", nameof(parameters));
+                    throw new ArgumentException(Configurator.GetConstantString("CantParseParam"), nameof(parameters));
                 }
             }
             else if (arguments[fieldIndex].Equals("income", StringComparison.InvariantCultureIgnoreCase))
@@ -177,7 +177,7 @@ namespace FileCabinetApp.CommandHandlers
                 }
                 else
                 {
-                    throw new ArgumentException("Can't parse parameters.", nameof(parameters));
+                    throw new ArgumentException(Configurator.GetConstantString("CantParseParam"), nameof(parameters));
                 }
             }
             else if (arguments[fieldIndex].Equals("patronymicletter", StringComparison.InvariantCultureIgnoreCase))
@@ -194,12 +194,12 @@ namespace FileCabinetApp.CommandHandlers
                 }
                 else
                 {
-                    throw new ArgumentException("Can't parse parameters.", nameof(parameters));
+                    throw new ArgumentException(Configurator.GetConstantString("CantParseParam"), nameof(parameters));
                 }
             }
             else
             {
-                throw new ArgumentException("Wrong property name.", nameof(parameters));
+                throw new ArgumentException(Configurator.GetConstantString("WrongPropertyName"), nameof(parameters));
             }
 
             return result;

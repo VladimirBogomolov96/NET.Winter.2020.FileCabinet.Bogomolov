@@ -33,13 +33,13 @@ namespace FileCabinetApp.CommandHandlers
         {
             if (commandRequest is null)
             {
-                Console.WriteLine("Wrong command line parameter.");
+                Console.WriteLine(Configurator.GetConstantString("InvalidCommand"));
                 return;
             }
 
             if (commandRequest.Command is null)
             {
-                Console.WriteLine("Wrong command line parameter.");
+                Console.WriteLine(Configurator.GetConstantString("InvalidCommand"));
                 return;
             }
 
@@ -69,11 +69,11 @@ namespace FileCabinetApp.CommandHandlers
             }
             else
             {
-                Console.WriteLine("Available commands:");
+                Console.WriteLine(Configurator.GetConstantString("AvailableCommandsColon"));
 
                 foreach (var helpMessage in HelpMessages)
                 {
-                    Console.WriteLine("\t{0}\t- {1}", helpMessage[CommandHelpIndex], helpMessage[DescriptionHelpIndex]);
+                    Console.WriteLine($"\t{helpMessage[CommandHelpIndex]}\t- {helpMessage[DescriptionHelpIndex]}");
                 }
             }
 

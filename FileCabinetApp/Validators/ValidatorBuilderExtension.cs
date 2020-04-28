@@ -20,12 +20,12 @@ namespace FileCabinetApp.Validators
         {
             if (validatorBuilder is null)
             {
-                throw new ArgumentNullException(nameof(validatorBuilder), "Validator builder must be not null.");
+                throw new ArgumentNullException(nameof(validatorBuilder), Configurator.GetConstantString("NullValidatorBuilder"));
             }
 
             if (configuration is null)
             {
-                throw new ArgumentNullException(nameof(configuration), "Configuration must be not null.");
+                throw new ArgumentNullException(nameof(configuration), Configurator.GetConstantString("NullConfiguration"));
             }
 
             try
@@ -46,11 +46,22 @@ namespace FileCabinetApp.Validators
 
                 return result;
             }
-#pragma warning disable CA1031 // Do not catch general exception types
-            catch (Exception)
-#pragma warning restore CA1031 // Do not catch general exception types
+            catch (ArgumentNullException)
             {
-                Console.WriteLine("Wrong json data.");
+                Console.WriteLine(Configurator.GetConstantString("InvalidValidationFile"));
+                Console.WriteLine(Configurator.GetConstantString("ClosingProgram"));
+                Environment.Exit(-1);
+            }
+            catch (FormatException)
+            {
+                Console.WriteLine(Configurator.GetConstantString("InvalidValidationFile"));
+                Console.WriteLine(Configurator.GetConstantString("ClosingProgram"));
+                Environment.Exit(-1);
+            }
+            catch (OverflowException)
+            {
+                Console.WriteLine(Configurator.GetConstantString("ValidationOutOfRange"));
+                Console.WriteLine(Configurator.GetConstantString("ClosingProgram"));
                 Environment.Exit(-1);
             }
 

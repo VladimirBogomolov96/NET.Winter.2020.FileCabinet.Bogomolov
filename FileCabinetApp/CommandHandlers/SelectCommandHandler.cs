@@ -28,13 +28,13 @@ namespace FileCabinetApp.CommandHandlers
         {
             if (commandRequest is null)
             {
-                Console.WriteLine("Wrong command line parameter.");
+                Console.WriteLine(Configurator.GetConstantString("InvalidCommand"));
                 return;
             }
 
             if (commandRequest.Command is null)
             {
-                Console.WriteLine("Wrong command line parameter.");
+                Console.WriteLine(Configurator.GetConstantString("InvalidCommand"));
                 return;
             }
 
@@ -54,7 +54,7 @@ namespace FileCabinetApp.CommandHandlers
                     }
                     catch (ArgumentException)
                     {
-                        Console.WriteLine("Invalid parameters, fix your input.");
+                        Console.WriteLine(Configurator.GetConstantString("InvalidInput"));
                     }
                 }
             }
@@ -70,7 +70,7 @@ namespace FileCabinetApp.CommandHandlers
             {
                 if (searchRecordId.Count > 0)
                 {
-                    throw new ArgumentException("Set one parameter to fint to one property.", nameof(key));
+                    throw new ArgumentException(Configurator.GetConstantString("OneParamToOneProp"), nameof(key));
                 }
 
                 var conversionResultOfId = Converter.ConvertStringToInt(value);
@@ -87,7 +87,7 @@ namespace FileCabinetApp.CommandHandlers
             {
                 if (searchRecordFirstName.Count > 0)
                 {
-                    throw new ArgumentException("Set one parameter to fint to one property.", nameof(key));
+                    throw new ArgumentException(Configurator.GetConstantString("OneParamToOneProp"), nameof(key));
                 }
 
                 searchRecordFirstName.Add(value);
@@ -98,7 +98,7 @@ namespace FileCabinetApp.CommandHandlers
             {
                 if (searchRecordLastName.Count > 0)
                 {
-                    throw new ArgumentException("Set one parameter to fint to one property.", nameof(key));
+                    throw new ArgumentException(Configurator.GetConstantString("OneParamToOneProp"), nameof(key));
                 }
 
                 searchRecordLastName.Add(value);
@@ -109,7 +109,7 @@ namespace FileCabinetApp.CommandHandlers
             {
                 if (searchRecordDateOfBirth.Count > 0)
                 {
-                    throw new ArgumentException("Set one parameter to fint to one property.", nameof(key));
+                    throw new ArgumentException(Configurator.GetConstantString("OneParamToOneProp"), nameof(key));
                 }
 
                 var dateOfBirthConversionResult = Converter.ConvertStringToDateTime(value);
@@ -126,7 +126,7 @@ namespace FileCabinetApp.CommandHandlers
             {
                 if (searchRecordPatronymicLetter.Count > 0)
                 {
-                    throw new ArgumentException("Set one parameter to fint to one property.", nameof(key));
+                    throw new ArgumentException(Configurator.GetConstantString("OneParamToOneProp"), nameof(key));
                 }
 
                 var patronymicLetterConversionResult = Converter.ConvertStringToChar(value);
@@ -143,7 +143,7 @@ namespace FileCabinetApp.CommandHandlers
             {
                 if (searchRecordIncome.Count > 0)
                 {
-                    throw new ArgumentException("Set one parameter to fint to one property.", nameof(key));
+                    throw new ArgumentException(Configurator.GetConstantString("OneParamToOneProp"), nameof(key));
                 }
 
                 var incomeConversionResult = Converter.ConvertStringToDecimal(value);
@@ -160,7 +160,7 @@ namespace FileCabinetApp.CommandHandlers
             {
                 if (searchRecordHeight.Count > 0)
                 {
-                    throw new ArgumentException("Set one parameter to fint to one property.", nameof(key));
+                    throw new ArgumentException(Configurator.GetConstantString("OneParamToOneProp"), nameof(key));
                 }
 
                 var heightConversionResult = Converter.ConvertStringToShort(value);
@@ -173,7 +173,7 @@ namespace FileCabinetApp.CommandHandlers
                 return;
             }
 
-            throw new ArgumentException("Wrong property name.", nameof(key));
+            throw new ArgumentException(Configurator.GetConstantString("WrongPropertyName"), nameof(key));
         }
 
         private static void SetSearchParametersOr(List<int> searchRecordId, List<string> searchRecordFirstName, List<string> searchRecordLastName, List<DateTime> searchRecordDateOfBirth, List<char> searchRecordPatronymicLetter, List<decimal> searchRecordIncome, List<short> searchRecordHeight, string key, string value)
@@ -250,7 +250,7 @@ namespace FileCabinetApp.CommandHandlers
                 return;
             }
 
-            throw new ArgumentException("Wrong property name.", nameof(key));
+            throw new ArgumentException(Configurator.GetConstantString("WrongPropertyName"), nameof(key));
         }
 
         private static IEnumerable<int> GetTableColumnLengths(IEnumerable<PropertyInfo> properties, IEnumerable<FileCabinetRecord> records)
@@ -360,7 +360,7 @@ namespace FileCabinetApp.CommandHandlers
 
             if (!fieldsToShow.Any())
             {
-                throw new ArgumentException("Wrong parameters.", nameof(fieldsToShow));
+                throw new ArgumentException(Configurator.GetConstantString("WrongParameters"), nameof(fieldsToShow));
             }
 
             PropertyInfo[] properties = typeof(FileCabinetRecord).GetProperties();
@@ -368,7 +368,7 @@ namespace FileCabinetApp.CommandHandlers
             {
                 if (!properties.Any(x => x.Name.Equals(field, StringComparison.InvariantCultureIgnoreCase)))
                 {
-                    throw new ArgumentException("Wrong property name.");
+                    throw new ArgumentException(Configurator.GetConstantString("WrongPropertyName"));
                 }
             }
 
@@ -404,7 +404,7 @@ namespace FileCabinetApp.CommandHandlers
         {
             if (parameters is null)
             {
-                throw new ArgumentNullException(nameof(parameters), "Parameters must be not null.");
+                throw new ArgumentNullException(nameof(parameters), Configurator.GetConstantString("NullParameters"));
             }
 
             var temp = parameters.Split("where");
@@ -423,7 +423,7 @@ namespace FileCabinetApp.CommandHandlers
             }
             else if (temp.Length > 2)
             {
-                throw new ArgumentException("Wrong parameters.", nameof(parameters));
+                throw new ArgumentException(Configurator.GetConstantString("WrongParameters"), nameof(parameters));
             }
             else
             {
@@ -446,7 +446,7 @@ namespace FileCabinetApp.CommandHandlers
 
                 if (searchParams.Count() < 2)
                 {
-                    throw new ArgumentException("Must be at least 2 search conditions.", nameof(parameters));
+                    throw new ArgumentException(Configurator.GetConstantString("2SearchConditions"), nameof(parameters));
                 }
 
                 IEnumerable<IEnumerable<string>> fieldsAndValuesToFind = searchParams.Select(x => x.Split('=').Select(y => y.Trim()));

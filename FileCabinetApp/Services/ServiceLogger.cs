@@ -39,7 +39,7 @@ namespace FileCabinetApp.Services
         {
             if (transfer is null)
             {
-                throw new ArgumentNullException(nameof(transfer), "Transfer must be not null.");
+                throw new ArgumentNullException(nameof(transfer), Configurator.GetConstantString("NullTransfer"));
             }
 
             this.writer.WriteLine($"{DateTime.Now} Calling CreateRecord with FirstName = {transfer.FirstName}, LastName = {transfer.LastName}, DateOfBirth = {transfer.DateOfBirth}, Height = {transfer.Height}, Income = {transfer.Income}, PatrinymicLetter = {transfer.PatronymicLetter}.");

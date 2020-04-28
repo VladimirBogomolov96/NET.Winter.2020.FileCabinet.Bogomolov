@@ -9,6 +9,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="CommandHandlers\SelectCommandHandler.cs~RF143269f.TMP" />
     <None Remove="CommandHandlers\UpdateCommandHandler.cs~RF25acc96.TMP" />
   </ItemGroup>
 

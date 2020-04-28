@@ -20,7 +20,7 @@ namespace FileCabinetApp.Validators
         {
             if (validators is null)
             {
-                throw new ArgumentNullException(nameof(validators), "List of validators must be not null.");
+                throw new ArgumentNullException(nameof(validators), Configurator.GetConstantString("NullValidatorSequence"));
             }
 
             this.validators = validators.ToList();
@@ -36,7 +36,7 @@ namespace FileCabinetApp.Validators
         {
             if (record is null)
             {
-                throw new ArgumentNullException(nameof(record), "Record must be not null.");
+                throw new ArgumentNullException(nameof(record), Configurator.GetConstantString("NullRecord"));
             }
 
             foreach (var validator in this.validators)

@@ -24,13 +24,13 @@ namespace FileCabinetApp.CommandHandlers
         {
             if (commandRequest is null)
             {
-                Console.WriteLine("Wrong command.");
+                Console.WriteLine(Configurator.GetConstantString("InvalidCommand"));
                 return;
             }
 
             if (commandRequest.Command is null)
             {
-                Console.WriteLine("Wrong command.");
+                Console.WriteLine(Configurator.GetConstantString("InvalidCommand"));
                 return;
             }
 
@@ -68,17 +68,17 @@ namespace FileCabinetApp.CommandHandlers
 
         private void Create()
         {
-            Console.Write("First name: ");
+            Console.Write(Configurator.GetConstantString("FirstNameColon"));
             string firstName = ReadInput<string>(Converter.ConvertStringToString);
-            Console.Write("Last name: ");
+            Console.Write(Configurator.GetConstantString("LastNameColon"));
             string lastName = ReadInput<string>(Converter.ConvertStringToString);
-            Console.Write("Date of birth: ");
+            Console.Write(Configurator.GetConstantString("DateOfBirthColon"));
             DateTime dateOfBirth = ReadInput<DateTime>(Converter.ConvertStringToDateTime);
-            Console.Write("Height: ");
+            Console.Write(Configurator.GetConstantString("HeightColon"));
             short height = ReadInput<short>(Converter.ConvertStringToShort);
-            Console.Write("Income: ");
+            Console.Write(Configurator.GetConstantString("IncomeColon"));
             decimal income = ReadInput<decimal>(Converter.ConvertStringToDecimal);
-            Console.Write("Patronymic letter: ");
+            Console.Write(Configurator.GetConstantString("PatronymicColon"));
             char patronymicLetter = ReadInput<char>(Converter.ConvertStringToChar);
             RecordParametersTransfer transfer = new RecordParametersTransfer(firstName, lastName, dateOfBirth, height, income, patronymicLetter);
             try
@@ -88,7 +88,7 @@ namespace FileCabinetApp.CommandHandlers
             }
             catch (ArgumentException)
             {
-                Console.WriteLine("Invalid input data. Fix your input in order to meet validation rules.");
+                Console.WriteLine(Configurator.GetConstantString("InvalidInput"));
             }
         }
     }

@@ -28,13 +28,13 @@ namespace FileCabinetApp.CommandHandlers
         {
             if (commandRequest is null)
             {
-                Console.WriteLine("Wrong command line parameter.");
+                Console.WriteLine(Configurator.GetConstantString("InvalidCommand"));
                 return;
             }
 
             if (commandRequest.Command is null)
             {
-                Console.WriteLine("Wrong command line parameter.");
+                Console.WriteLine(Configurator.GetConstantString("InvalidCommand"));
                 return;
             }
 
@@ -53,7 +53,7 @@ namespace FileCabinetApp.CommandHandlers
             string[] parametersArr = parameters.Split(' ', 2);
             if (parametersArr.Length < 2)
             {
-                Console.WriteLine("Enter export format and destination file.");
+                Console.WriteLine(Configurator.GetConstantString("InvalidInput"));
                 return;
             }
 
@@ -86,7 +86,7 @@ namespace FileCabinetApp.CommandHandlers
                 }
                 catch (DirectoryNotFoundException)
                 {
-                    Console.WriteLine("Directory not exist.");
+                    Console.WriteLine(Configurator.GetConstantString("DirectoryNotExist"));
                 }
             }
             else if (parametersArr[exportTypeIndex].Equals("xml", StringComparison.OrdinalIgnoreCase))
@@ -104,12 +104,12 @@ namespace FileCabinetApp.CommandHandlers
                 }
                 catch (DirectoryNotFoundException)
                 {
-                    Console.WriteLine("Directory not exist.");
+                    Console.WriteLine(Configurator.GetConstantString("DirectoryNotExist"));
                 }
             }
             else
             {
-                Console.WriteLine("Wrong format type.");
+                Console.WriteLine(Configurator.GetConstantString("InvalidFormatType"));
             }
         }
     }

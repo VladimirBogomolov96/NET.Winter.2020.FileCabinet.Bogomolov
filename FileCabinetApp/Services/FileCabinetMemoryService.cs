@@ -42,7 +42,7 @@ namespace FileCabinetApp
         {
             if (transfer is null)
             {
-                throw new ArgumentNullException(nameof(transfer), "Transfer must be not null.");
+                throw new ArgumentNullException(nameof(transfer), Configurator.GetConstantString("NullTransfer"));
             }
 
             if (!this.recordValidator.ValidateParameters(transfer.RecordSimulation()).Item1)
@@ -111,7 +111,7 @@ namespace FileCabinetApp
         {
             if (records is null)
             {
-                throw new ArgumentNullException(nameof(records), "Records must be not null.");
+                throw new ArgumentNullException(nameof(records), Configurator.GetConstantString("NullRecordsSequence"));
             }
 
             foreach (FileCabinetRecord record in records)
@@ -153,7 +153,7 @@ namespace FileCabinetApp
         {
             if (record is null)
             {
-                throw new ArgumentNullException(nameof(record), "Record must be not null.");
+                throw new ArgumentNullException(nameof(record), Configurator.GetConstantString("NullRecord"));
             }
 
             if (!this.recordValidator.ValidateParameters(record).Item1)
@@ -163,7 +163,7 @@ namespace FileCabinetApp
 
             if (this.ids.Contains(record.Id))
             {
-                throw new ArgumentOutOfRangeException(nameof(record), "Record with given id already exists.");
+                throw new ArgumentOutOfRangeException(nameof(record), Configurator.GetConstantString("RecordIdExist"));
             }
 
             this.list.Add(record);
@@ -181,7 +181,7 @@ namespace FileCabinetApp
         {
             if (snapshot is null)
             {
-                throw new ArgumentNullException(nameof(snapshot), "Snapshot must be not null.");
+                throw new ArgumentNullException(nameof(snapshot), Configurator.GetConstantString("NullSnapshot"));
             }
 
             int count = 0;
@@ -232,7 +232,7 @@ namespace FileCabinetApp
         /// <exception cref="InvalidOperationException">Thrown always, because can't purge in memory service.</exception>
         public int Purge()
         {
-            throw new InvalidOperationException("Purge command can't be used in memory sevice.");
+            throw new InvalidOperationException(Configurator.GetConstantString("PurgeInMemory"));
         }
 
         /// <summary>
@@ -247,12 +247,12 @@ namespace FileCabinetApp
         {
             if (records is null)
             {
-                throw new ArgumentNullException(nameof(records), "Records must be not null.");
+                throw new ArgumentNullException(nameof(records), Configurator.GetConstantString("NullRecordsSequence"));
             }
 
             if (fieldsAndValuesToSet is null)
             {
-                throw new ArgumentNullException(nameof(fieldsAndValuesToSet), "Fields and values to set must be not null.");
+                throw new ArgumentNullException(nameof(fieldsAndValuesToSet), Configurator.GetConstantString("NullFieldsAndValues"));
             }
 
             int result = 0;
@@ -331,7 +331,7 @@ namespace FileCabinetApp
                 var value = keyValuePair.Last();
                 if (key.Equals("id", StringComparison.InvariantCultureIgnoreCase))
                 {
-                    throw new ArgumentException("Can't update ID property.", nameof(fieldsAndValuesToSet));
+                    throw new ArgumentException(Configurator.GetConstantString("IdChange"), nameof(fieldsAndValuesToSet));
                 }
 
                 if (key.Equals("firstname", StringComparison.InvariantCultureIgnoreCase))
@@ -442,7 +442,7 @@ namespace FileCabinetApp
                     continue;
                 }
 
-                throw new ArgumentException("Key not exist.", nameof(fieldsAndValuesToSet));
+                throw new ArgumentException(Configurator.GetConstantString("KeyNotExist"), nameof(fieldsAndValuesToSet));
             }
         }
     }

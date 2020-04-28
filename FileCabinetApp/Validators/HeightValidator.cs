@@ -31,7 +31,7 @@ namespace FileCabinetApp.Validators
         {
             if (record is null)
             {
-                throw new ArgumentNullException(nameof(record), "Record must be not null.");
+                throw new ArgumentNullException(nameof(record), Configurator.GetConstantString("NullRecord"));
             }
 
             if (record.Height < this.minHeight || record.Height > this.maxHeight)

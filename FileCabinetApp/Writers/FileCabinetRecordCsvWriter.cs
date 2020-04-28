@@ -47,7 +47,7 @@ namespace FileCabinetApp
         {
             if (record is null)
             {
-                throw new ArgumentNullException(nameof(record), "Record must be not null.");
+                throw new ArgumentNullException(nameof(record), Configurator.GetConstantString("NullRecord"));
             }
 
             string writing = $"{record.Id},{record.FirstName},{record.PatronymicLetter},{record.LastName},{record.DateOfBirth.ToString("MM/dd/yyyy", CultureInfo.InvariantCulture)},{record.Height},{record.Income}";

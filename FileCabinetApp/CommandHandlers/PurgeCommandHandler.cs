@@ -24,13 +24,13 @@ namespace FileCabinetApp.CommandHandlers
         {
             if (commandRequest is null)
             {
-                Console.WriteLine("Wrong command line parameter.");
+                Console.WriteLine(Configurator.GetConstantString("InvalidCommand"));
                 return;
             }
 
             if (commandRequest.Command is null)
             {
-                Console.WriteLine("Wrong command line parameter.");
+                Console.WriteLine(Configurator.GetConstantString("InvalidCommand"));
                 return;
             }
 
@@ -49,11 +49,11 @@ namespace FileCabinetApp.CommandHandlers
             try
             {
                 int purgedRecords = this.Service.Purge();
-                Console.WriteLine("Data file processing is completed: {0} of {1} records were purged.", purgedRecords, purgedRecords + this.Service.GetStat().Item1);
+                Console.WriteLine($"Data file processing is completed: {purgedRecords} of {purgedRecords + this.Service.GetStat().Item1} records were purged.");
             }
             catch (InvalidOperationException)
             {
-                Console.WriteLine("Defragmentation can be completed only with filesystem service.");
+                Console.WriteLine(Configurator.GetConstantString("PurgeInMemory"));
             }
         }
     }

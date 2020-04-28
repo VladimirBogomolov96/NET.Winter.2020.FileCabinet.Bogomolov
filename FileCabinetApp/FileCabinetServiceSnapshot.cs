@@ -50,7 +50,7 @@ namespace FileCabinetApp
         {
             if (writer is null)
             {
-                throw new ArgumentNullException(nameof(writer), "Writer must be not null.");
+                throw new ArgumentNullException(nameof(writer), Configurator.GetConstantString("NullStream"));
             }
 
             using FileCabinetRecordCsvWriter csvWriter = new FileCabinetRecordCsvWriter(writer);
@@ -69,7 +69,7 @@ namespace FileCabinetApp
         {
             if (writer is null)
             {
-                throw new ArgumentNullException(nameof(writer), "Writer must be not null.");
+                throw new ArgumentNullException(nameof(writer), Configurator.GetConstantString("NullStream"));
             }
 
             writer.WriteStartElement("records");

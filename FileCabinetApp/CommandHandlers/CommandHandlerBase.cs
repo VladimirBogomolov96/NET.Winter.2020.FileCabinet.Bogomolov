@@ -58,7 +58,7 @@ namespace FileCabinetApp.CommandHandlers
                 else
                 {
                     Console.WriteLine($"Command {commandRequest.Command} doesn't exist.");
-                    Console.WriteLine("The most similar commands are:");
+                    Console.WriteLine(Configurator.GetConstantString("SimilarCommands"));
                     foreach (string command in similarCommands)
                     {
                         Console.WriteLine(command);

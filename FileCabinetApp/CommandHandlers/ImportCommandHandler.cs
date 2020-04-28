@@ -27,13 +27,13 @@ namespace FileCabinetApp.CommandHandlers
         {
             if (commandRequest is null)
             {
-                Console.WriteLine("Wrong command line parameter.");
+                Console.WriteLine(Configurator.GetConstantString("InvalidCommand"));
                 return;
             }
 
             if (commandRequest.Command is null)
             {
-                Console.WriteLine("Wrong command line parameter.");
+                Console.WriteLine(Configurator.GetConstantString("InvalidCommand"));
                 return;
             }
 
@@ -53,7 +53,7 @@ namespace FileCabinetApp.CommandHandlers
             string[] parametersArr = parameters.Split(' ', 2);
             if (parametersArr.Length < 2)
             {
-                Console.WriteLine("Enter import format and destination file.");
+                Console.WriteLine(Configurator.GetConstantString("InvalidInput"));
                 return;
             }
 
@@ -84,7 +84,7 @@ namespace FileCabinetApp.CommandHandlers
             }
             else
             {
-                Console.WriteLine("Wrong format type.");
+                Console.WriteLine(Configurator.GetConstantString("InvalidFormatType"));
             }
         }
     }

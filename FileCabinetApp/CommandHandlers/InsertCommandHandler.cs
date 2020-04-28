@@ -25,13 +25,13 @@ namespace FileCabinetApp.CommandHandlers
         {
             if (commandRequest is null)
             {
-                Console.WriteLine("Wrong command line parameter.");
+                Console.WriteLine(Configurator.GetConstantString("InvalidCommand"));
                 return;
             }
 
             if (commandRequest.Command is null)
             {
-                Console.WriteLine("Wrong command line parameter.");
+                Console.WriteLine(Configurator.GetConstantString("InvalidCommand"));
                 return;
             }
 
@@ -39,16 +39,16 @@ namespace FileCabinetApp.CommandHandlers
             {
                 try
                 {
-                    Console.WriteLine("Record #{0} was inserted succesfully.", this.Service.Insert(this.ParseRecord(commandRequest.Parameters)));
+                    Console.WriteLine($"Record #{this.Service.Insert(this.ParseRecord(commandRequest.Parameters))} was inserted succesfully.");
                     this.Service.ClearCache();
                 }
                 catch (ArgumentOutOfRangeException)
                 {
-                    Console.WriteLine("Record with given id already exists.");
+                    Console.WriteLine(Configurator.GetConstantString("RecordIdExist"));
                 }
                 catch (ArgumentException)
                 {
-                    Console.WriteLine("Invalid parameters, fix your input.");
+                    Console.WriteLine(Configurator.GetConstantString("InvalidInput"));
                 }
             }
             else
@@ -61,13 +61,13 @@ namespace FileCabinetApp.CommandHandlers
         {
             if (parameters is null)
             {
-                throw new ArgumentNullException(nameof(parameters), "Parameters must be not null.");
+                throw new ArgumentNullException(nameof(parameters), Configurator.GetConstantString("NullParameters"));
             }
 
             var arguments = parameters.Split("values");
             if (arguments.Length != 2)
             {
-                throw new ArgumentException("Wrong insert parameters.", nameof(parameters));
+                throw new ArgumentException(Configurator.GetConstantString("InvalidInput"), nameof(parameters));
             }
             else
             {
@@ -88,12 +88,12 @@ namespace FileCabinetApp.CommandHandlers
 
                 if (fields.Count != amountOfFields)
                 {
-                    throw new ArgumentException("Wrong amount of fields.", nameof(parameters));
+                    throw new ArgumentException(Configurator.GetConstantString("WrongFieldsAmount"), nameof(parameters));
                 }
 
                 if (values.Count != amountOfFields)
                 {
-                    throw new ArgumentException("Wrong amount of values.", nameof(parameters));
+                    throw new ArgumentException(Configurator.GetConstantString("WrongValuesAmount"), nameof(parameters));
                 }
 
                 var conversionResultOfId = Converter.ConvertStringToInt(values[fields.FindIndex(x => x.Equals("id", StringComparison.InvariantCultureIgnoreCase))]);

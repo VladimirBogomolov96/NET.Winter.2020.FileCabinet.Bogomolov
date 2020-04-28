@@ -28,13 +28,13 @@ namespace FileCabinetApp.CommandHandlers
         {
             if (commandRequest is null)
             {
-                Console.WriteLine("Wrong command line parameter.");
+                Console.WriteLine(Configurator.GetConstantString("InvalidCommand"));
                 return;
             }
 
             if (commandRequest.Command is null)
             {
-                Console.WriteLine("Wrong command line parameter.");
+                Console.WriteLine(Configurator.GetConstantString("InvalidCommand"));
                 return;
             }
 
@@ -50,7 +50,7 @@ namespace FileCabinetApp.CommandHandlers
 
         private void Exit()
         {
-            Console.WriteLine("Exiting an application...");
+            Console.WriteLine(Configurator.GetConstantString("ClosingProgram"));
             this.action(false);
         }
     }

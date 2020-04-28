@@ -31,7 +31,7 @@ namespace FileCabinetApp.Validators
         {
             if (record is null)
             {
-                throw new ArgumentNullException(nameof(record), "Record must be not null.");
+                throw new ArgumentNullException(nameof(record), Configurator.GetConstantString("NullRecord"));
             }
 
             if (record.Income < this.from || record.Income > this.to)

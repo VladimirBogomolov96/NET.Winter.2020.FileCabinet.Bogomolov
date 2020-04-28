@@ -19,7 +19,7 @@ namespace FileCabinetApp.Printers
         {
             if (records is null)
             {
-                throw new ArgumentNullException(nameof(records), "Sequence of records must be not null.");
+                throw new ArgumentNullException(nameof(records), Configurator.GetConstantString("NullRecordsSequence"));
             }
 
             foreach (var record in records)
@@ -30,7 +30,7 @@ namespace FileCabinetApp.Printers
                 }
 
                 Console.WriteLine(
-                        "#{0}, {1}, {2}., {3}, {4}, {5} cm, {6}$",
+                        Configurator.GetConstantString("PrintPatthern"),
                         record.Id,
                         record.FirstName,
                         record.PatronymicLetter,
