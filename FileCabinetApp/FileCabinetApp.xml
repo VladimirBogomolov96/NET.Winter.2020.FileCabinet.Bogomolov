@@ -532,29 +532,6 @@
             </summary>
             <value>Whether stopwatch is using or not.</value>
         </member>
-        <member name="T:FileCabinetApp.Printers.DefaultPrinter">
-            <summary>
-            Default printer for records.
-            </summary>
-        </member>
-        <member name="M:FileCabinetApp.Printers.DefaultPrinter.Print(System.Collections.Generic.IEnumerable{FileCabinetApp.FileCabinetRecord})">
-            <summary>
-            Prints records.
-            </summary>
-            <param name="records">Records to print.</param>
-            <exception cref="T:System.ArgumentNullException">Thrown when given records are null.</exception>
-        </member>
-        <member name="T:FileCabinetApp.Printers.IRecordPrinter">
-            <summary>
-            Provides methods to print records.
-            </summary>
-        </member>
-        <member name="M:FileCabinetApp.Printers.IRecordPrinter.Print(System.Collections.Generic.IEnumerable{FileCabinetApp.FileCabinetRecord})">
-            <summary>
-            Prints records.
-            </summary>
-            <param name="records">Records to print.</param>
-        </member>
         <member name="T:FileCabinetApp.Program">
             <summary>
             API class of the program.
