@@ -1,6 +1,4 @@
-﻿using CommandLine;
-
-namespace FileCabinetGenerator
+﻿namespace FileCabinetGenerator
 {
     /// <summary>
     /// Command line options.
@@ -11,28 +9,24 @@ namespace FileCabinetGenerator
         /// Gets or sets type of output file.
         /// </summary>
         /// <value>Type of output file.</value>
-        [Option('t', "output-type", Default = "csv", Required = false)]
-        public string OutputType { get; set; }
+        public string OutputType { get; set; } = "csv";
 
         /// <summary>
         /// Gets or sets name of output file.
         /// </summary>
         /// <value>Name of output file.</value>
-        [Option('o', "output", Default = "NewFile", Required = false)]
-        public string OutputFileName { get; set; }
+        public string OutputFileName { get; set; } = "NewFile";
 
         /// <summary>
         /// Gets or sets amount of records.
         /// </summary>
         /// <value>Amount of records.</value>
-        [Option('a', "records-amount", Default = 10, Required = false)]
-        public int RecordsAmount { get; set; }
+        public int RecordsAmount { get; set; } = 10;
 
         /// <summary>
         /// Gets or sets start id.
         /// </summary>
         /// <value>Start id.</value>
-        [Option('i', "start-id", Default = 1, Required = false)]
-        public int StartId { get; set; }
+        public int StartId { get; set; } = 1;
     }
 }

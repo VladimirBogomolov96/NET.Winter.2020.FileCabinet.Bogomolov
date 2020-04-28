@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Xml;
-using CommandLine;
 using FileCabinetApp;
 
 namespace FileCabinetGenerator
@@ -98,8 +97,125 @@ namespace FileCabinetGenerator
 
         private static Options GetCommandLineArguments(string[] args)
         {
+            if (args is null)
+            {
+                throw new ArgumentNullException(nameof(args), "Args must be not null");
+            }
+
+            List<string> singleParams = new List<string>();
+            List<string> doubleParams = new List<string>();
+            List<string> doubleParamsValues = new List<string>();
+            for (int i = 0; i < args.Length; i++)
+            {
+                if (args[i].Substring(0, 2) == "--")
+                {
+                    singleParams.Add(args[i]);
+                    continue;
+                }
+                else if (args[i].Substring(0, 1) == "-")
+                {
+                    if (i == (args.Length - 1))
+                    {
+                        Console.WriteLine($"Invalid command line parameter '{args[i]}'.", nameof(args));
+                        Environment.Exit(-1);
+                    }
+
+                    doubleParams.Add(args[i]);
+                    doubleParamsValues.Add(args[i + 1]);
+                    i++;
+                    continue;
+                }
+                else
+                {
+                    Console.WriteLine($"Invalid command line parameter '{args[i]}'.", nameof(args));
+                    Environment.Exit(-1);
+                }
+            }
+
             Options options = new Options();
-            var result = Parser.Default.ParseArguments<Options>(args).WithParsed(parsed => options = parsed);
+            foreach (string param in singleParams)
+            {
+                string[] keyValuePair = param.Split('=');
+                if (keyValuePair.Length == 2)
+                {
+                    if (keyValuePair[0] == "--output-type")
+                    {
+                        options.OutputType = keyValuePair[1];
+                    }
+                    else if (keyValuePair[0] == "--output")
+                    {
+                        options.OutputFileName = keyValuePair[1];
+                    }
+                    else if (keyValuePair[0] == "--records-amount")
+                    {
+                        if (!int.TryParse(keyValuePair[1], out int amount))
+                        {
+                            Console.WriteLine($"Invalid command line parameter '{param}'.", nameof(args));
+                            Environment.Exit(-1);
+                        }
+
+                        options.RecordsAmount = amount;
+                    }
+                    else if (keyValuePair[0] == "--start-id")
+                    {
+                        if (!int.TryParse(keyValuePair[1], out int startId))
+                        {
+                            Console.WriteLine($"Invalid command line parameter '{param}'.", nameof(args));
+                            Environment.Exit(-1);
+                        }
+
+                        options.StartId = startId;
+                    }
+                    else
+                    {
+                        Console.WriteLine($"Invalid command line parameter '{param}'.", nameof(args));
+                        Environment.Exit(-1);
+                    }
+                }
+                else
+                {
+                    Console.WriteLine($"Invalid command line parameter '{param}'.", nameof(args));
+                    Environment.Exit(-1);
+                }
+            }
+
+            for (int i = 0; i < doubleParams.Count; i++)
+            {
+                if (doubleParams[i] == "-t")
+                {
+                    options.OutputType = doubleParamsValues[i];
+                }
+                else if (doubleParams[i] == "-o")
+                {
+                    options.OutputFileName = doubleParamsValues[i];
+                }
+                else if (doubleParams[i] == "-a")
+                {
+                    if (!int.TryParse(doubleParamsValues[i], out int amount))
+                    {
+                        Console.WriteLine($"Invalid command line parameter value '{doubleParamsValues[i]}'.", nameof(args));
+                        Environment.Exit(-1);
+                    }
+
+                    options.RecordsAmount = amount;
+                }
+                else if (doubleParams[i] == "-i")
+                {
+                    if (!int.TryParse(doubleParamsValues[i], out int startId))
+                    {
+                        Console.WriteLine($"Invalid command line parameter value '{doubleParamsValues[i]}'.", nameof(args));
+                        Environment.Exit(-1);
+                    }
+
+                    options.StartId = startId;
+                }
+                else
+                {
+                    Console.WriteLine($"Invalid command line parameter '{doubleParams[i]}'.", nameof(args));
+                    Environment.Exit(-1);
+                }
+            }
+
             return options;
         }
 
