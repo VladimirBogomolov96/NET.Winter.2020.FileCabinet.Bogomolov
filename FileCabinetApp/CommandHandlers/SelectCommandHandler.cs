@@ -40,16 +40,19 @@ namespace FileCabinetApp.CommandHandlers
 
             if (commandRequest.Command.Equals("select", StringComparison.InvariantCultureIgnoreCase))
             {
-                if (this.Service.GetCache().TryGetValue(commandRequest.Parameters.Replace(" ", string.Empty, StringComparison.InvariantCultureIgnoreCase), out string resultFromCache))
+                string[] memoization = this.GetMemoizationKey(commandRequest.Parameters);
+                string oldResult = this.Service.GetCache(memoization);
+                if (oldResult != null)
                 {
-                    Console.WriteLine(resultFromCache);
+                    Console.WriteLine(oldResult);
                 }
                 else
                 {
                     try
                     {
                         string result = this.Select(commandRequest.Parameters);
-                        this.Service.SaveInCache(commandRequest.Parameters.Replace(" ", string.Empty, StringComparison.InvariantCultureIgnoreCase), result);
+                        memoization[8] = result;
+                        this.Service.SaveInCache(memoization);
                         Console.WriteLine(result);
                     }
                     catch (ArgumentException)
@@ -580,6 +583,78 @@ namespace FileCabinetApp.CommandHandlers
             }
 
             return result.Distinct();
+        }
+
+        private string[] GetMemoizationKey(string parameters)
+        {
+            string[] result = new string[9];
+            var temp = parameters.Split("where");
+            StringBuilder sb = new StringBuilder();
+            foreach (string str in temp[0].Split(','))
+            {
+                sb.Append(str.Trim());
+            }
+
+            if (temp.Length == 1)
+            {
+                result[0] = sb.ToString();
+                return result;
+            }
+
+            var tempOr = temp[1].Split("or");
+            var tempAnd = temp[1].Split("and");
+            string type;
+            if (tempOr.Length > tempAnd.Length)
+            {
+                type = "or";
+            }
+            else
+            {
+                type = "and";
+            }
+
+            sb.Append(type);
+            result[0] = sb.ToString();
+            foreach (string keyValue in temp[1].Split(type))
+            {
+                var pair = keyValue.Split('=');
+                if (pair[0].Trim().Equals("id", StringComparison.InvariantCultureIgnoreCase))
+                {
+                    result[1] = pair[1].Trim();
+                    continue;
+                }
+                else if (pair[0].Trim().Equals("firstname", StringComparison.InvariantCultureIgnoreCase))
+                {
+                    result[2] = pair[1].Trim();
+                    continue;
+                }
+                else if (pair[0].Trim().Equals("lastname", StringComparison.InvariantCultureIgnoreCase))
+                {
+                    result[3] = pair[1].Trim();
+                    continue;
+                }
+                else if (pair[0].Trim().Equals("dateofbirth", StringComparison.InvariantCultureIgnoreCase))
+                {
+                    result[4] = pair[1].Trim();
+                    continue;
+                }
+                else if (pair[0].Trim().Equals("patronymicletter", StringComparison.InvariantCultureIgnoreCase))
+                {
+                    result[5] = pair[1].Trim();
+                    continue;
+                }
+                else if (pair[0].Trim().Equals("income", StringComparison.InvariantCultureIgnoreCase))
+                {
+                    result[6] = pair[1].Trim();
+                    continue;
+                }
+                else if (pair[0].Trim().Equals("height", StringComparison.InvariantCultureIgnoreCase))
+                {
+                    result[7] = pair[1].Trim();
+                }
+            }
+
+            return result;
         }
     }
 }

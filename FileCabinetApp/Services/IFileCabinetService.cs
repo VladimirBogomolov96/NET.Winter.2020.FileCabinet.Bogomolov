@@ -84,15 +84,15 @@ namespace FileCabinetApp
         /// <summary>
         /// Gets cache.
         /// </summary>
+        /// <param name="memoizationKey">Parameters of execution.</param>
         /// <returns>Cache.</returns>
-        Dictionary<string, string> GetCache();
+        string GetCache(string[] memoizationKey);
 
         /// <summary>
         /// Saves condition and result of execution in cache.
         /// </summary>
-        /// <param name="parameters">Parameters of execution.</param>
-        /// <param name="result">Result of execution.</param>
-        void SaveInCache(string parameters, string result);
+        /// <param name="memoization">Parameters and result of execution.</param>
+        void SaveInCache(string[] memoization);
 
         /// <summary>
         /// Clears cache.

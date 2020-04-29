@@ -193,26 +193,26 @@ namespace FileCabinetApp.Services
         }
 
         /// <summary>
-        /// Gets cache and writes info to log file.
+        /// Gets cache.
         /// </summary>
+        /// <param name="memoizationKey">Parameters of execution.</param>
         /// <returns>Cache.</returns>
-        public Dictionary<string, string> GetCache()
+        public string GetCache(string[] memoizationKey)
         {
             this.writer.WriteLine($"{DateTime.Now} Calling GetCache.");
-            var result = this.service.GetCache();
+            var result = this.service.GetCache(memoizationKey);
             this.writer.WriteLine($"{DateTime.Now} GetCache completed.");
             return result;
         }
 
         /// <summary>
-        /// Saves condition and result of execution in cache and writes info to log file.
+        /// Saves condition and result of execution in cache.
         /// </summary>
-        /// <param name="parameters">Parameters of execution.</param>
-        /// <param name="result">Result of execution.</param>
-        public void SaveInCache(string parameters, string result)
+        /// <param name="memoization">Parameters and result of execution.</param>
+        public void SaveInCache(string[] memoization)
         {
             this.writer.WriteLine($"{DateTime.Now} Calling SaveInCache.");
-            this.service.SaveInCache(parameters, result);
+            this.service.SaveInCache(memoization);
             this.writer.WriteLine($"{DateTime.Now} SaveInCache completed.");
         }
 

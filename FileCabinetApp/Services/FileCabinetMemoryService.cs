@@ -11,7 +11,7 @@ namespace FileCabinetApp
     public class FileCabinetMemoryService : IFileCabinetService
     {
         private readonly List<int> ids = new List<int>();
-        private readonly Dictionary<string, string> cache = new Dictionary<string, string>();
+        private readonly List<string[]> cache = new List<string[]>();
         private readonly List<FileCabinetRecord> list = new List<FileCabinetRecord>();
         private IRecordValidator recordValidator;
 
@@ -299,20 +299,43 @@ namespace FileCabinetApp
         /// <summary>
         /// Gets cache.
         /// </summary>
+        /// <param name="memoizationKey">Parameters of execution.</param>
         /// <returns>Cache.</returns>
-        public Dictionary<string, string> GetCache()
+        public string GetCache(string[] memoizationKey)
         {
-            return this.cache;
+            if (memoizationKey is null)
+            {
+                return null;
+            }
+
+            foreach (string[] arr in this.cache)
+            {
+                bool isFit = true;
+                for (int i = 0; i < 8; i++)
+                {
+                    if (arr[i] != memoizationKey[i])
+                    {
+                        isFit = false;
+                        break;
+                    }
+                }
+
+                if (isFit)
+                {
+                    return arr[8];
+                }
+            }
+
+            return null;
         }
 
         /// <summary>
         /// Saves condition and result of execution in cache.
         /// </summary>
-        /// <param name="parameters">Parameters of execution.</param>
-        /// <param name="result">Result of execution.</param>
-        public void SaveInCache(string parameters, string result)
+        /// <param name="memoization">Parameters and result of execution.</param>
+        public void SaveInCache(string[] memoization)
         {
-            this.cache.Add(parameters, result);
+            this.cache.Add(memoization);
         }
 
         /// <summary>

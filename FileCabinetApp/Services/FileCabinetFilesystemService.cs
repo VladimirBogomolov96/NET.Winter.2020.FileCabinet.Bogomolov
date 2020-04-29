@@ -19,7 +19,6 @@ namespace FileCabinetApp
         private readonly int sizeOfString;
         private readonly int sizeOfRecord;
         private readonly Dictionary<int, int> dictionaryIdOffset = new Dictionary<int, int>();
-        private readonly Dictionary<string, string> cache = new Dictionary<string, string>();
         private readonly FileStream fileStream;
         private readonly BinaryReader binaryReader;
         private readonly BinaryWriter binaryWriter;
@@ -467,20 +466,19 @@ namespace FileCabinetApp
         /// <summary>
         /// Gets cache.
         /// </summary>
+        /// <param name="memoizationKey">Parameters of execution.</param>
         /// <returns>Cache.</returns>
-        public Dictionary<string, string> GetCache()
+        public string GetCache(string[] memoizationKey)
         {
-            return this.cache;
+            return null;
         }
 
         /// <summary>
         /// Saves condition and result of execution in cache.
         /// </summary>
-        /// <param name="parameters">Parameters of execution.</param>
-        /// <param name="result">Result of execution.</param>
-        public void SaveInCache(string parameters, string result)
+        /// <param name="memoization">Parameters and result of execution.</param>
+        public void SaveInCache(string[] memoization)
         {
-            this.cache.Add(parameters, result);
         }
 
         /// <summary>
@@ -488,7 +486,6 @@ namespace FileCabinetApp
         /// </summary>
         public void ClearCache()
         {
-            this.cache.Clear();
         }
 
         /// <summary>

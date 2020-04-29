@@ -167,26 +167,26 @@ namespace FileCabinetApp.Services
         }
 
         /// <summary>
-        /// Gets cache and measure execution time.
+        /// Gets cache.
         /// </summary>
+        /// <param name="memoizationKey">Parameters of execution.</param>
         /// <returns>Cache.</returns>
-        public Dictionary<string, string> GetCache()
+        public string GetCache(string[] memoizationKey)
         {
             var stopWatch = Stopwatch.StartNew();
-            var result = this.service.GetCache();
+            var result = this.service.GetCache(memoizationKey);
             Console.WriteLine($"GetCache method execution duration is {stopWatch.ElapsedTicks} ticks.");
             return result;
         }
 
         /// <summary>
-        /// Saves condition and result of execution in cache and measure execution time.
+        /// Saves condition and result of execution in cache.
         /// </summary>
-        /// <param name="parameters">Parameters of execution.</param>
-        /// <param name="result">Result of execution.</param>
-        public void SaveInCache(string parameters, string result)
+        /// <param name="memoization">Parameters and result of execution.</param>
+        public void SaveInCache(string[] memoization)
         {
             var stopWatch = Stopwatch.StartNew();
-            this.service.SaveInCache(parameters, result);
+            this.service.SaveInCache(memoization);
             Console.WriteLine($"SaveInCache method execution duration is {stopWatch.ElapsedTicks} ticks.");
         }
 

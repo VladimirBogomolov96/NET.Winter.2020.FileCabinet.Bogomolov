@@ -743,18 +743,18 @@
             <exception cref="T:System.ArgumentNullException">Thrown when records or fields and values to set is null.</exception>
             <exception cref="T:System.ArgumentException">Thrown when data is invalid.</exception>
         </member>
-        <member name="M:FileCabinetApp.FileCabinetFilesystemService.GetCache">
+        <member name="M:FileCabinetApp.FileCabinetFilesystemService.GetCache(System.String[])">
             <summary>
             Gets cache.
             </summary>
+            <param name="memoizationKey">Parameters of execution.</param>
             <returns>Cache.</returns>
         </member>
-        <member name="M:FileCabinetApp.FileCabinetFilesystemService.SaveInCache(System.String,System.String)">
+        <member name="M:FileCabinetApp.FileCabinetFilesystemService.SaveInCache(System.String[])">
             <summary>
             Saves condition and result of execution in cache.
             </summary>
-            <param name="parameters">Parameters of execution.</param>
-            <param name="result">Result of execution.</param>
+            <param name="memoization">Parameters and result of execution.</param>
         </member>
         <member name="M:FileCabinetApp.FileCabinetFilesystemService.ClearCache">
             <summary>
@@ -866,18 +866,18 @@
             <exception cref="T:System.ArgumentNullException">Thrown when records or fields and values to set is null.</exception>
             <exception cref="T:System.ArgumentException">Thrown when data is invalid.</exception>
         </member>
-        <member name="M:FileCabinetApp.FileCabinetMemoryService.GetCache">
+        <member name="M:FileCabinetApp.FileCabinetMemoryService.GetCache(System.String[])">
             <summary>
             Gets cache.
             </summary>
+            <param name="memoizationKey">Parameters of execution.</param>
             <returns>Cache.</returns>
         </member>
-        <member name="M:FileCabinetApp.FileCabinetMemoryService.SaveInCache(System.String,System.String)">
+        <member name="M:FileCabinetApp.FileCabinetMemoryService.SaveInCache(System.String[])">
             <summary>
             Saves condition and result of execution in cache.
             </summary>
-            <param name="parameters">Parameters of execution.</param>
-            <param name="result">Result of execution.</param>
+            <param name="memoization">Parameters and result of execution.</param>
         </member>
         <member name="M:FileCabinetApp.FileCabinetMemoryService.ClearCache">
             <summary>
@@ -962,18 +962,18 @@
             <param name="fieldsAndValuesToSet">Fields and values to set.</param>
             <returns>Amount of updated records.</returns>
         </member>
-        <member name="M:FileCabinetApp.IFileCabinetService.GetCache">
+        <member name="M:FileCabinetApp.IFileCabinetService.GetCache(System.String[])">
             <summary>
             Gets cache.
             </summary>
+            <param name="memoizationKey">Parameters of execution.</param>
             <returns>Cache.</returns>
         </member>
-        <member name="M:FileCabinetApp.IFileCabinetService.SaveInCache(System.String,System.String)">
+        <member name="M:FileCabinetApp.IFileCabinetService.SaveInCache(System.String[])">
             <summary>
             Saves condition and result of execution in cache.
             </summary>
-            <param name="parameters">Parameters of execution.</param>
-            <param name="result">Result of execution.</param>
+            <param name="memoization">Parameters and result of execution.</param>
         </member>
         <member name="M:FileCabinetApp.IFileCabinetService.ClearCache">
             <summary>
@@ -1078,18 +1078,18 @@
             </summary>
             <param name="recordValidator">Rules of validation.</param>
         </member>
-        <member name="M:FileCabinetApp.Services.ServiceLogger.GetCache">
+        <member name="M:FileCabinetApp.Services.ServiceLogger.GetCache(System.String[])">
             <summary>
-            Gets cache and writes info to log file.
+            Gets cache.
             </summary>
+            <param name="memoizationKey">Parameters of execution.</param>
             <returns>Cache.</returns>
         </member>
-        <member name="M:FileCabinetApp.Services.ServiceLogger.SaveInCache(System.String,System.String)">
+        <member name="M:FileCabinetApp.Services.ServiceLogger.SaveInCache(System.String[])">
             <summary>
-            Saves condition and result of execution in cache and writes info to log file.
+            Saves condition and result of execution in cache.
             </summary>
-            <param name="parameters">Parameters of execution.</param>
-            <param name="result">Result of execution.</param>
+            <param name="memoization">Parameters and result of execution.</param>
         </member>
         <member name="M:FileCabinetApp.Services.ServiceLogger.ClearCache">
             <summary>
@@ -1189,18 +1189,18 @@
             </summary>
             <param name="recordValidator">Rules of validation.</param>
         </member>
-        <member name="M:FileCabinetApp.Services.ServiceMeter.GetCache">
+        <member name="M:FileCabinetApp.Services.ServiceMeter.GetCache(System.String[])">
             <summary>
-            Gets cache and measure execution time.
+            Gets cache.
             </summary>
+            <param name="memoizationKey">Parameters of execution.</param>
             <returns>Cache.</returns>
         </member>
-        <member name="M:FileCabinetApp.Services.ServiceMeter.SaveInCache(System.String,System.String)">
+        <member name="M:FileCabinetApp.Services.ServiceMeter.SaveInCache(System.String[])">
             <summary>
-            Saves condition and result of execution in cache and measure execution time.
+            Saves condition and result of execution in cache.
             </summary>
-            <param name="parameters">Parameters of execution.</param>
-            <param name="result">Result of execution.</param>
+            <param name="memoization">Parameters and result of execution.</param>
         </member>
         <member name="M:FileCabinetApp.Services.ServiceMeter.ClearCache">
             <summary>
