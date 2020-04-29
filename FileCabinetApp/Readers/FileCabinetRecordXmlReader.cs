@@ -59,6 +59,10 @@ namespace FileCabinetApp
                 {
                     Console.WriteLine($"Invalid data in {xmlModel.Id}{xmlModel.Name.FirstName}{xmlModel.Name.LastName}{xmlModel.PatronymicLetter[0]}{xmlModel.Income}{xmlModel.Height}. Data was skipped.");
                 }
+                catch (ArgumentException)
+                {
+                    Console.WriteLine($"Invalid data in {xmlModel.Id}{xmlModel.Name.FirstName}{xmlModel.Name.LastName}{xmlModel.PatronymicLetter[0]}{xmlModel.Income}{xmlModel.Height}. Data was skipped.");
+                }
             }
 
             return list;

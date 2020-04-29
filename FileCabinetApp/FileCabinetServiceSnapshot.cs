@@ -99,7 +99,14 @@ namespace FileCabinetApp
         public void LoadFromXml(XmlReader xmlReader)
         {
             FileCabinetRecordXmlReader fileXmlReader = new FileCabinetRecordXmlReader(xmlReader);
-            this.records = fileXmlReader.ReadAll().ToArray();
+            try
+            {
+                this.records = fileXmlReader.ReadAll().ToArray();
+            }
+            catch (InvalidOperationException)
+            {
+                Console.WriteLine(Configurator.GetConstantString("InvalidDeserialize"));
+            }
         }
     }
 }

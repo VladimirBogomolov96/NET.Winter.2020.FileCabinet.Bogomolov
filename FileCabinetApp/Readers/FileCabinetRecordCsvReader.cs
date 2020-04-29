@@ -49,9 +49,19 @@ namespace FileCabinetApp
                     };
                     records.Add(record);
                 }
-#pragma warning disable CA1031 // Do not catch general exception types
-                catch (Exception)
-#pragma warning restore CA1031 // Do not catch general exception types
+                catch (IndexOutOfRangeException)
+                {
+                    Console.WriteLine($"Invalid data in string {tempFields}. Data was skipped.");
+                }
+                catch (ArgumentException)
+                {
+                    Console.WriteLine($"Invalid data in string {tempFields}. Data was skipped.");
+                }
+                catch (FormatException)
+                {
+                    Console.WriteLine($"Invalid data in string {tempFields}. Data was skipped.");
+                }
+                catch (OverflowException)
                 {
                     Console.WriteLine($"Invalid data in string {tempFields}. Data was skipped.");
                 }

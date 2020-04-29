@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 
@@ -11,12 +12,12 @@ namespace FileCabinetApp
     /// </summary>
     public class FileCabinetFilesystemService : IFileCabinetService, IDisposable
     {
-        private const int SizeOfChar = 1;
-        private const int SizeOfShort = 2;
-        private const int SizeOfInt = 4;
-        private const int SizeOfDecimal = 16;
-        private const int SizeOfString = 122;
-        private const int SizeOfRecord = 281;
+        private readonly int sizeOfChar;
+        private readonly int sizeOfShort;
+        private readonly int sizeOfInt;
+        private readonly int sizeOfDecimal;
+        private readonly int sizeOfString;
+        private readonly int sizeOfRecord;
         private readonly Dictionary<int, int> dictionaryIdOffset = new Dictionary<int, int>();
         private readonly Dictionary<string, string> cache = new Dictionary<string, string>();
         private readonly FileStream fileStream;
@@ -40,6 +41,33 @@ namespace FileCabinetApp
             this.fileStream = fileStream;
             this.binaryWriter = new BinaryWriter(fileStream);
             this.binaryReader = new BinaryReader(fileStream);
+            try
+            {
+                this.sizeOfChar = int.Parse(Configurator.GetSetting("SizeOfChar"), CultureInfo.InvariantCulture);
+                this.sizeOfShort = int.Parse(Configurator.GetSetting("SizeOfShort"), CultureInfo.InvariantCulture);
+                this.sizeOfInt = int.Parse(Configurator.GetSetting("SizeOfInt"), CultureInfo.InvariantCulture);
+                this.sizeOfDecimal = int.Parse(Configurator.GetSetting("SizeOfDecimal"), CultureInfo.InvariantCulture);
+                this.sizeOfString = int.Parse(Configurator.GetSetting("SizeOfString"), CultureInfo.InvariantCulture);
+                this.sizeOfRecord = int.Parse(Configurator.GetSetting("SizeOfRecord"), CultureInfo.InvariantCulture);
+            }
+            catch (ArgumentException)
+            {
+                Console.WriteLine(Configurator.GetConstantString("InvalidTypeSyzeData"));
+                Console.WriteLine(Configurator.GetConstantString("ClosingProgram"));
+                Environment.Exit(-1);
+            }
+            catch (FormatException)
+            {
+                Console.WriteLine(Configurator.GetConstantString("InvalidTypeSyzeData"));
+                Console.WriteLine(Configurator.GetConstantString("ClosingProgram"));
+                Environment.Exit(-1);
+            }
+            catch (OverflowException)
+            {
+                Console.WriteLine(Configurator.GetConstantString("InvalidTypeSyzeData"));
+                Console.WriteLine(Configurator.GetConstantString("ClosingProgram"));
+                Environment.Exit(-1);
+            }
         }
 
         /// <summary>
@@ -84,28 +112,28 @@ namespace FileCabinetApp
             }
 
             this.dictionaryIdOffset.Add(id, this.currentOffset);
-            this.currentOffset += SizeOfShort;
+            this.currentOffset += this.sizeOfShort;
             this.binaryWriter.Seek(this.currentOffset, 0);
             this.binaryWriter.Write(id);
-            this.currentOffset += SizeOfInt;
+            this.currentOffset += this.sizeOfInt;
             this.binaryWriter.Write(transfer.FirstName);
-            this.currentOffset += SizeOfString;
+            this.currentOffset += this.sizeOfString;
             this.binaryWriter.Seek(this.currentOffset, 0);
             this.binaryWriter.Write(transfer.LastName);
-            this.currentOffset += SizeOfString;
+            this.currentOffset += this.sizeOfString;
             this.binaryWriter.Seek(this.currentOffset, 0);
             this.binaryWriter.Write(transfer.DateOfBirth.Day);
-            this.currentOffset += SizeOfInt;
+            this.currentOffset += this.sizeOfInt;
             this.binaryWriter.Write(transfer.DateOfBirth.Month);
-            this.currentOffset += SizeOfInt;
+            this.currentOffset += this.sizeOfInt;
             this.binaryWriter.Write(transfer.DateOfBirth.Year);
-            this.currentOffset += SizeOfInt;
+            this.currentOffset += this.sizeOfInt;
             this.binaryWriter.Write(transfer.PatronymicLetter);
-            this.currentOffset += SizeOfChar;
+            this.currentOffset += this.sizeOfChar;
             this.binaryWriter.Write(transfer.Income);
-            this.currentOffset += SizeOfDecimal;
+            this.currentOffset += this.sizeOfDecimal;
             this.binaryWriter.Write(transfer.Height);
-            this.currentOffset += SizeOfShort;
+            this.currentOffset += this.sizeOfShort;
             return id;
         }
 
@@ -134,28 +162,28 @@ namespace FileCabinetApp
             }
 
             this.dictionaryIdOffset.Add(record.Id, this.currentOffset);
-            this.currentOffset += SizeOfShort;
+            this.currentOffset += this.sizeOfShort;
             this.binaryWriter.Seek(this.currentOffset, 0);
             this.binaryWriter.Write(record.Id);
-            this.currentOffset += SizeOfInt;
+            this.currentOffset += this.sizeOfInt;
             this.binaryWriter.Write(record.FirstName);
-            this.currentOffset += SizeOfString;
+            this.currentOffset += this.sizeOfString;
             this.binaryWriter.Seek(this.currentOffset, 0);
             this.binaryWriter.Write(record.LastName);
-            this.currentOffset += SizeOfString;
+            this.currentOffset += this.sizeOfString;
             this.binaryWriter.Seek(this.currentOffset, 0);
             this.binaryWriter.Write(record.DateOfBirth.Day);
-            this.currentOffset += SizeOfInt;
+            this.currentOffset += this.sizeOfInt;
             this.binaryWriter.Write(record.DateOfBirth.Month);
-            this.currentOffset += SizeOfInt;
+            this.currentOffset += this.sizeOfInt;
             this.binaryWriter.Write(record.DateOfBirth.Year);
-            this.currentOffset += SizeOfInt;
+            this.currentOffset += this.sizeOfInt;
             this.binaryWriter.Write(record.PatronymicLetter);
-            this.currentOffset += SizeOfChar;
+            this.currentOffset += this.sizeOfChar;
             this.binaryWriter.Write(record.Income);
-            this.currentOffset += SizeOfDecimal;
+            this.currentOffset += this.sizeOfDecimal;
             this.binaryWriter.Write(record.Height);
-            this.currentOffset += SizeOfShort;
+            this.currentOffset += this.sizeOfShort;
             return record.Id;
         }
 
@@ -172,20 +200,20 @@ namespace FileCabinetApp
                 this.binaryReader.BaseStream.Seek(tempOffset, 0);
                 if (this.binaryReader.ReadBoolean())
                 {
-                    tempOffset += SizeOfRecord;
+                    tempOffset += this.sizeOfRecord;
                     continue;
                 }
 
                 FileCabinetRecord newRecord = new FileCabinetRecord();
-                tempOffset += SizeOfShort;
+                tempOffset += this.sizeOfShort;
                 this.binaryReader.BaseStream.Seek(tempOffset, 0);
                 newRecord.Id = this.binaryReader.ReadInt32();
-                tempOffset += SizeOfInt;
+                tempOffset += this.sizeOfInt;
                 newRecord.FirstName = this.binaryReader.ReadString();
-                this.binaryReader.BaseStream.Seek(tempOffset + SizeOfString, 0);
+                this.binaryReader.BaseStream.Seek(tempOffset + this.sizeOfString, 0);
                 newRecord.LastName = this.binaryReader.ReadString();
-                tempOffset += SizeOfString;
-                this.binaryReader.BaseStream.Seek(tempOffset + SizeOfString, 0);
+                tempOffset += this.sizeOfString;
+                this.binaryReader.BaseStream.Seek(tempOffset + this.sizeOfString, 0);
                 int day = this.binaryReader.ReadInt32();
                 int month = this.binaryReader.ReadInt32();
                 int year = this.binaryReader.ReadInt32();
@@ -217,13 +245,13 @@ namespace FileCabinetApp
                 this.binaryReader.BaseStream.Seek(tempOffset, 0);
                 if (this.binaryReader.ReadBoolean())
                 {
-                    tempOffset += SizeOfRecord;
+                    tempOffset += this.sizeOfRecord;
                     removedCounter++;
                     continue;
                 }
 
                 counter++;
-                tempOffset += SizeOfRecord;
+                tempOffset += this.sizeOfRecord;
             }
 
             return (counter, removedCounter);
@@ -279,7 +307,7 @@ namespace FileCabinetApp
                 {
                     this.dictionaryIdOffset.Add(record.Id, this.currentOffset);
                     this.WriteToFile(record, this.currentOffset);
-                    this.currentOffset += SizeOfRecord;
+                    this.currentOffset += this.sizeOfRecord;
                     count++;
                 }
             }
@@ -349,7 +377,7 @@ namespace FileCabinetApp
                 if (this.binaryReader.ReadBoolean())
                 {
                     deletePosition = tempOffset;
-                    tempOffset += SizeOfRecord;
+                    tempOffset += this.sizeOfRecord;
                     while (tempOffset < this.binaryReader.BaseStream.Length)
                     {
                         this.binaryReader.BaseStream.Seek(tempOffset, 0);
@@ -363,7 +391,7 @@ namespace FileCabinetApp
                             break;
                         }
 
-                        tempOffset += SizeOfRecord;
+                        tempOffset += this.sizeOfRecord;
                     }
 
                     if (tempOffset >= this.binaryReader.BaseStream.Length)
@@ -373,10 +401,10 @@ namespace FileCabinetApp
                     }
                 }
 
-                tempOffset += SizeOfRecord;
+                tempOffset += this.sizeOfRecord;
             }
 
-            return (int)(initialLength - this.binaryReader.BaseStream.Length) / SizeOfRecord;
+            return (int)(initialLength - this.binaryReader.BaseStream.Length) / this.sizeOfRecord;
         }
 
         /// <summary>
@@ -604,15 +632,15 @@ namespace FileCabinetApp
         {
             this.binaryWriter.Seek(offset, 0);
             this.binaryWriter.Write(false);
-            offset += SizeOfShort;
+            offset += this.sizeOfShort;
             this.binaryWriter.Seek(offset, 0);
             this.binaryWriter.Write(record.Id);
-            offset += SizeOfInt;
+            offset += this.sizeOfInt;
             this.binaryWriter.Write(record.FirstName);
-            offset += SizeOfString;
+            offset += this.sizeOfString;
             this.binaryWriter.Seek(offset, 0);
             this.binaryWriter.Write(record.LastName);
-            offset += SizeOfString;
+            offset += this.sizeOfString;
             this.binaryWriter.Seek(offset, 0);
             this.binaryWriter.Write(record.DateOfBirth.Day);
             this.binaryWriter.Write(record.DateOfBirth.Month);
@@ -624,18 +652,18 @@ namespace FileCabinetApp
 
         private FileCabinetRecord GetRecord(int offset)
         {
-            int tempOffset = offset + SizeOfShort;
+            int tempOffset = offset + this.sizeOfShort;
             this.binaryReader.BaseStream.Seek(tempOffset, 0);
             FileCabinetRecord tempRecord = new FileCabinetRecord
             {
                 Id = this.binaryReader.ReadInt32(),
             };
-            tempOffset += SizeOfInt;
+            tempOffset += this.sizeOfInt;
             tempRecord.FirstName = this.binaryReader.ReadString();
-            this.binaryReader.BaseStream.Seek(tempOffset + SizeOfString, 0);
+            this.binaryReader.BaseStream.Seek(tempOffset + this.sizeOfString, 0);
             tempRecord.LastName = this.binaryReader.ReadString();
-            tempOffset += SizeOfString;
-            this.binaryReader.BaseStream.Seek(tempOffset + SizeOfString, 0);
+            tempOffset += this.sizeOfString;
+            this.binaryReader.BaseStream.Seek(tempOffset + this.sizeOfString, 0);
             int day = this.binaryReader.ReadInt32();
             int month = this.binaryReader.ReadInt32();
             int year = this.binaryReader.ReadInt32();

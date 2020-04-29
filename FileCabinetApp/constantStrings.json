@@ -51,8 +51,10 @@
 	"FailConversionStringToDate": "Can't convert given string to DateTime.",
 	"MissingString": "Can't find string by key",
 	"MissingRule": "Can't find validation rule by key",
+	"InvalidDeserialize": "Can't deserialize, data is invalid.",
 	"ClosingProgram": "Closing program...",
 	"MissingValidation": "Can't find validation rules file",
 	"ValidationOutOfRange": "Validation values is out of type range.",
+	"InvalidTypeSyzeData": "Type syze data in appsettings.json is invalid.",
 	"InvalidValidationFile": "Validation rules file is invalid."
 }
