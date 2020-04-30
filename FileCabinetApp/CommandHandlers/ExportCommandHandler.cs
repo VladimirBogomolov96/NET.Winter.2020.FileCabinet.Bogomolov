@@ -54,6 +54,8 @@ namespace FileCabinetApp.CommandHandlers
             if (parametersArr.Length < 2)
             {
                 Console.WriteLine(Configurator.GetConstantString("InvalidInput"));
+                Console.WriteLine(Configurator.GetConstantString("CommandPatthern"));
+                Console.WriteLine(Configurator.GetConstantString("ExportPatthern"));
                 return;
             }
 

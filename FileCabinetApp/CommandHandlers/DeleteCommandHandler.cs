@@ -62,6 +62,8 @@ namespace FileCabinetApp.CommandHandlers
                 catch (ArgumentException)
                 {
                     Console.WriteLine(Configurator.GetConstantString("InvalidInput"));
+                    Console.WriteLine(Configurator.GetConstantString("CommandPatthern"));
+                    Console.WriteLine(Configurator.GetConstantString("DeletePatthern"));
                 }
             }
             else
@@ -78,6 +80,11 @@ namespace FileCabinetApp.CommandHandlers
             }
 
             var temp = parameters.Split("where");
+            if (temp.Length != 2)
+            {
+                throw new ArgumentException(Configurator.GetConstantString("InvalidInput"), nameof(parameters));
+            }
+
             var arguments = temp[1].Split('=');
             if (arguments.Length != 2)
             {

@@ -46,6 +46,8 @@ namespace FileCabinetApp.CommandHandlers
                 catch (ArgumentException)
                 {
                     Console.WriteLine(Configurator.GetConstantString("InvalidInput"));
+                    Console.WriteLine(Configurator.GetConstantString("CommandPatthern"));
+                    Console.WriteLine(Configurator.GetConstantString("UpdatePatthern"));
                 }
             }
             else

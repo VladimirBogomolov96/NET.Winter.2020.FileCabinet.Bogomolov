@@ -40,25 +40,27 @@ namespace FileCabinetApp.CommandHandlers
 
             if (commandRequest.Command.Equals("select", StringComparison.InvariantCultureIgnoreCase))
             {
-                string[] memoization = this.GetMemoizationKey(commandRequest.Parameters);
-                string oldResult = this.Service.GetCache(memoization);
-                if (oldResult != null)
+                try
                 {
-                    Console.WriteLine(oldResult);
-                }
-                else
-                {
-                    try
+                    string[] memoization = this.GetMemoizationKey(commandRequest.Parameters);
+                    string oldResult = this.Service.GetCache(memoization);
+                    if (oldResult != null)
+                    {
+                        Console.WriteLine(oldResult);
+                    }
+                    else
                     {
                         string result = this.Select(commandRequest.Parameters);
                         memoization[8] = result;
                         this.Service.SaveInCache(memoization);
                         Console.WriteLine(result);
                     }
-                    catch (ArgumentException)
-                    {
-                        Console.WriteLine(Configurator.GetConstantString("InvalidInput"));
-                    }
+                }
+                catch (ArgumentException)
+                {
+                    Console.WriteLine(Configurator.GetConstantString("InvalidInput"));
+                    Console.WriteLine(Configurator.GetConstantString("CommandPatthern"));
+                    Console.WriteLine(Configurator.GetConstantString("SelectPatthern"));
                 }
             }
             else
@@ -618,6 +620,11 @@ namespace FileCabinetApp.CommandHandlers
             foreach (string keyValue in temp[1].Split(type))
             {
                 var pair = keyValue.Split('=');
+                if (pair.Length != 2)
+                {
+                    throw new ArgumentException(Configurator.GetConstantString("InvalidInput"), nameof(parameters));
+                }
+
                 if (pair[0].Trim().Equals("id", StringComparison.InvariantCultureIgnoreCase))
                 {
                     result[1] = pair[1].Trim();
