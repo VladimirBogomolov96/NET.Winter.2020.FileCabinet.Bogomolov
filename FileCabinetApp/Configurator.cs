@@ -44,7 +44,7 @@ namespace FileCabinetApp
             try
             {
                 ConstStrings = new ConfigurationBuilder()
-                    .SetBasePath(GetSetting("ConstantStringsPath"))
+                    .SetBasePath(AppDomain.CurrentDomain.BaseDirectory)
                     .AddJsonFile(GetSetting("ConstantStringsFileName"))
                     .Build();
             }

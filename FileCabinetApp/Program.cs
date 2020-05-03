@@ -52,7 +52,7 @@ namespace FileCabinetApp
             try
             {
                 validationRules = new ConfigurationBuilder()
-                    .SetBasePath(Configurator.GetSetting("ValidationRulesPath"))
+                    .SetBasePath(AppDomain.CurrentDomain.BaseDirectory)
                     .AddJsonFile(Configurator.GetSetting("ValidationRulesFileName"))
                     .Build();
             }
