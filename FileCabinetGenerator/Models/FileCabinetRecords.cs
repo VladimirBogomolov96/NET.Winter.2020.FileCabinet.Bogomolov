@@ -1,6 +1,4 @@
-﻿using System;
-using System.Globalization;
-using System.Xml.Serialization;
+﻿using System.Xml.Serialization;
 
 namespace FileCabinetGenerator
 {
@@ -15,6 +13,8 @@ namespace FileCabinetGenerator
         /// </summary>
         /// <value>Array of xml representations of records.</value>
         [XmlElement("record")]
+#pragma warning disable CA1819 // Properties should not return arrays
         public FileCabinetRecordXml[] Records { get; set; }
+#pragma warning restore CA1819 // Properties should not return arrays
     }
 }

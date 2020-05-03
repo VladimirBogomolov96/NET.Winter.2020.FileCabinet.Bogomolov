@@ -1,9 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
-using System.Text;
 using System.Xml;
 
 namespace FileCabinetApp
@@ -13,7 +11,7 @@ namespace FileCabinetApp
     /// </summary>
     public class FileCabinetServiceSnapshot
     {
-        private FileCabinetRecord[] records;
+        private FileCabinetRecord[] records = Array.Empty<FileCabinetRecord>();
 
         /// <summary>
         /// Initializes a new instance of the <see cref="FileCabinetServiceSnapshot"/> class.
@@ -52,13 +50,13 @@ namespace FileCabinetApp
         {
             if (writer is null)
             {
-                throw new ArgumentNullException(nameof(writer), "Writer must be not null.");
+                throw new ArgumentNullException(nameof(writer), Configurator.GetConstantString("NullStream"));
             }
 
             using FileCabinetRecordCsvWriter csvWriter = new FileCabinetRecordCsvWriter(writer);
-            for (int i = 0; i < this.records.Length; i++)
+            foreach (var record in this.records)
             {
-                csvWriter.Write(this.records[i]);
+                csvWriter.Write(record);
             }
         }
 
@@ -71,14 +69,14 @@ namespace FileCabinetApp
         {
             if (writer is null)
             {
-                throw new ArgumentNullException(nameof(writer), "Writer must be not null.");
+                throw new ArgumentNullException(nameof(writer), Configurator.GetConstantString("NullStream"));
             }
 
             writer.WriteStartElement("records");
             using FileCabinetRecordXmlWriter xmlWriter = new FileCabinetRecordXmlWriter(writer);
-            for (int i = 0; i < this.records.Length; i++)
+            foreach (var record in this.records)
             {
-                xmlWriter.Write(this.records[i]);
+                xmlWriter.Write(record);
             }
 
             writer.WriteEndElement();
@@ -101,7 +99,14 @@ namespace FileCabinetApp
         public void LoadFromXml(XmlReader xmlReader)
         {
             FileCabinetRecordXmlReader fileXmlReader = new FileCabinetRecordXmlReader(xmlReader);
-            this.records = fileXmlReader.ReadAll().ToArray();
+            try
+            {
+                this.records = fileXmlReader.ReadAll().ToArray();
+            }
+            catch (InvalidOperationException)
+            {
+                Console.WriteLine(Configurator.GetConstantString("InvalidDeserialize"));
+            }
         }
     }
 }

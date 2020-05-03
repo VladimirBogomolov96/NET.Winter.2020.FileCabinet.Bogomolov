@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace FileCabinetApp.Validators
 {
@@ -9,8 +7,8 @@ namespace FileCabinetApp.Validators
     /// </summary>
     public class FirstNameValidator : IRecordValidator
     {
-        private int minLength;
-        private int maxLength;
+        private readonly int minLength;
+        private readonly int maxLength;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="FirstNameValidator"/> class.
@@ -33,7 +31,7 @@ namespace FileCabinetApp.Validators
         {
             if (record is null)
             {
-                throw new ArgumentNullException(nameof(record), "Record must be not null.");
+                throw new ArgumentNullException(nameof(record), Configurator.GetConstantString("NullRecord"));
             }
 
             if (record.FirstName is null || record.FirstName.Length < this.minLength || record.FirstName.Length > this.maxLength || record.FirstName.Trim().Length is 0)

@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 
 namespace FileCabinetApp.CommandHandlers
 {
@@ -27,13 +26,13 @@ namespace FileCabinetApp.CommandHandlers
         {
             if (commandRequest is null)
             {
-                Console.WriteLine("Wrong command line parameter.");
+                Console.WriteLine(Configurator.GetConstantString("InvalidCommand"));
                 return;
             }
 
             if (commandRequest.Command is null)
             {
-                Console.WriteLine("Wrong command line parameter.");
+                Console.WriteLine(Configurator.GetConstantString("InvalidCommand"));
                 return;
             }
 
@@ -41,12 +40,14 @@ namespace FileCabinetApp.CommandHandlers
             {
                 try
                 {
-                    Console.WriteLine("{0} records were updated.", this.Update(commandRequest.Parameters));
+                    Console.WriteLine($"{this.Update(commandRequest.Parameters)} records were updated.");
                     this.Service.ClearCache();
                 }
-                catch (ArgumentException ex)
+                catch (ArgumentException)
                 {
-                    Console.WriteLine(ex.Message);
+                    Console.WriteLine(Configurator.GetConstantString("InvalidInput"));
+                    Console.WriteLine(Configurator.GetConstantString("CommandPatthern"));
+                    Console.WriteLine(Configurator.GetConstantString("UpdatePatthern"));
                 }
             }
             else
@@ -55,62 +56,13 @@ namespace FileCabinetApp.CommandHandlers
             }
         }
 
-        private int Update(string parameters)
-        {
-            if (parameters is null)
-            {
-                throw new ArgumentNullException(nameof(parameters), "Parameters must be not null.");
-            }
-
-            if (parameters.Substring(0, 3).Equals("set", StringComparison.InvariantCulture))
-            {
-                parameters = parameters.Remove(0, 3);
-            }
-            else
-            {
-                throw new ArgumentException("Wrong parameters format.", nameof(parameters));
-            }
-
-            var arguments = parameters.Split("where");
-            if (arguments.Length != 2)
-            {
-                throw new ArgumentException("Wrong insert parameters.", nameof(parameters));
-            }
-
-            var fieldsToSet = arguments[0].Split(',');
-            IEnumerable<IEnumerable<string>> fieldsAndValuesToSet = fieldsToSet.Select(x => x.Split('=').Select(y => y.Trim()));
-            var fieldsToFind = arguments[1].Split("and");
-            IEnumerable<IEnumerable<string>> fieldsAndValuesToFind = fieldsToFind.Select(x => x.Split('=').Select(y => y.Trim()));
-            List<int> searchRecordId = new List<int>(1);
-            List<string> searchRecordFirstName = new List<string>(1);
-            List<string> searchRecordLastName = new List<string>(1);
-            List<DateTime> searchRecordDateOfBirth = new List<DateTime>(1);
-            List<char> searchRecordPatronymicLetter = new List<char>(1);
-            List<decimal> searchRecordIncome = new List<decimal>(1);
-            List<short> searchRecordHeight = new List<short>(1);
-            foreach (var pair in fieldsAndValuesToFind)
-            {
-                this.SetSearchParameters(searchRecordId, searchRecordFirstName, searchRecordLastName, searchRecordDateOfBirth, searchRecordPatronymicLetter, searchRecordIncome, searchRecordHeight, pair.First(), pair.Last());
-            }
-
-            IEnumerable<FileCabinetRecord> recordsToUpdate = this.FindRecordsToUpdate(searchRecordId, searchRecordFirstName, searchRecordLastName, searchRecordDateOfBirth, searchRecordPatronymicLetter, searchRecordIncome, searchRecordHeight);
-            if (recordsToUpdate is null)
-            {
-                return 0;
-            }
-            else
-            {
-                return this.Service.Update(recordsToUpdate, fieldsAndValuesToSet);
-            }
-        }
-
-        private void SetSearchParameters(List<int> searchRecordId, List<string> searchRecordFirstName, List<string> searchRecordLastName, List<DateTime> searchRecordDateOfBirth, List<char> searchRecordPatronymicLetter, List<decimal> searchRecordIncome, List<short> searchRecordHeight, string key, string value)
+        private static void SetSearchParameters(List<int> searchRecordId, List<string> searchRecordFirstName, List<string> searchRecordLastName, List<DateTime> searchRecordDateOfBirth, List<char> searchRecordPatronymicLetter, List<decimal> searchRecordIncome, List<short> searchRecordHeight, string key, string value)
         {
             if (key.Equals("id", StringComparison.InvariantCultureIgnoreCase))
             {
                 if (searchRecordId.Count > 0)
                 {
-                    throw new ArgumentException("Set one parameter to fint to one property.", nameof(key));
+                    throw new ArgumentException(Configurator.GetConstantString("OneParamToOneProp"), nameof(key));
                 }
 
                 var conversionResultOfId = Converter.ConvertStringToInt(value);
@@ -127,7 +79,7 @@ namespace FileCabinetApp.CommandHandlers
             {
                 if (searchRecordFirstName.Count > 0)
                 {
-                    throw new ArgumentException("Set one parameter to fint to one property.", nameof(key));
+                    throw new ArgumentException(Configurator.GetConstantString("OneParamToOneProp"), nameof(key));
                 }
 
                 searchRecordFirstName.Add(value);
@@ -138,7 +90,7 @@ namespace FileCabinetApp.CommandHandlers
             {
                 if (searchRecordLastName.Count > 0)
                 {
-                    throw new ArgumentException("Set one parameter to fint to one property.", nameof(key));
+                    throw new ArgumentException(Configurator.GetConstantString("OneParamToOneProp"), nameof(key));
                 }
 
                 searchRecordLastName.Add(value);
@@ -149,7 +101,7 @@ namespace FileCabinetApp.CommandHandlers
             {
                 if (searchRecordDateOfBirth.Count > 0)
                 {
-                    throw new ArgumentException("Set one parameter to fint to one property.", nameof(key));
+                    throw new ArgumentException(Configurator.GetConstantString("OneParamToOneProp"), nameof(key));
                 }
 
                 var dateOfBirthConversionResult = Converter.ConvertStringToDateTime(value);
@@ -166,7 +118,7 @@ namespace FileCabinetApp.CommandHandlers
             {
                 if (searchRecordPatronymicLetter.Count > 0)
                 {
-                    throw new ArgumentException("Set one parameter to fint to one property.", nameof(key));
+                    throw new ArgumentException(Configurator.GetConstantString("OneParamToOneProp"), nameof(key));
                 }
 
                 var patronymicLetterConversionResult = Converter.ConvertStringToChar(value);
@@ -183,7 +135,7 @@ namespace FileCabinetApp.CommandHandlers
             {
                 if (searchRecordIncome.Count > 0)
                 {
-                    throw new ArgumentException("Set one parameter to fint to one property.", nameof(key));
+                    throw new ArgumentException(Configurator.GetConstantString("OneParamToOneProp"), nameof(key));
                 }
 
                 var incomeConversionResult = Converter.ConvertStringToDecimal(value);
@@ -200,7 +152,7 @@ namespace FileCabinetApp.CommandHandlers
             {
                 if (searchRecordHeight.Count > 0)
                 {
-                    throw new ArgumentException("Set one parameter to fint to one property.", nameof(key));
+                    throw new ArgumentException(Configurator.GetConstantString("OneParamToOneProp"), nameof(key));
                 }
 
                 var heightConversionResult = Converter.ConvertStringToShort(value);
@@ -213,7 +165,56 @@ namespace FileCabinetApp.CommandHandlers
                 return;
             }
 
-            throw new ArgumentException("Wrong property name.", nameof(key));
+            throw new ArgumentException(Configurator.GetConstantString("WrongPropertyName"), nameof(key));
+        }
+
+        private int Update(string parameters)
+        {
+            if (parameters is null)
+            {
+                throw new ArgumentNullException(nameof(parameters), Configurator.GetConstantString("NullParameters"));
+            }
+
+            if (parameters.Substring(0, 3).Equals("set", StringComparison.InvariantCulture))
+            {
+                parameters = parameters.Remove(0, 3);
+            }
+            else
+            {
+                throw new ArgumentException(Configurator.GetConstantString("InvalidInput"), nameof(parameters));
+            }
+
+            var arguments = parameters.Split("where");
+            if (arguments.Length != 2)
+            {
+                throw new ArgumentException(Configurator.GetConstantString("InvalidInput"), nameof(parameters));
+            }
+
+            var fieldsToSet = arguments[0].Split(',');
+            IEnumerable<IEnumerable<string>> fieldsAndValuesToSet = fieldsToSet.Select(x => x.Split('=').Select(y => y.Trim()));
+            var fieldsToFind = arguments[1].Split("and");
+            IEnumerable<IEnumerable<string>> fieldsAndValuesToFind = fieldsToFind.Select(x => x.Split('=').Select(y => y.Trim()));
+            List<int> searchRecordId = new List<int>(1);
+            List<string> searchRecordFirstName = new List<string>(1);
+            List<string> searchRecordLastName = new List<string>(1);
+            List<DateTime> searchRecordDateOfBirth = new List<DateTime>(1);
+            List<char> searchRecordPatronymicLetter = new List<char>(1);
+            List<decimal> searchRecordIncome = new List<decimal>(1);
+            List<short> searchRecordHeight = new List<short>(1);
+            foreach (var pair in fieldsAndValuesToFind)
+            {
+                SetSearchParameters(searchRecordId, searchRecordFirstName, searchRecordLastName, searchRecordDateOfBirth, searchRecordPatronymicLetter, searchRecordIncome, searchRecordHeight, pair.First(), pair.Last());
+            }
+
+            IEnumerable<FileCabinetRecord> recordsToUpdate = this.FindRecordsToUpdate(searchRecordId, searchRecordFirstName, searchRecordLastName, searchRecordDateOfBirth, searchRecordPatronymicLetter, searchRecordIncome, searchRecordHeight);
+            if (recordsToUpdate is null)
+            {
+                return 0;
+            }
+            else
+            {
+                return this.Service.Update(recordsToUpdate, fieldsAndValuesToSet);
+            }
         }
 
         private IEnumerable<FileCabinetRecord> FindRecordsToUpdate(List<int> searchRecordId, List<string> searchRecordFirstName, List<string> searchRecordLastName, List<DateTime> searchRecordDateOfBirth, List<char> searchRecordPatronymicLetter, List<decimal> searchRecordIncome, List<short> searchRecordHeight)

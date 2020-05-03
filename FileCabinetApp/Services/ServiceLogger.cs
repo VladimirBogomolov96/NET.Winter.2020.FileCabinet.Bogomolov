@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -13,8 +12,8 @@ namespace FileCabinetApp.Services
     /// </summary>
     public sealed class ServiceLogger : IFileCabinetService, IDisposable
     {
-        private IFileCabinetService service;
-        private StreamWriter writer;
+        private readonly IFileCabinetService service;
+        private readonly StreamWriter writer;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="ServiceLogger"/> class.
@@ -34,38 +33,19 @@ namespace FileCabinetApp.Services
         /// </summary>
         /// <param name="transfer">Object to transfer parameters of new record.</param>
         /// <returns>ID of created record.</returns>
-        /// <exception cref="ArgumentNullException">Throw when first name or last name is null, when transfer object is null.</exception>
-        /// <exception cref="ArgumentException">Thrown when firs name or last name length is out of 2 and 60 chars or contains only whitespaces, when date of birth out of 01-Jan-1950 and current date, when height is out of 1 and 300 cm, when income is negative, when patronymic letter is not a latin uppercase letter.</exception>
+        /// <exception cref="ArgumentNullException">Throw when transfer object is null.</exception>
+        /// <exception cref="ArgumentException">Thrown when transfer data is invalid.</exception>
         public int CreateRecord(RecordParametersTransfer transfer)
         {
             if (transfer is null)
             {
-                throw new ArgumentNullException(nameof(transfer), "Transfer must be not null.");
+                throw new ArgumentNullException(nameof(transfer), Configurator.GetConstantString("NullTransfer"));
             }
 
-            this.writer.WriteLine($"{DateTime.Now} Calling CreateRecord() with FirstName = {transfer.FirstName}, LastName = {transfer.LastName}, DateOfBirth = {transfer.DateOfBirth}, Height = {transfer.Height}, Income = {transfer.Income}, PatrinymicLetter = {transfer.PatronymicLetter}.");
+            this.writer.WriteLine($"{DateTime.Now} Calling CreateRecord with FirstName = {transfer.FirstName}, LastName = {transfer.LastName}, DateOfBirth = {transfer.DateOfBirth}, Height = {transfer.Height}, Income = {transfer.Income}, PatrinymicLetter = {transfer.PatronymicLetter}.");
             var result = this.service.CreateRecord(transfer);
-            this.writer.WriteLine($"{DateTime.Now} CreateRecord() returned {result}");
+            this.writer.WriteLine($"{DateTime.Now} CreateRecord returned {result}");
             return result;
-        }
-
-        /// <summary>
-        /// Edits existing record and writes info to log file.
-        /// </summary>
-        /// <param name="id">ID of a record to edit.</param>
-        /// <param name="transfer">Object to transfer new parameters to existing record.</param>
-        /// <exception cref="ArgumentNullException">Throw when first name or last name is null, when transfer object is null.</exception>
-        /// <exception cref="ArgumentException">Thrown when firs name or last name length is out of 2 and 60 chars or contains only whitespaces, when date of birth out of 01-Jan-1950 and current date, when height is out of 1 and 300 cm, when income is negative, when patronymic letter is not a latin uppercase letter.</exception>
-        public void EditRecord(int id, RecordParametersTransfer transfer)
-        {
-            if (transfer is null)
-            {
-                throw new ArgumentNullException(nameof(transfer), "Transfer must be not null.");
-            }
-
-            this.writer.WriteLine($"{DateTime.Now} Calling EditRecord() with id = {id} FirstName = {transfer.FirstName}, LastName = {transfer.LastName}, DateOfBirth = {transfer.DateOfBirth}, Height = {transfer.Height}, Income = {transfer.Income}, PatrinymicLetter = {transfer.PatronymicLetter}.");
-            this.service.EditRecord(id, transfer);
-            this.writer.WriteLine($"{DateTime.Now} EditRecord() end execution.");
         }
 
         /// <summary>
@@ -74,9 +54,9 @@ namespace FileCabinetApp.Services
         /// <returns>Array of all existing records.</returns>
         public ReadOnlyCollection<FileCabinetRecord> GetRecords()
         {
-            this.writer.WriteLine($"{DateTime.Now} Calling GetRecords().");
+            this.writer.WriteLine($"{DateTime.Now} Calling GetRecords.");
             var result = this.service.GetRecords();
-            this.writer.WriteLine($"{DateTime.Now} GetRecords() return ReadOnlyCollection with {result.Count} FileCabinetRecords.");
+            this.writer.WriteLine($"{DateTime.Now} GetRecords return ReadOnlyCollection with {result.Count} FileCabinetRecord(s).");
             return result;
         }
 
@@ -86,9 +66,9 @@ namespace FileCabinetApp.Services
         /// <returns>Amount of existing records.</returns>
         public (int, int) GetStat()
         {
-            this.writer.WriteLine($"{DateTime.Now} Calling GetStat().");
+            this.writer.WriteLine($"{DateTime.Now} Calling GetStat.");
             var result = this.service.GetStat();
-            this.writer.WriteLine($"{DateTime.Now} GetStat() return that service contains {result.Item1} items and {result.Item2} removed items.");
+            this.writer.WriteLine($"{DateTime.Now} GetStat return that service contains {result.Item1} item(s) and {result.Item2} removed item(s).");
             return result;
         }
 
@@ -98,9 +78,9 @@ namespace FileCabinetApp.Services
         /// <returns>Snapshot of records.</returns>
         public FileCabinetServiceSnapshot MakeSnapshot()
         {
-            this.writer.WriteLine($"{DateTime.Now} Calling MakeSnapshot().");
+            this.writer.WriteLine($"{DateTime.Now} Calling MakeSnapshot.");
             var result = this.service.MakeSnapshot();
-            this.writer.WriteLine($"{DateTime.Now} MakeSnapshot() return snapshot of service in current moment.");
+            this.writer.WriteLine($"{DateTime.Now} MakeSnapshot return snapshot of service in current moment.");
             return result;
         }
 
@@ -108,11 +88,12 @@ namespace FileCabinetApp.Services
         /// Defragments file and writes info to log file.
         /// </summary>
         /// <returns>Amount of purged records.</returns>
+        /// <exception cref="InvalidOperationException">Thrown when inner service is memory service.</exception>
         public int Purge()
         {
-            this.writer.WriteLine($"{DateTime.Now} Calling Purge().");
+            this.writer.WriteLine($"{DateTime.Now} Calling Purge.");
             var result = this.service.Purge();
-            this.writer.WriteLine($"{DateTime.Now} Purge() defragment {result} records.");
+            this.writer.WriteLine($"{DateTime.Now} Purge defragment {result} record(s).");
             return result;
         }
 
@@ -121,9 +102,10 @@ namespace FileCabinetApp.Services
         /// </summary>
         /// <param name="records">Records to delete.</param>
         /// <returns>IDs of deleted records.</returns>
+        /// <exception cref="ArgumentNullException">Thrown when records is null.</exception>
         public IEnumerable<int> Delete(IEnumerable<FileCabinetRecord> records)
         {
-            this.writer.WriteLine($"{DateTime.Now} Calling Delete() for {records.Count()}.");
+            this.writer.WriteLine($"{DateTime.Now} Calling Delete for {records.Count()} record(s).");
             var result = this.service.Delete(records);
             StringBuilder stringBuilder = new StringBuilder();
             foreach (int id in result)
@@ -131,7 +113,7 @@ namespace FileCabinetApp.Services
                 stringBuilder.Append(id).Append(' ');
             }
 
-            this.writer.WriteLine($"{DateTime.Now} Delete() deleted records by ids {stringBuilder}");
+            this.writer.WriteLine($"{DateTime.Now} Delete deleted records by id(s) {stringBuilder}");
             return result;
         }
 
@@ -142,9 +124,9 @@ namespace FileCabinetApp.Services
         /// <returns>Whether record existed or not.</returns>
         public bool Remove(int id)
         {
-            this.writer.WriteLine($"{DateTime.Now} Calling Purge() with id = {id}.");
+            this.writer.WriteLine($"{DateTime.Now} Calling Remove with id = {id}.");
             var result = this.service.Remove(id);
-            this.writer.WriteLine($"{DateTime.Now} Remove() removing of record by id {id} was {result}.");
+            this.writer.WriteLine($"{DateTime.Now} Remove removing of record by id {id} was {result}.");
             return result;
         }
 
@@ -153,11 +135,12 @@ namespace FileCabinetApp.Services
         /// </summary>
         /// <param name="snapshot">Snapshot that represent statement to restore.</param>
         /// <returns>Amount of new records added.</returns>
+        /// <exception cref="ArgumentNullException">Thrown when snapshot is null.</exception>
         public int Restore(FileCabinetServiceSnapshot snapshot)
         {
-            this.writer.WriteLine($"{DateTime.Now} Calling Restore().");
+            this.writer.WriteLine($"{DateTime.Now} Calling Restore.");
             var result = this.service.Restore(snapshot);
-            this.writer.WriteLine($"{DateTime.Now} Restore() imported {result} records.");
+            this.writer.WriteLine($"{DateTime.Now} Restore imported {result} record(s).");
             return result;
         }
 
@@ -166,11 +149,13 @@ namespace FileCabinetApp.Services
         /// </summary>
         /// <param name="record">Record to insert.</param>
         /// <returns>Id of inserted record.</returns>
+        /// <exception cref="ArgumentNullException">Thrown when record is null.</exception>
+        /// <exception cref="ArgumentException">Thrown when records data is invalid or when record with given id is already exists.</exception>
         public int Insert(FileCabinetRecord record)
         {
-            this.writer.WriteLine($"{DateTime.Now} Calling Insert().");
+            this.writer.WriteLine($"{DateTime.Now} Calling Insert.");
             var result = this.service.Insert(record);
-            this.writer.WriteLine($"{DateTime.Now} Insert() inserted record #{result}.");
+            this.writer.WriteLine($"{DateTime.Now} Insert inserted record #{result}.");
             return result;
         }
 
@@ -180,11 +165,13 @@ namespace FileCabinetApp.Services
         /// <param name="records">Records to update.</param>
         /// <param name="fieldsAndValuesToSet">Fields and values to set.</param>
         /// <returns>Amount of updated records.</returns>
+        /// <exception cref="ArgumentNullException">Thrown when records or fields and values to set is null.</exception>
+        /// <exception cref="ArgumentException">Thrown when data is invalid.</exception>
         public int Update(IEnumerable<FileCabinetRecord> records, IEnumerable<IEnumerable<string>> fieldsAndValuesToSet)
         {
-            this.writer.WriteLine($"{DateTime.Now} Calling Update().");
+            this.writer.WriteLine($"{DateTime.Now} Calling Update.");
             var result = this.service.Update(records, fieldsAndValuesToSet);
-            this.writer.WriteLine($"{DateTime.Now} Update() updated {result} records.");
+            this.writer.WriteLine($"{DateTime.Now} Update updated {result} record(s).");
             return result;
         }
 
@@ -206,27 +193,27 @@ namespace FileCabinetApp.Services
         }
 
         /// <summary>
-        /// Gets cache and writes info to log file.
+        /// Gets cache.
         /// </summary>
+        /// <param name="memoizationKey">Parameters of execution.</param>
         /// <returns>Cache.</returns>
-        public Dictionary<string, string> GetCache()
+        public string GetCache(string[] memoizationKey)
         {
-            this.writer.WriteLine($"{DateTime.Now} Calling GetCache().");
-            var result = this.service.GetCache();
-            this.writer.WriteLine($"{DateTime.Now} GetCache() completed.");
+            this.writer.WriteLine($"{DateTime.Now} Calling GetCache.");
+            var result = this.service.GetCache(memoizationKey);
+            this.writer.WriteLine($"{DateTime.Now} GetCache completed.");
             return result;
         }
 
         /// <summary>
-        /// Saves condition and result of execution in cache and writes info to log file.
+        /// Saves condition and result of execution in cache.
         /// </summary>
-        /// <param name="parameters">Parameters of execution.</param>
-        /// <param name="result">Result of execution.</param>
-        public void SaveInCache(string parameters, string result)
+        /// <param name="memoization">Parameters and result of execution.</param>
+        public void SaveInCache(string[] memoization)
         {
-            this.writer.WriteLine($"{DateTime.Now} Calling SaveInCache().");
-            this.service.SaveInCache(parameters, result);
-            this.writer.WriteLine($"{DateTime.Now} SaveInCache() completed.");
+            this.writer.WriteLine($"{DateTime.Now} Calling SaveInCache.");
+            this.service.SaveInCache(memoization);
+            this.writer.WriteLine($"{DateTime.Now} SaveInCache completed.");
         }
 
         /// <summary>
@@ -234,9 +221,9 @@ namespace FileCabinetApp.Services
         /// </summary>
         public void ClearCache()
         {
-            this.writer.WriteLine($"{DateTime.Now} Calling ClearCache().");
+            this.writer.WriteLine($"{DateTime.Now} Calling ClearCache.");
             this.service.ClearCache();
-            this.writer.WriteLine($"{DateTime.Now} ClearCache() completed.");
+            this.writer.WriteLine($"{DateTime.Now} ClearCache completed.");
         }
     }
 }

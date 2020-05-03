@@ -28,34 +28,39 @@ namespace FileCabinetApp.CommandHandlers
         {
             if (commandRequest is null)
             {
-                Console.WriteLine("Wrong command line parameter.");
+                Console.WriteLine(Configurator.GetConstantString("InvalidCommand"));
                 return;
             }
 
             if (commandRequest.Command is null)
             {
-                Console.WriteLine("Wrong command line parameter.");
+                Console.WriteLine(Configurator.GetConstantString("InvalidCommand"));
                 return;
             }
 
             if (commandRequest.Command.Equals("select", StringComparison.InvariantCultureIgnoreCase))
             {
-                if (this.Service.GetCache().TryGetValue(commandRequest.Parameters.Replace(" ", string.Empty, StringComparison.InvariantCultureIgnoreCase), out string resultFromCache))
+                try
                 {
-                    Console.WriteLine(resultFromCache);
-                }
-                else
-                {
-                    try
+                    string[] memoization = this.GetMemoizationKey(commandRequest.Parameters);
+                    string oldResult = this.Service.GetCache(memoization);
+                    if (oldResult != null)
+                    {
+                        Console.WriteLine(oldResult);
+                    }
+                    else
                     {
                         string result = this.Select(commandRequest.Parameters);
-                        this.Service.SaveInCache(commandRequest.Parameters.Replace(" ", string.Empty, StringComparison.InvariantCultureIgnoreCase), result);
+                        memoization[8] = result;
+                        this.Service.SaveInCache(memoization);
                         Console.WriteLine(result);
                     }
-                    catch (ArgumentException)
-                    {
-                        Console.WriteLine("Wrong parameters.");
-                    }
+                }
+                catch (ArgumentException)
+                {
+                    Console.WriteLine(Configurator.GetConstantString("InvalidInput"));
+                    Console.WriteLine(Configurator.GetConstantString("CommandPatthern"));
+                    Console.WriteLine(Configurator.GetConstantString("SelectPatthern"));
                 }
             }
             else
@@ -64,11 +69,347 @@ namespace FileCabinetApp.CommandHandlers
             }
         }
 
+        private static void SetSearchParametersAnd(List<int> searchRecordId, List<string> searchRecordFirstName, List<string> searchRecordLastName, List<DateTime> searchRecordDateOfBirth, List<char> searchRecordPatronymicLetter, List<decimal> searchRecordIncome, List<short> searchRecordHeight, string key, string value)
+        {
+            if (key.Equals("id", StringComparison.InvariantCultureIgnoreCase))
+            {
+                if (searchRecordId.Count > 0)
+                {
+                    throw new ArgumentException(Configurator.GetConstantString("OneParamToOneProp"), nameof(key));
+                }
+
+                var conversionResultOfId = Converter.ConvertStringToInt(value);
+                if (!conversionResultOfId.Item1)
+                {
+                    throw new ArgumentException(conversionResultOfId.Item2, nameof(value));
+                }
+
+                searchRecordId.Add(conversionResultOfId.Item3);
+                return;
+            }
+
+            if (key.Equals("firstname", StringComparison.InvariantCultureIgnoreCase))
+            {
+                if (searchRecordFirstName.Count > 0)
+                {
+                    throw new ArgumentException(Configurator.GetConstantString("OneParamToOneProp"), nameof(key));
+                }
+
+                searchRecordFirstName.Add(value);
+                return;
+            }
+
+            if (key.Equals("lastname", StringComparison.InvariantCultureIgnoreCase))
+            {
+                if (searchRecordLastName.Count > 0)
+                {
+                    throw new ArgumentException(Configurator.GetConstantString("OneParamToOneProp"), nameof(key));
+                }
+
+                searchRecordLastName.Add(value);
+                return;
+            }
+
+            if (key.Equals("dateofbirth", StringComparison.InvariantCultureIgnoreCase))
+            {
+                if (searchRecordDateOfBirth.Count > 0)
+                {
+                    throw new ArgumentException(Configurator.GetConstantString("OneParamToOneProp"), nameof(key));
+                }
+
+                var dateOfBirthConversionResult = Converter.ConvertStringToDateTime(value);
+                if (!dateOfBirthConversionResult.Item1)
+                {
+                    throw new ArgumentException(dateOfBirthConversionResult.Item2, nameof(value));
+                }
+
+                searchRecordDateOfBirth.Add(dateOfBirthConversionResult.Item3);
+                return;
+            }
+
+            if (key.Equals("patronymicletter", StringComparison.InvariantCultureIgnoreCase))
+            {
+                if (searchRecordPatronymicLetter.Count > 0)
+                {
+                    throw new ArgumentException(Configurator.GetConstantString("OneParamToOneProp"), nameof(key));
+                }
+
+                var patronymicLetterConversionResult = Converter.ConvertStringToChar(value);
+                if (!patronymicLetterConversionResult.Item1)
+                {
+                    throw new ArgumentException(patronymicLetterConversionResult.Item2, nameof(value));
+                }
+
+                searchRecordPatronymicLetter.Add(patronymicLetterConversionResult.Item3);
+                return;
+            }
+
+            if (key.Equals("income", StringComparison.InvariantCultureIgnoreCase))
+            {
+                if (searchRecordIncome.Count > 0)
+                {
+                    throw new ArgumentException(Configurator.GetConstantString("OneParamToOneProp"), nameof(key));
+                }
+
+                var incomeConversionResult = Converter.ConvertStringToDecimal(value);
+                if (!incomeConversionResult.Item1)
+                {
+                    throw new ArgumentException(incomeConversionResult.Item2, nameof(value));
+                }
+
+                searchRecordIncome.Add(incomeConversionResult.Item3);
+                return;
+            }
+
+            if (key.Equals("height", StringComparison.InvariantCultureIgnoreCase))
+            {
+                if (searchRecordHeight.Count > 0)
+                {
+                    throw new ArgumentException(Configurator.GetConstantString("OneParamToOneProp"), nameof(key));
+                }
+
+                var heightConversionResult = Converter.ConvertStringToShort(value);
+                if (!heightConversionResult.Item1)
+                {
+                    throw new ArgumentException(heightConversionResult.Item2, nameof(value));
+                }
+
+                searchRecordHeight.Add(heightConversionResult.Item3);
+                return;
+            }
+
+            throw new ArgumentException(Configurator.GetConstantString("WrongPropertyName"), nameof(key));
+        }
+
+        private static void SetSearchParametersOr(List<int> searchRecordId, List<string> searchRecordFirstName, List<string> searchRecordLastName, List<DateTime> searchRecordDateOfBirth, List<char> searchRecordPatronymicLetter, List<decimal> searchRecordIncome, List<short> searchRecordHeight, string key, string value)
+        {
+            if (key.Equals("id", StringComparison.InvariantCultureIgnoreCase))
+            {
+                var conversionResultOfId = Converter.ConvertStringToInt(value);
+                if (!conversionResultOfId.Item1)
+                {
+                    throw new ArgumentException(conversionResultOfId.Item2, nameof(value));
+                }
+
+                searchRecordId.Add(conversionResultOfId.Item3);
+                return;
+            }
+
+            if (key.Equals("firstname", StringComparison.InvariantCultureIgnoreCase))
+            {
+                searchRecordFirstName.Add(value);
+                return;
+            }
+
+            if (key.Equals("lastname", StringComparison.InvariantCultureIgnoreCase))
+            {
+                searchRecordLastName.Add(value);
+                return;
+            }
+
+            if (key.Equals("dateofbirth", StringComparison.InvariantCultureIgnoreCase))
+            {
+                var dateOfBirthConversionResult = Converter.ConvertStringToDateTime(value);
+                if (!dateOfBirthConversionResult.Item1)
+                {
+                    throw new ArgumentException(dateOfBirthConversionResult.Item2, nameof(value));
+                }
+
+                searchRecordDateOfBirth.Add(dateOfBirthConversionResult.Item3);
+                return;
+            }
+
+            if (key.Equals("patronymicletter", StringComparison.InvariantCultureIgnoreCase))
+            {
+                var patronymicLetterConversionResult = Converter.ConvertStringToChar(value);
+                if (!patronymicLetterConversionResult.Item1)
+                {
+                    throw new ArgumentException(patronymicLetterConversionResult.Item2, nameof(value));
+                }
+
+                searchRecordPatronymicLetter.Add(patronymicLetterConversionResult.Item3);
+                return;
+            }
+
+            if (key.Equals("income", StringComparison.InvariantCultureIgnoreCase))
+            {
+                var incomeConversionResult = Converter.ConvertStringToDecimal(value);
+                if (!incomeConversionResult.Item1)
+                {
+                    throw new ArgumentException(incomeConversionResult.Item2, nameof(value));
+                }
+
+                searchRecordIncome.Add(incomeConversionResult.Item3);
+                return;
+            }
+
+            if (key.Equals("height", StringComparison.InvariantCultureIgnoreCase))
+            {
+                var heightConversionResult = Converter.ConvertStringToShort(value);
+                if (!heightConversionResult.Item1)
+                {
+                    throw new ArgumentException(heightConversionResult.Item2, nameof(value));
+                }
+
+                searchRecordHeight.Add(heightConversionResult.Item3);
+                return;
+            }
+
+            throw new ArgumentException(Configurator.GetConstantString("WrongPropertyName"), nameof(key));
+        }
+
+        private static IEnumerable<int> GetTableColumnLengths(IEnumerable<PropertyInfo> properties, IEnumerable<FileCabinetRecord> records)
+        {
+            int maxLength;
+            int newMaxLength;
+            foreach (var property in properties)
+            {
+                maxLength = property.Name.Length;
+                foreach (var record in records)
+                {
+                    if ((newMaxLength = property.GetValue(record).ToString().Length) > maxLength)
+                    {
+                        maxLength = newMaxLength;
+                    }
+                }
+
+                yield return maxLength;
+            }
+        }
+
+        private static string GetTableColumnsNames(IEnumerable<PropertyInfo> properties, IEnumerable<int> lengths)
+        {
+            StringBuilder result = new StringBuilder(lengths.Sum() + (properties.Count() * 2));
+            int[] lengthsArr = lengths.ToArray();
+            int counter = 0;
+            int diff;
+            foreach (var property in properties)
+            {
+                if (property.Name.Length == lengthsArr[counter])
+                {
+                    result.Append('|' + property.Name + '|');
+                }
+                else
+                {
+                    result.Append('|' + property.Name);
+                    diff = lengthsArr[counter] - property.Name.Length;
+                    for (int i = 0; i < diff; i++)
+                    {
+                        result.Append(' ');
+                    }
+
+                    result.Append('|');
+                }
+
+                counter++;
+            }
+
+            result.Append("\n");
+            return result.ToString();
+        }
+
+        private static string GetValuesString(FileCabinetRecord record, IEnumerable<int> lengths, IEnumerable<PropertyInfo> propertyInfos)
+        {
+            StringBuilder result = new StringBuilder(lengths.Sum() + (propertyInfos.Count() * 2));
+            int[] lengthsArr = lengths.ToArray();
+            int counter = 0;
+            int diff;
+            string valueStr;
+            foreach (var property in propertyInfos)
+            {
+                var value = property.GetValue(record);
+                valueStr = value.ToString();
+                if (valueStr.Length == lengthsArr[counter])
+                {
+                    result.Append('|' + valueStr + '|');
+                }
+                else
+                {
+                    if (value is string || value is char)
+                    {
+                        result.Append('|' + valueStr);
+                        diff = lengthsArr[counter] - valueStr.Length;
+                        for (int i = 0; i < diff; i++)
+                        {
+                            result.Append(' ');
+                        }
+
+                        result.Append('|');
+                    }
+                    else
+                    {
+                        result.Append('|');
+                        diff = lengthsArr[counter] - valueStr.Length;
+                        for (int i = 0; i < diff; i++)
+                        {
+                            result.Append(' ');
+                        }
+
+                        result.Append(valueStr + '|');
+                    }
+                }
+
+                counter++;
+            }
+
+            result.Append("\n");
+            return result.ToString();
+        }
+
+        private static string CreateTable(IEnumerable<FileCabinetRecord> records, IEnumerable<string> fieldsToShow)
+        {
+            if (!records.Any())
+            {
+                return "No records with such conditions.";
+            }
+
+            if (!fieldsToShow.Any())
+            {
+                throw new ArgumentException(Configurator.GetConstantString("WrongParameters"), nameof(fieldsToShow));
+            }
+
+            PropertyInfo[] properties = typeof(FileCabinetRecord).GetProperties();
+            foreach (string field in fieldsToShow)
+            {
+                if (!properties.Any(x => x.Name.Equals(field, StringComparison.InvariantCultureIgnoreCase)))
+                {
+                    throw new ArgumentException(Configurator.GetConstantString("WrongPropertyName"));
+                }
+            }
+
+            IEnumerable<PropertyInfo> selectedProperties = properties.Where(x => fieldsToShow.Any(y => y.Equals(x.Name, StringComparison.InvariantCultureIgnoreCase)));
+            IEnumerable<int> columnsLengths = GetTableColumnLengths(selectedProperties, records);
+            StringBuilder table = new StringBuilder();
+            StringBuilder separator = new StringBuilder();
+            foreach (int length in columnsLengths)
+            {
+                separator.Append('+');
+                for (int i = 0; i < length; i++)
+                {
+                    separator.Append('-');
+                }
+
+                separator.Append('+');
+            }
+
+            separator.Append("\n");
+            table.Append(separator);
+            table.Append(GetTableColumnsNames(selectedProperties, columnsLengths));
+            table.Append(separator);
+            foreach (FileCabinetRecord record in records)
+            {
+                table.Append(GetValuesString(record, columnsLengths, selectedProperties));
+                table.Append(separator);
+            }
+
+            return table.ToString();
+        }
+
         private string Select(string parameters)
         {
             if (parameters is null)
             {
-                throw new ArgumentNullException(nameof(parameters), "Parameters must be not null.");
+                throw new ArgumentNullException(nameof(parameters), Configurator.GetConstantString("NullParameters"));
             }
 
             var temp = parameters.Split("where");
@@ -87,7 +428,7 @@ namespace FileCabinetApp.CommandHandlers
             }
             else if (temp.Length > 2)
             {
-                throw new ArgumentException("Wrong parameters.", nameof(parameters));
+                throw new ArgumentException(Configurator.GetConstantString("WrongParameters"), nameof(parameters));
             }
             else
             {
@@ -110,7 +451,7 @@ namespace FileCabinetApp.CommandHandlers
 
                 if (searchParams.Count() < 2)
                 {
-                    throw new ArgumentException("Must be at least 2 search conditions.", nameof(parameters));
+                    throw new ArgumentException(Configurator.GetConstantString("2SearchConditions"), nameof(parameters));
                 }
 
                 IEnumerable<IEnumerable<string>> fieldsAndValuesToFind = searchParams.Select(x => x.Split('=').Select(y => y.Trim()));
@@ -125,21 +466,21 @@ namespace FileCabinetApp.CommandHandlers
                 {
                     foreach (var pair in fieldsAndValuesToFind)
                     {
-                        this.SetSearchParametersOr(searchRecordId, searchRecordFirstName, searchRecordLastName, searchRecordDateOfBirth, searchRecordPatronymicLetter, searchRecordIncome, searchRecordHeight, pair.First(), pair.Last());
+                        SetSearchParametersOr(searchRecordId, searchRecordFirstName, searchRecordLastName, searchRecordDateOfBirth, searchRecordPatronymicLetter, searchRecordIncome, searchRecordHeight, pair.First(), pair.Last());
                     }
                 }
                 else
                 {
                     foreach (var pair in fieldsAndValuesToFind)
                     {
-                        this.SetSearchParametersAnd(searchRecordId, searchRecordFirstName, searchRecordLastName, searchRecordDateOfBirth, searchRecordPatronymicLetter, searchRecordIncome, searchRecordHeight, pair.First(), pair.Last());
+                        SetSearchParametersAnd(searchRecordId, searchRecordFirstName, searchRecordLastName, searchRecordDateOfBirth, searchRecordPatronymicLetter, searchRecordIncome, searchRecordHeight, pair.First(), pair.Last());
                     }
                 }
 
                 recordsToShow = func.Invoke(searchRecordId, searchRecordFirstName, searchRecordLastName, searchRecordDateOfBirth, searchRecordPatronymicLetter, searchRecordIncome, searchRecordHeight);
             }
 
-            return this.CreateTable(recordsToShow, fieldsToShow);
+            return CreateTable(recordsToShow, fieldsToShow);
         }
 
         private IEnumerable<FileCabinetRecord> SelectAnd(List<int> searchRecordId, List<string> searchRecordFirstName, List<string> searchRecordLastName, List<DateTime> searchRecordDateOfBirth, List<char> searchRecordPatronymicLetter, List<decimal> searchRecordIncome, List<short> searchRecordHeight)
@@ -246,340 +587,81 @@ namespace FileCabinetApp.CommandHandlers
             return result.Distinct();
         }
 
-        private void SetSearchParametersAnd(List<int> searchRecordId, List<string> searchRecordFirstName, List<string> searchRecordLastName, List<DateTime> searchRecordDateOfBirth, List<char> searchRecordPatronymicLetter, List<decimal> searchRecordIncome, List<short> searchRecordHeight, string key, string value)
+        private string[] GetMemoizationKey(string parameters)
         {
-            if (key.Equals("id", StringComparison.InvariantCultureIgnoreCase))
+            string[] result = new string[9];
+            var temp = parameters.Split("where");
+            StringBuilder sb = new StringBuilder();
+            foreach (string str in temp[0].Split(','))
             {
-                if (searchRecordId.Count > 0)
-                {
-                    throw new ArgumentException("Set one parameter to fint to one property.", nameof(key));
-                }
-
-                var conversionResultOfId = Converter.ConvertStringToInt(value);
-                if (!conversionResultOfId.Item1)
-                {
-                    throw new ArgumentException(conversionResultOfId.Item2, nameof(value));
-                }
-
-                searchRecordId.Add(conversionResultOfId.Item3);
-                return;
+                sb.Append(str.Trim());
             }
 
-            if (key.Equals("firstname", StringComparison.InvariantCultureIgnoreCase))
+            if (temp.Length == 1)
             {
-                if (searchRecordFirstName.Count > 0)
-                {
-                    throw new ArgumentException("Set one parameter to fint to one property.", nameof(key));
-                }
-
-                searchRecordFirstName.Add(value);
-                return;
+                result[0] = sb.ToString();
+                return result;
             }
 
-            if (key.Equals("lastname", StringComparison.InvariantCultureIgnoreCase))
+            var tempOr = temp[1].Split("or");
+            var tempAnd = temp[1].Split("and");
+            string type;
+            if (tempOr.Length > tempAnd.Length)
             {
-                if (searchRecordLastName.Count > 0)
-                {
-                    throw new ArgumentException("Set one parameter to fint to one property.", nameof(key));
-                }
-
-                searchRecordLastName.Add(value);
-                return;
+                type = "or";
+            }
+            else
+            {
+                type = "and";
             }
 
-            if (key.Equals("dateofbirth", StringComparison.InvariantCultureIgnoreCase))
+            sb.Append(type);
+            result[0] = sb.ToString();
+            foreach (string keyValue in temp[1].Split(type))
             {
-                if (searchRecordDateOfBirth.Count > 0)
+                var pair = keyValue.Split('=');
+                if (pair.Length != 2)
                 {
-                    throw new ArgumentException("Set one parameter to fint to one property.", nameof(key));
+                    throw new ArgumentException(Configurator.GetConstantString("InvalidInput"), nameof(parameters));
                 }
 
-                var dateOfBirthConversionResult = Converter.ConvertStringToDateTime(value);
-                if (!dateOfBirthConversionResult.Item1)
+                if (pair[0].Trim().Equals("id", StringComparison.InvariantCultureIgnoreCase))
                 {
-                    throw new ArgumentException(dateOfBirthConversionResult.Item2, nameof(value));
+                    result[1] = pair[1].Trim();
+                    continue;
                 }
-
-                searchRecordDateOfBirth.Add(dateOfBirthConversionResult.Item3);
-                return;
-            }
-
-            if (key.Equals("patronymicletter", StringComparison.InvariantCultureIgnoreCase))
-            {
-                if (searchRecordPatronymicLetter.Count > 0)
+                else if (pair[0].Trim().Equals("firstname", StringComparison.InvariantCultureIgnoreCase))
                 {
-                    throw new ArgumentException("Set one parameter to fint to one property.", nameof(key));
+                    result[2] = pair[1].Trim();
+                    continue;
                 }
-
-                var patronymicLetterConversionResult = Converter.ConvertStringToChar(value);
-                if (!patronymicLetterConversionResult.Item1)
+                else if (pair[0].Trim().Equals("lastname", StringComparison.InvariantCultureIgnoreCase))
                 {
-                    throw new ArgumentException(patronymicLetterConversionResult.Item2, nameof(value));
+                    result[3] = pair[1].Trim();
+                    continue;
                 }
-
-                searchRecordPatronymicLetter.Add(patronymicLetterConversionResult.Item3);
-                return;
-            }
-
-            if (key.Equals("income", StringComparison.InvariantCultureIgnoreCase))
-            {
-                if (searchRecordIncome.Count > 0)
+                else if (pair[0].Trim().Equals("dateofbirth", StringComparison.InvariantCultureIgnoreCase))
                 {
-                    throw new ArgumentException("Set one parameter to fint to one property.", nameof(key));
+                    result[4] = pair[1].Trim();
+                    continue;
                 }
-
-                var incomeConversionResult = Converter.ConvertStringToDecimal(value);
-                if (!incomeConversionResult.Item1)
+                else if (pair[0].Trim().Equals("patronymicletter", StringComparison.InvariantCultureIgnoreCase))
                 {
-                    throw new ArgumentException(incomeConversionResult.Item2, nameof(value));
+                    result[5] = pair[1].Trim();
+                    continue;
                 }
-
-                searchRecordIncome.Add(incomeConversionResult.Item3);
-                return;
-            }
-
-            if (key.Equals("height", StringComparison.InvariantCultureIgnoreCase))
-            {
-                if (searchRecordHeight.Count > 0)
+                else if (pair[0].Trim().Equals("income", StringComparison.InvariantCultureIgnoreCase))
                 {
-                    throw new ArgumentException("Set one parameter to fint to one property.", nameof(key));
+                    result[6] = pair[1].Trim();
+                    continue;
                 }
-
-                var heightConversionResult = Converter.ConvertStringToShort(value);
-                if (!heightConversionResult.Item1)
+                else if (pair[0].Trim().Equals("height", StringComparison.InvariantCultureIgnoreCase))
                 {
-                    throw new ArgumentException(heightConversionResult.Item2, nameof(value));
-                }
-
-                searchRecordHeight.Add(heightConversionResult.Item3);
-                return;
-            }
-
-            throw new ArgumentException("Wrong property name.", nameof(key));
-        }
-
-        private void SetSearchParametersOr(List<int> searchRecordId, List<string> searchRecordFirstName, List<string> searchRecordLastName, List<DateTime> searchRecordDateOfBirth, List<char> searchRecordPatronymicLetter, List<decimal> searchRecordIncome, List<short> searchRecordHeight, string key, string value)
-        {
-            if (key.Equals("id", StringComparison.InvariantCultureIgnoreCase))
-            {
-                var conversionResultOfId = Converter.ConvertStringToInt(value);
-                if (!conversionResultOfId.Item1)
-                {
-                    throw new ArgumentException(conversionResultOfId.Item2, nameof(value));
-                }
-
-                searchRecordId.Add(conversionResultOfId.Item3);
-                return;
-            }
-
-            if (key.Equals("firstname", StringComparison.InvariantCultureIgnoreCase))
-            {
-                searchRecordFirstName.Add(value);
-                return;
-            }
-
-            if (key.Equals("lastname", StringComparison.InvariantCultureIgnoreCase))
-            {
-                searchRecordLastName.Add(value);
-                return;
-            }
-
-            if (key.Equals("dateofbirth", StringComparison.InvariantCultureIgnoreCase))
-            {
-                var dateOfBirthConversionResult = Converter.ConvertStringToDateTime(value);
-                if (!dateOfBirthConversionResult.Item1)
-                {
-                    throw new ArgumentException(dateOfBirthConversionResult.Item2, nameof(value));
-                }
-
-                searchRecordDateOfBirth.Add(dateOfBirthConversionResult.Item3);
-                return;
-            }
-
-            if (key.Equals("patronymicletter", StringComparison.InvariantCultureIgnoreCase))
-            {
-                var patronymicLetterConversionResult = Converter.ConvertStringToChar(value);
-                if (!patronymicLetterConversionResult.Item1)
-                {
-                    throw new ArgumentException(patronymicLetterConversionResult.Item2, nameof(value));
-                }
-
-                searchRecordPatronymicLetter.Add(patronymicLetterConversionResult.Item3);
-                return;
-            }
-
-            if (key.Equals("income", StringComparison.InvariantCultureIgnoreCase))
-            {
-                var incomeConversionResult = Converter.ConvertStringToDecimal(value);
-                if (!incomeConversionResult.Item1)
-                {
-                    throw new ArgumentException(incomeConversionResult.Item2, nameof(value));
-                }
-
-                searchRecordIncome.Add(incomeConversionResult.Item3);
-                return;
-            }
-
-            if (key.Equals("height", StringComparison.InvariantCultureIgnoreCase))
-            {
-                var heightConversionResult = Converter.ConvertStringToShort(value);
-                if (!heightConversionResult.Item1)
-                {
-                    throw new ArgumentException(heightConversionResult.Item2, nameof(value));
-                }
-
-                searchRecordHeight.Add(heightConversionResult.Item3);
-                return;
-            }
-
-            throw new ArgumentException("Wrong property name.", nameof(key));
-        }
-
-        private string CreateTable(IEnumerable<FileCabinetRecord> records, IEnumerable<string> fieldsToShow)
-        {
-            if (!records.Any())
-            {
-                return "No records with such conditions.";
-            }
-
-            if (!fieldsToShow.Any())
-            {
-                throw new ArgumentException("Wrong parameters.", nameof(fieldsToShow));
-            }
-
-            PropertyInfo[] properties = typeof(FileCabinetRecord).GetProperties();
-            foreach (string field in fieldsToShow)
-            {
-                if (!properties.Any(x => x.Name.Equals(field, StringComparison.InvariantCultureIgnoreCase)))
-                {
-                    throw new ArgumentException("Wrong property name.");
+                    result[7] = pair[1].Trim();
                 }
             }
 
-            IEnumerable<PropertyInfo> selectedProperties = properties.Where(x => fieldsToShow.Any(y => y.Equals(x.Name, StringComparison.InvariantCultureIgnoreCase)));
-            IEnumerable<int> columnsLengths = this.GetTableColumnLengths(selectedProperties, records);
-            StringBuilder table = new StringBuilder();
-            StringBuilder separator = new StringBuilder();
-            foreach (int length in columnsLengths)
-            {
-                separator.Append('+');
-                for (int i = 0; i < length; i++)
-                {
-                    separator.Append('-');
-                }
-
-                separator.Append('+');
-            }
-
-            separator.Append("\n");
-            table.Append(separator);
-            table.Append(this.GetTableColumnsNames(selectedProperties, columnsLengths));
-            table.Append(separator);
-            foreach (FileCabinetRecord record in records)
-            {
-                table.Append(this.GetValuesString(record, columnsLengths, selectedProperties));
-                table.Append(separator);
-            }
-
-            return table.ToString();
-        }
-
-        private IEnumerable<int> GetTableColumnLengths(IEnumerable<PropertyInfo> properties, IEnumerable<FileCabinetRecord> records)
-        {
-            int maxLength;
-            int newMaxLength;
-            foreach (var property in properties)
-            {
-                maxLength = property.Name.Length;
-                foreach (var record in records)
-                {
-                    if ((newMaxLength = property.GetValue(record).ToString().Length) > maxLength)
-                    {
-                        maxLength = newMaxLength;
-                    }
-                }
-
-                yield return maxLength;
-            }
-        }
-
-        private string GetTableColumnsNames(IEnumerable<PropertyInfo> properties, IEnumerable<int> lengths)
-        {
-            StringBuilder result = new StringBuilder(lengths.Sum() + (properties.Count() * 2));
-            int[] lengthsArr = lengths.ToArray();
-            int counter = 0;
-            int diff;
-            foreach (var property in properties)
-            {
-                if (property.Name.Length == lengthsArr[counter])
-                {
-                    result.Append('|' + property.Name + '|');
-                }
-                else
-                {
-                    result.Append('|' + property.Name);
-                    diff = lengthsArr[counter] - property.Name.Length;
-                    for (int i = 0; i < diff; i++)
-                    {
-                        result.Append(' ');
-                    }
-
-                    result.Append('|');
-                }
-
-                counter++;
-            }
-
-            result.Append("\n");
-            return result.ToString();
-        }
-
-        private string GetValuesString(FileCabinetRecord record, IEnumerable<int> lengths, IEnumerable<PropertyInfo> propertyInfos)
-        {
-            StringBuilder result = new StringBuilder(lengths.Sum() + (propertyInfos.Count() * 2));
-            int[] lengthsArr = lengths.ToArray();
-            int counter = 0;
-            int diff;
-            string valueStr;
-            foreach (var property in propertyInfos)
-            {
-                var value = property.GetValue(record);
-                valueStr = value.ToString();
-                if (valueStr.Length == lengthsArr[counter])
-                {
-                    result.Append('|' + valueStr + '|');
-                }
-                else
-                {
-                    if (value is string || value is char)
-                    {
-                        result.Append('|' + valueStr);
-                        diff = lengthsArr[counter] - valueStr.Length;
-                        for (int i = 0; i < diff; i++)
-                        {
-                            result.Append(' ');
-                        }
-
-                        result.Append('|');
-                    }
-                    else
-                    {
-                        result.Append('|');
-                        diff = lengthsArr[counter] - valueStr.Length;
-                        for (int i = 0; i < diff; i++)
-                        {
-                            result.Append(' ');
-                        }
-
-                        result.Append(valueStr + '|');
-                    }
-                }
-
-                counter++;
-            }
-
-            result.Append("\n");
-            return result.ToString();
+            return result;
         }
     }
 }

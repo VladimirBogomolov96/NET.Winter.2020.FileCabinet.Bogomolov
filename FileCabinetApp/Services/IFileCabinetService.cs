@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Collections.ObjectModel;
 
 namespace FileCabinetApp
@@ -15,13 +14,6 @@ namespace FileCabinetApp
         /// <param name="transfer">Object to transfer parameters of new record.</param>
         /// <returns>ID of created record.</returns>
         int CreateRecord(RecordParametersTransfer transfer);
-
-        /// <summary>
-        /// Edits existing record.
-        /// </summary>
-        /// <param name="id">ID of a record to edit.</param>
-        /// <param name="transfer">Object to transfer new parameters to existing record.</param>
-        void EditRecord(int id, RecordParametersTransfer transfer);
 
         /// <summary>
         /// Sets record validator.
@@ -92,15 +84,15 @@ namespace FileCabinetApp
         /// <summary>
         /// Gets cache.
         /// </summary>
+        /// <param name="memoizationKey">Parameters of execution.</param>
         /// <returns>Cache.</returns>
-        Dictionary<string, string> GetCache();
+        string GetCache(string[] memoizationKey);
 
         /// <summary>
         /// Saves condition and result of execution in cache.
         /// </summary>
-        /// <param name="parameters">Parameters of execution.</param>
-        /// <param name="result">Result of execution.</param>
-        void SaveInCache(string parameters, string result);
+        /// <param name="memoization">Parameters and result of execution.</param>
+        void SaveInCache(string[] memoization);
 
         /// <summary>
         /// Clears cache.

@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 
 namespace FileCabinetApp.Validators
 {
@@ -10,7 +9,7 @@ namespace FileCabinetApp.Validators
     /// </summary>
     public class CompositeValidator : IRecordValidator
     {
-        private List<IRecordValidator> validators;
+        private readonly List<IRecordValidator> validators;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="CompositeValidator"/> class.
@@ -21,7 +20,7 @@ namespace FileCabinetApp.Validators
         {
             if (validators is null)
             {
-                throw new ArgumentNullException(nameof(validators), "List of validators must be not null.");
+                throw new ArgumentNullException(nameof(validators), Configurator.GetConstantString("NullValidatorSequence"));
             }
 
             this.validators = validators.ToList();
@@ -37,7 +36,7 @@ namespace FileCabinetApp.Validators
         {
             if (record is null)
             {
-                throw new ArgumentNullException(nameof(record), "Record must be not null.");
+                throw new ArgumentNullException(nameof(record), Configurator.GetConstantString("NullRecord"));
             }
 
             foreach (var validator in this.validators)

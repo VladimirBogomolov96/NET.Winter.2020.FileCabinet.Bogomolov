@@ -1,7 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Globalization;
-using System.Text;
 using System.Xml;
 
 namespace FileCabinetApp
@@ -44,11 +42,12 @@ namespace FileCabinetApp
         /// Writes a record into current stream.
         /// </summary>
         /// <param name="record">Record to write.</param>
+        /// <exception cref="ArgumentNullException">Thrown when given record is null.</exception>
         public void Write(FileCabinetRecord record)
         {
             if (record is null)
             {
-                throw new ArgumentNullException(nameof(record), "Record must be not null.");
+                throw new ArgumentNullException(nameof(record), Configurator.GetConstantString("NullRecord"));
             }
 
             this.writer.WriteStartElement("record");

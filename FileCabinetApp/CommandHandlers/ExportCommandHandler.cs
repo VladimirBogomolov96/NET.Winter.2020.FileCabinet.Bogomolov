@@ -28,13 +28,13 @@ namespace FileCabinetApp.CommandHandlers
         {
             if (commandRequest is null)
             {
-                Console.WriteLine("Wrong command line parameter.");
+                Console.WriteLine(Configurator.GetConstantString("InvalidCommand"));
                 return;
             }
 
             if (commandRequest.Command is null)
             {
-                Console.WriteLine("Wrong command line parameter.");
+                Console.WriteLine(Configurator.GetConstantString("InvalidCommand"));
                 return;
             }
 
@@ -53,7 +53,9 @@ namespace FileCabinetApp.CommandHandlers
             string[] parametersArr = parameters.Split(' ', 2);
             if (parametersArr.Length < 2)
             {
-                Console.WriteLine("Enter export format and destination file.");
+                Console.WriteLine(Configurator.GetConstantString("InvalidInput"));
+                Console.WriteLine(Configurator.GetConstantString("CommandPatthern"));
+                Console.WriteLine(Configurator.GetConstantString("ExportPatthern"));
                 return;
             }
 
@@ -84,9 +86,9 @@ namespace FileCabinetApp.CommandHandlers
                     snapshot.SaveToCsv(streamWriter);
                     Console.WriteLine($"All records are exported to file {parametersArr[filePathIndex]}");
                 }
-                catch (DirectoryNotFoundException ex)
+                catch (DirectoryNotFoundException)
                 {
-                    Console.WriteLine(ex.Message);
+                    Console.WriteLine(Configurator.GetConstantString("DirectoryNotExist"));
                 }
             }
             else if (parametersArr[exportTypeIndex].Equals("xml", StringComparison.OrdinalIgnoreCase))
@@ -102,14 +104,14 @@ namespace FileCabinetApp.CommandHandlers
                     snapshot.SaveToXml(xmlWriter);
                     Console.WriteLine($"All records are exported to file {parametersArr[filePathIndex]}");
                 }
-                catch (DirectoryNotFoundException ex)
+                catch (DirectoryNotFoundException)
                 {
-                    Console.WriteLine(ex.Message);
+                    Console.WriteLine(Configurator.GetConstantString("DirectoryNotExist"));
                 }
             }
             else
             {
-                Console.WriteLine("Wrong format type.");
+                Console.WriteLine(Configurator.GetConstantString("InvalidFormatType"));
             }
         }
     }

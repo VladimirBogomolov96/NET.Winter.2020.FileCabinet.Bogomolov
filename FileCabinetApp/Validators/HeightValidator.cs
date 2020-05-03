@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace FileCabinetApp.Validators
 {
@@ -9,8 +7,8 @@ namespace FileCabinetApp.Validators
     /// </summary>
     public class HeightValidator : IRecordValidator
     {
-        private short minHeight;
-        private short maxHeight;
+        private readonly short minHeight;
+        private readonly short maxHeight;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="HeightValidator"/> class.
@@ -33,7 +31,7 @@ namespace FileCabinetApp.Validators
         {
             if (record is null)
             {
-                throw new ArgumentNullException(nameof(record), "Record must be not null.");
+                throw new ArgumentNullException(nameof(record), Configurator.GetConstantString("NullRecord"));
             }
 
             if (record.Height < this.minHeight || record.Height > this.maxHeight)

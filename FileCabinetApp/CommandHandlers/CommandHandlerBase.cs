@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 
 namespace FileCabinetApp.CommandHandlers
 {
@@ -59,7 +58,7 @@ namespace FileCabinetApp.CommandHandlers
                 else
                 {
                     Console.WriteLine($"Command {commandRequest.Command} doesn't exist.");
-                    Console.WriteLine("The most similar commands are:");
+                    Console.WriteLine(Configurator.GetConstantString("SimilarCommands"));
                     foreach (string command in similarCommands)
                     {
                         Console.WriteLine(command);
@@ -79,18 +78,7 @@ namespace FileCabinetApp.CommandHandlers
             return this.commandHandler;
         }
 
-        private IEnumerable<string> GetSimilarCommands(string input)
-        {
-            foreach (string command in this.commands)
-            {
-                if (this.LevensteinAlgorithm(input, command) < 4)
-                {
-                    yield return command;
-                }
-            }
-        }
-
-        private int LevensteinAlgorithm(string input, string command)
+        private static int LevensteinAlgorithm(string input, string command)
         {
             int n = input.Length;
             int m = command.Length;
@@ -134,6 +122,17 @@ namespace FileCabinetApp.CommandHandlers
             }
 
             return matrix[n][m];
+        }
+
+        private IEnumerable<string> GetSimilarCommands(string input)
+        {
+            foreach (string command in this.commands)
+            {
+                if (LevensteinAlgorithm(input, command) < 4)
+                {
+                    yield return command;
+                }
+            }
         }
     }
 }

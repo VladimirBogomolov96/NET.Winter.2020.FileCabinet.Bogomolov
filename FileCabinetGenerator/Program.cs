@@ -1,10 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Xml;
-using CommandLine;
 using FileCabinetApp;
+using Microsoft.Extensions.Configuration;
 
 namespace FileCabinetGenerator
 {
@@ -13,8 +14,6 @@ namespace FileCabinetGenerator
     /// </summary>
     public static class Program
     {
-        private const string Alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
-
         /// <summary>
         /// Point of entrance to program.
         /// </summary>
@@ -22,7 +21,36 @@ namespace FileCabinetGenerator
         public static void Main(string[] args)
         {
             Options options = GetCommandLineArguments(args);
-            FileCabinetRecord[] records = GenerateRandomRecords(options.StartId, options.RecordsAmount);
+            FileCabinetRecord[] records = null;
+            try
+            {
+                records = GenerateRandomRecords(options.StartId, options.RecordsAmount);
+            }
+            catch (ArgumentOutOfRangeException)
+            {
+                Console.WriteLine(Configurator.GetConstantString("IndexLess1"));
+                Console.WriteLine(Configurator.GetConstantString("ClosingProgram"));
+                Environment.Exit(-1);
+            }
+            catch (ArgumentNullException)
+            {
+                Console.WriteLine(Configurator.GetConstantString("InvalidValidationFile"));
+                Console.WriteLine(Configurator.GetConstantString("ClosingProgram"));
+                Environment.Exit(-1);
+            }
+            catch (FormatException)
+            {
+                Console.WriteLine(Configurator.GetConstantString("InvalidValidationFile"));
+                Console.WriteLine(Configurator.GetConstantString("ClosingProgram"));
+                Environment.Exit(-1);
+            }
+            catch (OverflowException)
+            {
+                Console.WriteLine(Configurator.GetConstantString("ValidationOutOfRange"));
+                Console.WriteLine(Configurator.GetConstantString("ClosingProgram"));
+                Environment.Exit(-1);
+            }
+
             Export(options, records);
         }
 
@@ -54,11 +82,12 @@ namespace FileCabinetGenerator
                         csvWriter.Write(record);
                     }
 
-                    Console.WriteLine($"All records are exported to file {options.OutputFileName}");
+                    Console.WriteLine($"{records.Count()} records are exported to file {options.OutputFileName}");
                 }
-                catch (DirectoryNotFoundException ex)
+                catch (DirectoryNotFoundException)
                 {
-                    Console.WriteLine(ex.Message);
+                    Console.WriteLine($"Can't find directory {options.OutputFileName}.");
+                    Console.WriteLine(Configurator.GetConstantString("ClosingProgram"));
                 }
             }
             else if (options.OutputType.Equals("xml", StringComparison.OrdinalIgnoreCase))
@@ -83,23 +112,142 @@ namespace FileCabinetGenerator
                         xmlWriter.Write();
                     }
 
-                    Console.WriteLine($"All records are exported to file {options.OutputFileName}");
+                    Console.WriteLine($"{records.Count()} records are exported to file {options.OutputFileName}");
                 }
-                catch (DirectoryNotFoundException ex)
+                catch (DirectoryNotFoundException)
                 {
-                    Console.WriteLine(ex.Message);
+                    Console.WriteLine($"Can't find directory {options.OutputFileName}.");
+                    Console.WriteLine(Configurator.GetConstantString("ClosingProgram"));
                 }
             }
             else
             {
-                Console.WriteLine("Wrong format type.");
+                Console.WriteLine($"Wrong format type {options.OutputType}.");
+                Console.WriteLine(Configurator.GetConstantString("ClosingProgram"));
             }
         }
 
         private static Options GetCommandLineArguments(string[] args)
         {
+            if (args is null)
+            {
+                throw new ArgumentNullException(nameof(args), Configurator.GetConstantString("ArgsIsNull"));
+            }
+
+            List<string> singleParams = new List<string>();
+            List<string> doubleParams = new List<string>();
+            List<string> doubleParamsValues = new List<string>();
+            for (int i = 0; i < args.Length; i++)
+            {
+                if (args[i].Substring(0, 2) == "--")
+                {
+                    singleParams.Add(args[i]);
+                    continue;
+                }
+                else if (args[i].Substring(0, 1) == "-")
+                {
+                    if (i == (args.Length - 1))
+                    {
+                        Console.WriteLine($"Invalid command line parameter '{args[i]}'.");
+                        Environment.Exit(-1);
+                    }
+
+                    doubleParams.Add(args[i]);
+                    doubleParamsValues.Add(args[i + 1]);
+                    i++;
+                    continue;
+                }
+                else
+                {
+                    Console.WriteLine($"Invalid command line parameter '{args[i]}'.");
+                    Environment.Exit(-1);
+                }
+            }
+
             Options options = new Options();
-            var result = Parser.Default.ParseArguments<Options>(args).WithParsed(parsed => options = parsed);
+            foreach (string param in singleParams)
+            {
+                string[] keyValuePair = param.Split('=');
+                if (keyValuePair.Length == 2)
+                {
+                    if (keyValuePair[0] == "--output-type")
+                    {
+                        options.OutputType = keyValuePair[1];
+                    }
+                    else if (keyValuePair[0] == "--output")
+                    {
+                        options.OutputFileName = keyValuePair[1];
+                    }
+                    else if (keyValuePair[0] == "--records-amount")
+                    {
+                        if (!int.TryParse(keyValuePair[1], out int amount))
+                        {
+                            Console.WriteLine($"Invalid command line parameter '{param}'.");
+                            Environment.Exit(-1);
+                        }
+
+                        options.RecordsAmount = amount;
+                    }
+                    else if (keyValuePair[0] == "--start-id")
+                    {
+                        if (!int.TryParse(keyValuePair[1], out int startId))
+                        {
+                            Console.WriteLine($"Invalid command line parameter '{param}'.");
+                            Environment.Exit(-1);
+                        }
+
+                        options.StartId = startId;
+                    }
+                    else
+                    {
+                        Console.WriteLine($"Invalid command line parameter '{param}'.");
+                        Environment.Exit(-1);
+                    }
+                }
+                else
+                {
+                    Console.WriteLine($"Invalid command line parameter '{param}'.");
+                    Environment.Exit(-1);
+                }
+            }
+
+            for (int i = 0; i < doubleParams.Count; i++)
+            {
+                if (doubleParams[i] == "-t")
+                {
+                    options.OutputType = doubleParamsValues[i];
+                }
+                else if (doubleParams[i] == "-o")
+                {
+                    options.OutputFileName = doubleParamsValues[i];
+                }
+                else if (doubleParams[i] == "-a")
+                {
+                    if (!int.TryParse(doubleParamsValues[i], out int amount))
+                    {
+                        Console.WriteLine($"Invalid command line parameter value '{doubleParamsValues[i]}'.");
+                        Environment.Exit(-1);
+                    }
+
+                    options.RecordsAmount = amount;
+                }
+                else if (doubleParams[i] == "-i")
+                {
+                    if (!int.TryParse(doubleParamsValues[i], out int startId))
+                    {
+                        Console.WriteLine($"Invalid command line parameter value '{doubleParamsValues[i]}'.");
+                        Environment.Exit(-1);
+                    }
+
+                    options.StartId = startId;
+                }
+                else
+                {
+                    Console.WriteLine($"Invalid command line parameter '{doubleParams[i]}'.");
+                    Environment.Exit(-1);
+                }
+            }
+
             return options;
         }
 
@@ -107,24 +255,58 @@ namespace FileCabinetGenerator
         {
             if (start < 1)
             {
-                throw new ArgumentOutOfRangeException(nameof(start), "Index must be more than 0.");
+                throw new ArgumentOutOfRangeException(nameof(start), Configurator.GetConstantString("IndexLess1"));
             }
+
+            IConfigurationRoot validationRules = null;
+            try
+            {
+                validationRules = new ConfigurationBuilder()
+                    .SetBasePath(AppDomain.CurrentDomain.BaseDirectory)
+                    .AddJsonFile(Configurator.GetSetting("ValidationRulesFileName"))
+                    .Build();
+            }
+            catch (FileNotFoundException)
+            {
+                Console.WriteLine($"{Configurator.GetConstantString("MissingValidation")} {Configurator.GetSetting("ConstantStringsFileName")}");
+                Console.WriteLine(Configurator.GetConstantString("ClosingProgram"));
+                Environment.Exit(-1);
+            }
+            catch (FormatException)
+            {
+                Console.WriteLine(Configurator.GetConstantString("InvalidValidationFile"));
+                Console.WriteLine(Configurator.GetConstantString("ClosingProgram"));
+                Environment.Exit(-1);
+            }
+
+            int minFirstNameLength = int.Parse(validationRules.GetSection("default").GetSection("firstName").GetSection("minLength").Value, CultureInfo.InvariantCulture);
+            int maxFirstNameLength = int.Parse(validationRules.GetSection("default").GetSection("firstName").GetSection("maxLength").Value, CultureInfo.InvariantCulture);
+            int minLastNameLength = int.Parse(validationRules.GetSection("default").GetSection("lastName").GetSection("minLength").Value, CultureInfo.InvariantCulture);
+            int maxLastNameLength = int.Parse(validationRules.GetSection("default").GetSection("lastName").GetSection("maxLength").Value, CultureInfo.InvariantCulture);
+            DateTime fromDateOfBirth = DateTime.ParseExact(validationRules.GetSection("default").GetSection("dateOfBirth").GetSection("from").Value, "dd/MM/yyyy", CultureInfo.InvariantCulture);
+            DateTime toDateOfBirth = DateTime.ParseExact(validationRules.GetSection("default").GetSection("dateOfBirth").GetSection("to").Value, "dd/MM/yyyy", CultureInfo.InvariantCulture);
+            char minPatronymicLetter = char.Parse(validationRules.GetSection("default").GetSection("patronymicLetter").GetSection("from").Value);
+            char maxPatronymicLetter = char.Parse(validationRules.GetSection("default").GetSection("patronymicLetter").GetSection("to").Value);
+            decimal minIncome = decimal.Parse(validationRules.GetSection("default").GetSection("income").GetSection("from").Value, CultureInfo.InvariantCulture);
+            decimal maxIncome = decimal.Parse(validationRules.GetSection("default").GetSection("income").GetSection("to").Value, CultureInfo.InvariantCulture);
+            short minHeight = short.Parse(validationRules.GetSection("default").GetSection("height").GetSection("min").Value, CultureInfo.InvariantCulture);
+            short maxHeight = short.Parse(validationRules.GetSection("default").GetSection("height").GetSection("max").Value, CultureInfo.InvariantCulture);
+            string alphabet = Configurator.GetConstantString("Alphabet");
 
             FileCabinetRecord[] records = new FileCabinetRecord[amount];
             Random random = new Random();
             for (int i = 0; i < amount; i++)
             {
-                FileCabinetRecord newRecord = new FileCabinetRecord
+                records[i] = new FileCabinetRecord
                 {
                     Id = start++,
-                    FirstName = GetRandomString(Alphabet, random.Next(2, 60), random),
-                    LastName = GetRandomString(Alphabet, random.Next(2, 60), random),
-                    DateOfBirth = GetRandomDate(new DateTime(1950, 1, 1), random),
-                    PatronymicLetter = (char)random.Next((int)'A', (int)'Z'),
-                    Income = random.Next(),
-                    Height = (short)random.Next(1, 300),
+                    FirstName = GetRandomString(alphabet, random.Next(minFirstNameLength, maxFirstNameLength), random),
+                    LastName = GetRandomString(alphabet, random.Next(minLastNameLength, maxLastNameLength), random),
+                    DateOfBirth = GetRandomDate(fromDateOfBirth, toDateOfBirth, random),
+                    PatronymicLetter = (char)random.Next((int)minPatronymicLetter, (int)maxPatronymicLetter),
+                    Income = random.Next((int)minIncome, (int)maxIncome),
+                    Height = (short)random.Next(minHeight, maxHeight),
                 };
-                records[i] = newRecord;
             }
 
             return records;
@@ -141,10 +323,10 @@ namespace FileCabinetGenerator
             return new string(result);
         }
 
-        private static DateTime GetRandomDate(DateTime minValue, Random random)
+        private static DateTime GetRandomDate(DateTime from, DateTime to, Random random)
         {
-            int range = (DateTime.Today - minValue).Days;
-            return minValue.AddDays(random.Next(range));
+            int range = (to - from).Days;
+            return from.AddDays(random.Next(range));
         }
     }
 }

@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace FileCabinetApp.Validators
 {
@@ -9,8 +7,8 @@ namespace FileCabinetApp.Validators
     /// </summary>
     public class DateOfBirthValidator : IRecordValidator
     {
-        private DateTime from;
-        private DateTime to;
+        private readonly DateTime from;
+        private readonly DateTime to;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="DateOfBirthValidator"/> class.
@@ -33,7 +31,7 @@ namespace FileCabinetApp.Validators
         {
             if (record is null)
             {
-                throw new ArgumentNullException(nameof(record), "Record must be not null.");
+                throw new ArgumentNullException(nameof(record), Configurator.GetConstantString("NullRecord"));
             }
 
             if (record.DateOfBirth < this.from || record.DateOfBirth > this.to)

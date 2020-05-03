@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
-using System.Text;
 
 namespace FileCabinetApp.Services
 {
@@ -11,7 +10,7 @@ namespace FileCabinetApp.Services
     /// </summary>
     public class ServiceMeter : IFileCabinetService
     {
-        private IFileCabinetService service;
+        private readonly IFileCabinetService service;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="ServiceMeter"/> class.
@@ -27,28 +26,14 @@ namespace FileCabinetApp.Services
         /// </summary>
         /// <param name="transfer">Object to transfer parameters of new record.</param>
         /// <returns>ID of created record.</returns>
-        /// <exception cref="ArgumentNullException">Throw when first name or last name is null, when transfer object is null.</exception>
-        /// <exception cref="ArgumentException">Thrown when firs name or last name length is out of 2 and 60 chars or contains only whitespaces, when date of birth out of 01-Jan-1950 and current date, when height is out of 1 and 300 cm, when income is negative, when patronymic letter is not a latin uppercase letter.</exception>
+        /// <exception cref="ArgumentNullException">Throw when transfer object is null.</exception>
+        /// <exception cref="ArgumentException">Thrown when transfer data is invalid.</exception>
         public int CreateRecord(RecordParametersTransfer transfer)
         {
             var stopWatch = Stopwatch.StartNew();
             var result = this.service.CreateRecord(transfer);
             Console.WriteLine($"CreateRecord method execution duration is {stopWatch.ElapsedTicks} ticks.");
             return result;
-        }
-
-        /// <summary>
-        /// Edits existing record and measure execution time.
-        /// </summary>
-        /// <param name="id">ID of a record to edit.</param>
-        /// <param name="transfer">Object to transfer new parameters to existing record.</param>
-        /// <exception cref="ArgumentNullException">Throw when first name or last name is null, when transfer object is null.</exception>
-        /// <exception cref="ArgumentException">Thrown when firs name or last name length is out of 2 and 60 chars or contains only whitespaces, when date of birth out of 01-Jan-1950 and current date, when height is out of 1 and 300 cm, when income is negative, when patronymic letter is not a latin uppercase letter.</exception>
-        public void EditRecord(int id, RecordParametersTransfer transfer)
-        {
-            var stopWatch = Stopwatch.StartNew();
-            this.service.EditRecord(id, transfer);
-            Console.WriteLine($"EditRecord method execution duration is {stopWatch.ElapsedTicks} ticks.");
         }
 
         /// <summary>
@@ -80,6 +65,8 @@ namespace FileCabinetApp.Services
         /// </summary>
         /// <param name="record">Record to insert.</param>
         /// <returns>Id of inserted record.</returns>
+        /// <exception cref="ArgumentNullException">Thrown when record is null.</exception>
+        /// <exception cref="ArgumentException">Thrown when records data is invalid or when record with given id is already exists.</exception>
         public int Insert(FileCabinetRecord record)
         {
             var stopWatch = Stopwatch.StartNew();
@@ -104,6 +91,7 @@ namespace FileCabinetApp.Services
         /// Defragments file and measure execution time.
         /// </summary>
         /// <returns>Amount of purged records.</returns>
+        /// <exception cref="InvalidOperationException">Thrown when inner service is memory service.</exception>
         public int Purge()
         {
             var stopWatch = Stopwatch.StartNew();
@@ -117,6 +105,7 @@ namespace FileCabinetApp.Services
         /// </summary>
         /// <param name="records">Records to delete.</param>
         /// <returns>IDs of deleted records.</returns>
+        /// <exception cref="ArgumentNullException">Thrown when records is null.</exception>
         public IEnumerable<int> Delete(IEnumerable<FileCabinetRecord> records)
         {
             var stopWatch = Stopwatch.StartNew();
@@ -143,6 +132,7 @@ namespace FileCabinetApp.Services
         /// </summary>
         /// <param name="snapshot">Snapshot that represent statement to restore.</param>
         /// <returns>Amount of new records added.</returns>
+        /// <exception cref="ArgumentNullException">Thrown when snapshot is null.</exception>
         public int Restore(FileCabinetServiceSnapshot snapshot)
         {
             var stopWatch = Stopwatch.StartNew();
@@ -157,6 +147,8 @@ namespace FileCabinetApp.Services
         /// <param name="records">Records to update.</param>
         /// <param name="fieldsAndValuesToSet">Fields and values to set.</param>
         /// <returns>Amount of updated records.</returns>
+        /// <exception cref="ArgumentNullException">Thrown when records or fields and values to set is null.</exception>
+        /// <exception cref="ArgumentException">Thrown when data is invalid.</exception>
         public int Update(IEnumerable<FileCabinetRecord> records, IEnumerable<IEnumerable<string>> fieldsAndValuesToSet)
         {
             var stopWatch = Stopwatch.StartNew();
@@ -175,26 +167,26 @@ namespace FileCabinetApp.Services
         }
 
         /// <summary>
-        /// Gets cache and measure execution time.
+        /// Gets cache.
         /// </summary>
+        /// <param name="memoizationKey">Parameters of execution.</param>
         /// <returns>Cache.</returns>
-        public Dictionary<string, string> GetCache()
+        public string GetCache(string[] memoizationKey)
         {
             var stopWatch = Stopwatch.StartNew();
-            var result = this.service.GetCache();
+            var result = this.service.GetCache(memoizationKey);
             Console.WriteLine($"GetCache method execution duration is {stopWatch.ElapsedTicks} ticks.");
             return result;
         }
 
         /// <summary>
-        /// Saves condition and result of execution in cache and measure execution time.
+        /// Saves condition and result of execution in cache.
         /// </summary>
-        /// <param name="parameters">Parameters of execution.</param>
-        /// <param name="result">Result of execution.</param>
-        public void SaveInCache(string parameters, string result)
+        /// <param name="memoization">Parameters and result of execution.</param>
+        public void SaveInCache(string[] memoization)
         {
             var stopWatch = Stopwatch.StartNew();
-            this.service.SaveInCache(parameters, result);
+            this.service.SaveInCache(memoization);
             Console.WriteLine($"SaveInCache method execution duration is {stopWatch.ElapsedTicks} ticks.");
         }
 

@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace FileCabinetApp.Validators
 {
@@ -9,8 +7,8 @@ namespace FileCabinetApp.Validators
     /// </summary>
     public class IncomeValidator : IRecordValidator
     {
-        private decimal from;
-        private decimal to;
+        private readonly decimal from;
+        private readonly decimal to;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="IncomeValidator"/> class.
@@ -33,7 +31,7 @@ namespace FileCabinetApp.Validators
         {
             if (record is null)
             {
-                throw new ArgumentNullException(nameof(record), "Record must be not null.");
+                throw new ArgumentNullException(nameof(record), Configurator.GetConstantString("NullRecord"));
             }
 
             if (record.Income < this.from || record.Income > this.to)

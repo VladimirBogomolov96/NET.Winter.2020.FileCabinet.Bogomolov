@@ -1,7 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using FileCabinetApp.Validators;
 
 namespace FileCabinetApp.CommandHandlers
 {
@@ -27,19 +24,19 @@ namespace FileCabinetApp.CommandHandlers
         {
             if (commandRequest is null)
             {
-                Console.WriteLine("Wrong command line parameter.");
+                Console.WriteLine(Configurator.GetConstantString("InvalidCommand"));
                 return;
             }
 
             if (commandRequest.Command is null)
             {
-                Console.WriteLine("Wrong command line parameter.");
+                Console.WriteLine(Configurator.GetConstantString("InvalidCommand"));
                 return;
             }
 
             if (commandRequest.Command.Equals("create", StringComparison.InvariantCultureIgnoreCase))
             {
-                this.Create(commandRequest.Parameters);
+                this.Create();
                 this.Service.ClearCache();
             }
             else
@@ -69,19 +66,19 @@ namespace FileCabinetApp.CommandHandlers
             while (true);
         }
 
-        private void Create(string parameters)
+        private void Create()
         {
-            Console.Write("First name: ");
+            Console.Write(Configurator.GetConstantString("FirstNameColon"));
             string firstName = ReadInput<string>(Converter.ConvertStringToString);
-            Console.Write("Last name: ");
+            Console.Write(Configurator.GetConstantString("LastNameColon"));
             string lastName = ReadInput<string>(Converter.ConvertStringToString);
-            Console.Write("Date of birth: ");
+            Console.Write(Configurator.GetConstantString("DateOfBirthColon"));
             DateTime dateOfBirth = ReadInput<DateTime>(Converter.ConvertStringToDateTime);
-            Console.Write("Height: ");
+            Console.Write(Configurator.GetConstantString("HeightColon"));
             short height = ReadInput<short>(Converter.ConvertStringToShort);
-            Console.Write("Income: ");
+            Console.Write(Configurator.GetConstantString("IncomeColon"));
             decimal income = ReadInput<decimal>(Converter.ConvertStringToDecimal);
-            Console.Write("Patronymic letter: ");
+            Console.Write(Configurator.GetConstantString("PatronymicColon"));
             char patronymicLetter = ReadInput<char>(Converter.ConvertStringToChar);
             RecordParametersTransfer transfer = new RecordParametersTransfer(firstName, lastName, dateOfBirth, height, income, patronymicLetter);
             try
@@ -89,9 +86,9 @@ namespace FileCabinetApp.CommandHandlers
                 int index = this.Service.CreateRecord(transfer);
                 Console.WriteLine($"Record #{index} is created.");
             }
-            catch (ArgumentException ex)
+            catch (ArgumentException)
             {
-                Console.WriteLine(ex.Message);
+                Console.WriteLine(Configurator.GetConstantString("InvalidInput"));
             }
         }
     }

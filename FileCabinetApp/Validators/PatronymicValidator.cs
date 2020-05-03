@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace FileCabinetApp.Validators
 {
@@ -9,8 +7,8 @@ namespace FileCabinetApp.Validators
     /// </summary>
     public class PatronymicValidator : IRecordValidator
     {
-        private char from;
-        private char to;
+        private readonly char from;
+        private readonly char to;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="PatronymicValidator"/> class.
@@ -33,7 +31,7 @@ namespace FileCabinetApp.Validators
         {
             if (record is null)
             {
-                throw new ArgumentNullException(nameof(record), "Record must be not null.");
+                throw new ArgumentNullException(nameof(record), Configurator.GetConstantString("NullRecord"));
             }
 
             if (record.PatronymicLetter < this.from || record.PatronymicLetter > this.to)

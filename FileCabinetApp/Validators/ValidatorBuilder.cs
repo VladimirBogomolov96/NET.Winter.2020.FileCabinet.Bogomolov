@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text;
 
 namespace FileCabinetApp.Validators
 {
@@ -9,7 +8,7 @@ namespace FileCabinetApp.Validators
     /// </summary>
     public class ValidatorBuilder
     {
-        private List<IRecordValidator> validators = new List<IRecordValidator>();
+        private readonly List<IRecordValidator> validators = new List<IRecordValidator>();
 
         /// <summary>
         /// Adds first name validation.

@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
-using System.Text;
 
 namespace FileCabinetApp
 {
@@ -11,7 +10,7 @@ namespace FileCabinetApp
     /// </summary>
     public class FileCabinetRecordCsvReader
     {
-        private StreamReader fileReader;
+        private readonly StreamReader fileReader;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="FileCabinetRecordCsvReader"/> class.
@@ -34,18 +33,38 @@ namespace FileCabinetApp
 
             while (!this.fileReader.EndOfStream)
             {
-                string[] fields = this.fileReader.ReadLine().Split(',');
-                FileCabinetRecord record = new FileCabinetRecord
+                string tempFields = this.fileReader.ReadLine();
+                string[] fields = tempFields.Split(',');
+                try
                 {
-                    Id = int.Parse(fields[0], CultureInfo.InvariantCulture),
-                    FirstName = fields[1],
-                    LastName = fields[3],
-                    DateOfBirth = DateTime.Parse(fields[4], CultureInfo.InvariantCulture),
-                    PatronymicLetter = char.Parse(fields[2]),
-                    Income = decimal.Parse(fields[6], CultureInfo.InvariantCulture),
-                    Height = short.Parse(fields[5].Split('.')[0], CultureInfo.InvariantCulture),
-                };
-                records.Add(record);
+                    FileCabinetRecord record = new FileCabinetRecord
+                    {
+                        Id = int.Parse(fields[0], CultureInfo.InvariantCulture),
+                        FirstName = fields[1],
+                        LastName = fields[3],
+                        DateOfBirth = DateTime.Parse(fields[4], CultureInfo.InvariantCulture),
+                        PatronymicLetter = char.Parse(fields[2]),
+                        Income = decimal.Parse(fields[6], CultureInfo.InvariantCulture),
+                        Height = short.Parse(fields[5].Split('.')[0], CultureInfo.InvariantCulture),
+                    };
+                    records.Add(record);
+                }
+                catch (IndexOutOfRangeException)
+                {
+                    Console.WriteLine($"Invalid data in string {tempFields}. Data was skipped.");
+                }
+                catch (ArgumentException)
+                {
+                    Console.WriteLine($"Invalid data in string {tempFields}. Data was skipped.");
+                }
+                catch (FormatException)
+                {
+                    Console.WriteLine($"Invalid data in string {tempFields}. Data was skipped.");
+                }
+                catch (OverflowException)
+                {
+                    Console.WriteLine($"Invalid data in string {tempFields}. Data was skipped.");
+                }
             }
 
             return records;

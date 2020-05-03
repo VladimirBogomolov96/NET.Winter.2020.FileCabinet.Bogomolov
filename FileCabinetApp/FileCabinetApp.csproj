@@ -9,11 +9,11 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="CommandHandlers\SelectCommandHandler.cs~RF143269f.TMP" />
     <None Remove="CommandHandlers\UpdateCommandHandler.cs~RF25acc96.TMP" />
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="CommandLineParser" Version="2.7.82" />
     <PackageReference Include="Microsoft.CodeAnalysis.FxCopAnalyzers" Version="2.9.8">
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
       <PrivateAssets>all</PrivateAssets>

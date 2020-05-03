@@ -4,7 +4,6 @@ using System.Collections.ObjectModel;
 using System.Globalization;
 using System.IO;
 using System.Linq;
-using System.Text;
 
 namespace FileCabinetApp
 {
@@ -13,20 +12,16 @@ namespace FileCabinetApp
     /// </summary>
     public class FileCabinetFilesystemService : IFileCabinetService, IDisposable
     {
-        private const int SizeOfChar = 1;
-        private const int SizeOfShort = 2;
-        private const int SizeOfInt = 4;
-        private const int SizeOfDecimal = 16;
-        private const int SizeOfString = 122;
-        private const int SizeOfRecord = 281;
-        private readonly Dictionary<string, List<int>> firstNameDictionary = new Dictionary<string, List<int>>();
-        private readonly Dictionary<string, List<int>> lastNameDictionary = new Dictionary<string, List<int>>();
-        private readonly Dictionary<DateTime, List<int>> dateOfBirthDictionary = new Dictionary<DateTime, List<int>>();
-        private readonly Dictionary<int, int> idDictionary = new Dictionary<int, int>();
-        private readonly Dictionary<string, string> cache = new Dictionary<string, string>();
-        private FileStream fileStream;
-        private BinaryReader binaryReader;
-        private BinaryWriter binaryWriter;
+        private readonly int sizeOfChar;
+        private readonly int sizeOfShort;
+        private readonly int sizeOfInt;
+        private readonly int sizeOfDecimal;
+        private readonly int sizeOfString;
+        private readonly int sizeOfRecord;
+        private readonly Dictionary<int, int> dictionaryIdOffset = new Dictionary<int, int>();
+        private readonly FileStream fileStream;
+        private readonly BinaryReader binaryReader;
+        private readonly BinaryWriter binaryWriter;
         private int currentOffset;
         private IRecordValidator recordValidator;
 
@@ -39,12 +34,39 @@ namespace FileCabinetApp
         {
             if (fileStream is null)
             {
-                throw new ArgumentNullException(nameof(fileStream), "Stream must not be null.");
+                throw new ArgumentNullException(nameof(fileStream), Configurator.GetConstantString("NullStream"));
             }
 
             this.fileStream = fileStream;
             this.binaryWriter = new BinaryWriter(fileStream);
             this.binaryReader = new BinaryReader(fileStream);
+            try
+            {
+                this.sizeOfChar = int.Parse(Configurator.GetSetting("SizeOfChar"), CultureInfo.InvariantCulture);
+                this.sizeOfShort = int.Parse(Configurator.GetSetting("SizeOfShort"), CultureInfo.InvariantCulture);
+                this.sizeOfInt = int.Parse(Configurator.GetSetting("SizeOfInt"), CultureInfo.InvariantCulture);
+                this.sizeOfDecimal = int.Parse(Configurator.GetSetting("SizeOfDecimal"), CultureInfo.InvariantCulture);
+                this.sizeOfString = int.Parse(Configurator.GetSetting("SizeOfString"), CultureInfo.InvariantCulture);
+                this.sizeOfRecord = int.Parse(Configurator.GetSetting("SizeOfRecord"), CultureInfo.InvariantCulture);
+            }
+            catch (ArgumentException)
+            {
+                Console.WriteLine(Configurator.GetConstantString("InvalidTypeSyzeData"));
+                Console.WriteLine(Configurator.GetConstantString("ClosingProgram"));
+                Environment.Exit(-1);
+            }
+            catch (FormatException)
+            {
+                Console.WriteLine(Configurator.GetConstantString("InvalidTypeSyzeData"));
+                Console.WriteLine(Configurator.GetConstantString("ClosingProgram"));
+                Environment.Exit(-1);
+            }
+            catch (OverflowException)
+            {
+                Console.WriteLine(Configurator.GetConstantString("InvalidTypeSyzeData"));
+                Console.WriteLine(Configurator.GetConstantString("ClosingProgram"));
+                Environment.Exit(-1);
+            }
         }
 
         /// <summary>
@@ -64,12 +86,13 @@ namespace FileCabinetApp
         /// </summary>
         /// <param name="transfer">Object to transfer parameters of new record.</param>
         /// <returns>ID of created record.</returns>
-        /// <exception cref="ArgumentNullException">Thrown when transfer parameters is null.</exception>
+        /// <exception cref="ArgumentNullException">Throw when transfer object is null.</exception>
+        /// <exception cref="ArgumentException">Thrown when transfer data is invalid.</exception>
         public int CreateRecord(RecordParametersTransfer transfer)
         {
             if (transfer is null)
             {
-                throw new ArgumentNullException(nameof(transfer), "Transfer must be not null.");
+                throw new ArgumentNullException(nameof(transfer), Configurator.GetConstantString("NullTransfer"));
             }
 
             if (!this.recordValidator.ValidateParameters(transfer.RecordSimulation()).Item1)
@@ -78,38 +101,38 @@ namespace FileCabinetApp
             }
 
             int id;
-            if (this.idDictionary.Count is 0)
+            if (this.dictionaryIdOffset.Count is 0)
             {
                 id = 1;
             }
             else
             {
-                id = this.idDictionary.Keys.Max() + 1;
+                id = this.dictionaryIdOffset.Keys.Max() + 1;
             }
 
-            this.FillDictionaries(transfer, id, this.currentOffset);
-            this.currentOffset += SizeOfShort;
+            this.dictionaryIdOffset.Add(id, this.currentOffset);
+            this.currentOffset += this.sizeOfShort;
             this.binaryWriter.Seek(this.currentOffset, 0);
             this.binaryWriter.Write(id);
-            this.currentOffset += SizeOfInt;
+            this.currentOffset += this.sizeOfInt;
             this.binaryWriter.Write(transfer.FirstName);
-            this.currentOffset += SizeOfString;
+            this.currentOffset += this.sizeOfString;
             this.binaryWriter.Seek(this.currentOffset, 0);
             this.binaryWriter.Write(transfer.LastName);
-            this.currentOffset += SizeOfString;
+            this.currentOffset += this.sizeOfString;
             this.binaryWriter.Seek(this.currentOffset, 0);
             this.binaryWriter.Write(transfer.DateOfBirth.Day);
-            this.currentOffset += SizeOfInt;
+            this.currentOffset += this.sizeOfInt;
             this.binaryWriter.Write(transfer.DateOfBirth.Month);
-            this.currentOffset += SizeOfInt;
+            this.currentOffset += this.sizeOfInt;
             this.binaryWriter.Write(transfer.DateOfBirth.Year);
-            this.currentOffset += SizeOfInt;
+            this.currentOffset += this.sizeOfInt;
             this.binaryWriter.Write(transfer.PatronymicLetter);
-            this.currentOffset += SizeOfChar;
+            this.currentOffset += this.sizeOfChar;
             this.binaryWriter.Write(transfer.Income);
-            this.currentOffset += SizeOfDecimal;
+            this.currentOffset += this.sizeOfDecimal;
             this.binaryWriter.Write(transfer.Height);
-            this.currentOffset += SizeOfShort;
+            this.currentOffset += this.sizeOfShort;
             return id;
         }
 
@@ -118,11 +141,13 @@ namespace FileCabinetApp
         /// </summary>
         /// <param name="record">Record to insert.</param>
         /// <returns>Id of inserted record.</returns>
+        /// <exception cref="ArgumentNullException">Thrown when record is null.</exception>
+        /// <exception cref="ArgumentException">Thrown when records data is invalid or when record with given id is already exists.</exception>
         public int Insert(FileCabinetRecord record)
         {
             if (record is null)
             {
-                throw new ArgumentNullException(nameof(record), "Record must be not null.");
+                throw new ArgumentNullException(nameof(record), Configurator.GetConstantString("NullRecord"));
             }
 
             if (!this.recordValidator.ValidateParameters(record).Item1)
@@ -130,80 +155,35 @@ namespace FileCabinetApp
                 throw new ArgumentException(this.recordValidator.ValidateParameters(record).Item2);
             }
 
-            if (this.idDictionary.Keys.Contains(record.Id))
+            if (this.dictionaryIdOffset.Keys.Contains(record.Id))
             {
-                throw new ArgumentException("Record with given id already exists.", nameof(record));
+                throw new ArgumentException(Configurator.GetConstantString("RecordIdExist"), nameof(record));
             }
 
-            this.FillDictionaries(record, this.currentOffset);
-            this.currentOffset += SizeOfShort;
+            this.dictionaryIdOffset.Add(record.Id, this.currentOffset);
+            this.currentOffset += this.sizeOfShort;
             this.binaryWriter.Seek(this.currentOffset, 0);
             this.binaryWriter.Write(record.Id);
-            this.currentOffset += SizeOfInt;
+            this.currentOffset += this.sizeOfInt;
             this.binaryWriter.Write(record.FirstName);
-            this.currentOffset += SizeOfString;
+            this.currentOffset += this.sizeOfString;
             this.binaryWriter.Seek(this.currentOffset, 0);
             this.binaryWriter.Write(record.LastName);
-            this.currentOffset += SizeOfString;
+            this.currentOffset += this.sizeOfString;
             this.binaryWriter.Seek(this.currentOffset, 0);
             this.binaryWriter.Write(record.DateOfBirth.Day);
-            this.currentOffset += SizeOfInt;
+            this.currentOffset += this.sizeOfInt;
             this.binaryWriter.Write(record.DateOfBirth.Month);
-            this.currentOffset += SizeOfInt;
+            this.currentOffset += this.sizeOfInt;
             this.binaryWriter.Write(record.DateOfBirth.Year);
-            this.currentOffset += SizeOfInt;
+            this.currentOffset += this.sizeOfInt;
             this.binaryWriter.Write(record.PatronymicLetter);
-            this.currentOffset += SizeOfChar;
+            this.currentOffset += this.sizeOfChar;
             this.binaryWriter.Write(record.Income);
-            this.currentOffset += SizeOfDecimal;
+            this.currentOffset += this.sizeOfDecimal;
             this.binaryWriter.Write(record.Height);
-            this.currentOffset += SizeOfShort;
+            this.currentOffset += this.sizeOfShort;
             return record.Id;
-        }
-
-        /// <summary>
-        /// Edits existing record.
-        /// </summary>
-        /// <param name="id">ID of a record to edit.</param>
-        /// <param name="transfer">Object to transfer new parameters to existing record.</param>
-        /// <exception cref="ArgumentNullException">Thrown when transfer parameters is null.</exception>
-        public void EditRecord(int id, RecordParametersTransfer transfer)
-        {
-            if (transfer is null)
-            {
-                throw new ArgumentNullException(nameof(transfer), "Transfer must be not null.");
-            }
-
-            if (!this.recordValidator.ValidateParameters(transfer.RecordSimulation()).Item1)
-            {
-                throw new ArgumentException(this.recordValidator.ValidateParameters(transfer.RecordSimulation()).Item2);
-            }
-
-            int tempOffset = this.idDictionary[id];
-            this.RemoveFromDictionaries(this.GetRecord(this.idDictionary[id]));
-            this.binaryWriter.Seek(tempOffset, 0);
-            if (this.binaryReader.ReadBoolean())
-            {
-                return;
-            }
-
-            this.FillDictionaries(transfer, id, tempOffset);
-            tempOffset += SizeOfShort;
-            this.binaryWriter.Seek(tempOffset, 0);
-            this.binaryWriter.Write(id);
-            tempOffset += SizeOfInt;
-            this.binaryWriter.Write(transfer.FirstName);
-            tempOffset += SizeOfString;
-            this.binaryWriter.Seek(tempOffset, 0);
-            this.binaryWriter.Write(transfer.LastName);
-            tempOffset += SizeOfString;
-            this.binaryWriter.Seek(tempOffset, 0);
-            this.binaryWriter.Write(transfer.DateOfBirth.Day);
-            this.binaryWriter.Write(transfer.DateOfBirth.Month);
-            this.binaryWriter.Write(transfer.DateOfBirth.Year);
-            this.binaryWriter.Write(transfer.PatronymicLetter);
-            this.binaryWriter.Write(transfer.Income);
-            this.binaryWriter.Write(transfer.Height);
         }
 
         /// <summary>
@@ -219,20 +199,20 @@ namespace FileCabinetApp
                 this.binaryReader.BaseStream.Seek(tempOffset, 0);
                 if (this.binaryReader.ReadBoolean())
                 {
-                    tempOffset += SizeOfRecord;
+                    tempOffset += this.sizeOfRecord;
                     continue;
                 }
 
                 FileCabinetRecord newRecord = new FileCabinetRecord();
-                tempOffset += SizeOfShort;
+                tempOffset += this.sizeOfShort;
                 this.binaryReader.BaseStream.Seek(tempOffset, 0);
                 newRecord.Id = this.binaryReader.ReadInt32();
-                tempOffset += SizeOfInt;
+                tempOffset += this.sizeOfInt;
                 newRecord.FirstName = this.binaryReader.ReadString();
-                this.binaryReader.BaseStream.Seek(tempOffset + SizeOfString, 0);
+                this.binaryReader.BaseStream.Seek(tempOffset + this.sizeOfString, 0);
                 newRecord.LastName = this.binaryReader.ReadString();
-                tempOffset += SizeOfString;
-                this.binaryReader.BaseStream.Seek(tempOffset + SizeOfString, 0);
+                tempOffset += this.sizeOfString;
+                this.binaryReader.BaseStream.Seek(tempOffset + this.sizeOfString, 0);
                 int day = this.binaryReader.ReadInt32();
                 int month = this.binaryReader.ReadInt32();
                 int year = this.binaryReader.ReadInt32();
@@ -264,13 +244,13 @@ namespace FileCabinetApp
                 this.binaryReader.BaseStream.Seek(tempOffset, 0);
                 if (this.binaryReader.ReadBoolean())
                 {
-                    tempOffset += SizeOfRecord;
+                    tempOffset += this.sizeOfRecord;
                     removedCounter++;
                     continue;
                 }
 
                 counter++;
-                tempOffset += SizeOfRecord;
+                tempOffset += this.sizeOfRecord;
             }
 
             return (counter, removedCounter);
@@ -282,10 +262,7 @@ namespace FileCabinetApp
         /// <returns>Snapshot of records.</returns>
         public FileCabinetServiceSnapshot MakeSnapshot()
         {
-            ReadOnlyCollection<FileCabinetRecord> records = this.GetRecords();
-            FileCabinetRecord[] fileCabinetRecordsArray = new FileCabinetRecord[records.Count];
-            records.CopyTo(fileCabinetRecordsArray, 0);
-            return new FileCabinetServiceSnapshot(fileCabinetRecordsArray);
+            return new FileCabinetServiceSnapshot(this.GetRecords().ToArray());
         }
 
         /// <summary>
@@ -302,115 +279,39 @@ namespace FileCabinetApp
         /// </summary>
         /// <param name="snapshot">Snapshot that represent statement to restore.</param>
         /// <returns>Amount of new records added.</returns>
+        /// <exception cref="ArgumentNullException">Thrown when snapshot is null.</exception>
         public int Restore(FileCabinetServiceSnapshot snapshot)
         {
             if (snapshot is null)
             {
-                throw new ArgumentNullException(nameof(snapshot), "Snapshot must be not null.");
+                throw new ArgumentNullException(nameof(snapshot), Configurator.GetConstantString("NullSnapshot"));
             }
 
-            List<FileCabinetRecord> resultRecords = new List<FileCabinetRecord>();
-            ReadOnlyCollection<FileCabinetRecord> importData = snapshot.GetRecords;
-            ReadOnlyCollection<FileCabinetRecord> source = this.GetRecords();
-
-            int sourceIndex = 0;
-            int importIndex = 0;
-
-            for (; sourceIndex < source.Count && importIndex < importData.Count;)
+            int count = 0;
+            foreach (FileCabinetRecord record in snapshot.GetRecords)
             {
-                if (source[sourceIndex].Id < importData[importIndex].Id)
+                var validationResult = this.recordValidator.ValidateParameters(record);
+                if (!validationResult.Item1)
                 {
-                    resultRecords.Add(source[sourceIndex]);
-                    sourceIndex++;
+                    Console.WriteLine($"Invalid values in #{record.Id} record. {validationResult.Item2}");
+                    continue;
                 }
-                else if (source[sourceIndex].Id == importData[importIndex].Id)
-                {
-                    try
-                    {
-                        RecordParametersTransfer transfer = new RecordParametersTransfer(
-                            importData[importIndex].FirstName,
-                            importData[importIndex].LastName,
-                            importData[importIndex].DateOfBirth,
-                            importData[importIndex].Height,
-                            importData[importIndex].Income,
-                            importData[importIndex].PatronymicLetter);
-                        if (!this.recordValidator.ValidateParameters(transfer.RecordSimulation()).Item1)
-                        {
-                            throw new ArgumentException(this.recordValidator.ValidateParameters(transfer.RecordSimulation()).Item2);
-                        }
 
-                        resultRecords.Add(importData[importIndex]);
-                        importIndex++;
-                        sourceIndex++;
-                    }
-                    catch (ArgumentException ex)
-                    {
-                        Console.WriteLine(string.Format(CultureInfo.InvariantCulture, "Wrong data in record #{0} : {1}", importData[importIndex].Id, ex.Message));
-                        importIndex++;
-                        sourceIndex++;
-                        continue;
-                    }
+                if (this.dictionaryIdOffset.ContainsKey(record.Id))
+                {
+                    this.WriteToFile(record, this.dictionaryIdOffset[record.Id]);
+                    count++;
                 }
                 else
                 {
-                    try
-                    {
-                        RecordParametersTransfer transfer = new RecordParametersTransfer(
-                            importData[importIndex].FirstName,
-                            importData[importIndex].LastName,
-                            importData[importIndex].DateOfBirth,
-                            importData[importIndex].Height,
-                            importData[importIndex].Income,
-                            importData[importIndex].PatronymicLetter);
-                        if (!this.recordValidator.ValidateParameters(transfer.RecordSimulation()).Item1)
-                        {
-                            throw new ArgumentException(this.recordValidator.ValidateParameters(transfer.RecordSimulation()).Item2);
-                        }
-
-                        resultRecords.Add(importData[importIndex]);
-                        importIndex++;
-                    }
-                    catch (ArgumentException ex)
-                    {
-                        Console.WriteLine(string.Format(CultureInfo.InvariantCulture, "Wrong data in record #{0} : {1}", importData[importIndex].Id, ex.Message));
-                        importIndex++;
-                        continue;
-                    }
+                    this.dictionaryIdOffset.Add(record.Id, this.currentOffset);
+                    this.WriteToFile(record, this.currentOffset);
+                    this.currentOffset += this.sizeOfRecord;
+                    count++;
                 }
             }
 
-            for (; importIndex < importData.Count; importIndex++)
-            {
-                try
-                {
-                    RecordParametersTransfer transfer = new RecordParametersTransfer(
-                        importData[importIndex].FirstName,
-                        importData[importIndex].LastName,
-                        importData[importIndex].DateOfBirth,
-                        importData[importIndex].Height,
-                        importData[importIndex].Income,
-                        importData[importIndex].PatronymicLetter);
-                    if (!this.recordValidator.ValidateParameters(transfer.RecordSimulation()).Item1)
-                    {
-                        throw new ArgumentException(this.recordValidator.ValidateParameters(transfer.RecordSimulation()).Item2);
-                    }
-
-                    resultRecords.Add(importData[importIndex]);
-                }
-                catch (ArgumentException ex)
-                {
-                    Console.WriteLine(string.Format(CultureInfo.InvariantCulture, "Wrong data in record #{0} : {1}", importData[importIndex].Id, ex.Message));
-                    continue;
-                }
-            }
-
-            for (; sourceIndex < source.Count; sourceIndex++)
-            {
-                resultRecords.Add(source[sourceIndex]);
-            }
-
-            this.WriteImportToFile(resultRecords);
-            return importIndex;
+            return count;
         }
 
         /// <summary>
@@ -427,11 +328,12 @@ namespace FileCabinetApp
         /// </summary>
         /// <param name="records">Records to delete.</param>
         /// <returns>IDs of deleted records.</returns>
+        /// <exception cref="ArgumentNullException">Thrown when recors is null.</exception>
         public IEnumerable<int> Delete(IEnumerable<FileCabinetRecord> records)
         {
             if (records is null)
             {
-                throw new ArgumentNullException(nameof(records), "Records must be not null.");
+                throw new ArgumentNullException(nameof(records), Configurator.GetConstantString("NullRecordsSequence"));
             }
 
             foreach (FileCabinetRecord record in records)
@@ -448,9 +350,9 @@ namespace FileCabinetApp
         /// <returns>Whether record existed or not.</returns>
         public bool Remove(int id)
         {
-            if (this.idDictionary.TryGetValue(id, out int tempOffset))
+            if (this.dictionaryIdOffset.TryGetValue(id, out int tempOffset))
             {
-                this.RemoveFromDictionaries(this.GetRecord(tempOffset));
+                this.dictionaryIdOffset.Remove(id);
                 this.binaryWriter.Seek(tempOffset, 0);
                 this.binaryWriter.Write(true);
                 return true;
@@ -474,7 +376,7 @@ namespace FileCabinetApp
                 if (this.binaryReader.ReadBoolean())
                 {
                     deletePosition = tempOffset;
-                    tempOffset += SizeOfRecord;
+                    tempOffset += this.sizeOfRecord;
                     while (tempOffset < this.binaryReader.BaseStream.Length)
                     {
                         this.binaryReader.BaseStream.Seek(tempOffset, 0);
@@ -488,7 +390,7 @@ namespace FileCabinetApp
                             break;
                         }
 
-                        tempOffset += SizeOfRecord;
+                        tempOffset += this.sizeOfRecord;
                     }
 
                     if (tempOffset >= this.binaryReader.BaseStream.Length)
@@ -498,10 +400,10 @@ namespace FileCabinetApp
                     }
                 }
 
-                tempOffset += SizeOfRecord;
+                tempOffset += this.sizeOfRecord;
             }
 
-            return (int)(initialLength - this.binaryReader.BaseStream.Length) / SizeOfRecord;
+            return (int)(initialLength - this.binaryReader.BaseStream.Length) / this.sizeOfRecord;
         }
 
         /// <summary>
@@ -510,22 +412,24 @@ namespace FileCabinetApp
         /// <param name="records">Records to update.</param>
         /// <param name="fieldsAndValuesToSet">Fields and values to set.</param>
         /// <returns>Amount of updated records.</returns>
+        /// <exception cref="ArgumentNullException">Thrown when records or fields and values to set is null.</exception>
+        /// <exception cref="ArgumentException">Thrown when data is invalid.</exception>
         public int Update(IEnumerable<FileCabinetRecord> records, IEnumerable<IEnumerable<string>> fieldsAndValuesToSet)
         {
             if (records is null)
             {
-                throw new ArgumentNullException(nameof(records), "Records must be not null.");
+                throw new ArgumentNullException(nameof(records), Configurator.GetConstantString("NullRecordsSequence"));
             }
 
             if (fieldsAndValuesToSet is null)
             {
-                throw new ArgumentNullException(nameof(fieldsAndValuesToSet), "Fields and values to set must be not null.");
+                throw new ArgumentNullException(nameof(fieldsAndValuesToSet), Configurator.GetConstantString("NullFieldsAndValues"));
             }
 
             int result = 0;
             foreach (var record in records)
             {
-                int tempOffset = this.idDictionary[record.Id];
+                int tempOffset = this.dictionaryIdOffset[record.Id];
                 FileCabinetRecord temp = new FileCabinetRecord()
                 {
                     Id = record.Id,
@@ -536,12 +440,10 @@ namespace FileCabinetApp
                     Income = record.Income,
                     PatronymicLetter = record.PatronymicLetter,
                 };
-                this.RemoveFromDictionaries(record);
                 try
                 {
                     this.UpdateRecord(record, fieldsAndValuesToSet);
-                    this.FillDictionaries(record, tempOffset);
-                    this.WriteToFile(record, this.idDictionary[record.Id]);
+                    this.WriteToFile(record, this.dictionaryIdOffset[record.Id]);
                     result++;
                 }
                 catch (ArgumentException ex)
@@ -553,8 +455,7 @@ namespace FileCabinetApp
                     record.Income = temp.Income;
                     record.Height = temp.Height;
                     record.PatronymicLetter = temp.PatronymicLetter;
-                    this.FillDictionaries(record, tempOffset);
-                    this.WriteToFile(record, this.idDictionary[record.Id]);
+                    this.WriteToFile(record, this.dictionaryIdOffset[record.Id]);
                     throw new ArgumentException(ex.Message);
                 }
             }
@@ -565,20 +466,19 @@ namespace FileCabinetApp
         /// <summary>
         /// Gets cache.
         /// </summary>
+        /// <param name="memoizationKey">Parameters of execution.</param>
         /// <returns>Cache.</returns>
-        public Dictionary<string, string> GetCache()
+        public string GetCache(string[] memoizationKey)
         {
-            return this.cache;
+            return null;
         }
 
         /// <summary>
         /// Saves condition and result of execution in cache.
         /// </summary>
-        /// <param name="parameters">Parameters of execution.</param>
-        /// <param name="result">Result of execution.</param>
-        public void SaveInCache(string parameters, string result)
+        /// <param name="memoization">Parameters and result of execution.</param>
+        public void SaveInCache(string[] memoization)
         {
-            this.cache.Add(parameters, result);
         }
 
         /// <summary>
@@ -586,7 +486,6 @@ namespace FileCabinetApp
         /// </summary>
         public void ClearCache()
         {
-            this.cache.Clear();
         }
 
         /// <summary>
@@ -611,7 +510,7 @@ namespace FileCabinetApp
                 var value = keyValuePair.Last();
                 if (key.Equals("id", StringComparison.InvariantCultureIgnoreCase))
                 {
-                    throw new ArgumentException("Can't update ID property.", nameof(fieldsAndValuesToSet));
+                    throw new ArgumentException(Configurator.GetConstantString("IdChange"), nameof(fieldsAndValuesToSet));
                 }
 
                 if (key.Equals("firstname", StringComparison.InvariantCultureIgnoreCase))
@@ -722,7 +621,7 @@ namespace FileCabinetApp
                     continue;
                 }
 
-                throw new ArgumentException("Key not exist.", nameof(fieldsAndValuesToSet));
+                throw new ArgumentException(Configurator.GetConstantString("KeyNotExist"), nameof(fieldsAndValuesToSet));
             }
         }
 
@@ -730,15 +629,15 @@ namespace FileCabinetApp
         {
             this.binaryWriter.Seek(offset, 0);
             this.binaryWriter.Write(false);
-            offset += SizeOfShort;
+            offset += this.sizeOfShort;
             this.binaryWriter.Seek(offset, 0);
             this.binaryWriter.Write(record.Id);
-            offset += SizeOfInt;
+            offset += this.sizeOfInt;
             this.binaryWriter.Write(record.FirstName);
-            offset += SizeOfString;
+            offset += this.sizeOfString;
             this.binaryWriter.Seek(offset, 0);
             this.binaryWriter.Write(record.LastName);
-            offset += SizeOfString;
+            offset += this.sizeOfString;
             this.binaryWriter.Seek(offset, 0);
             this.binaryWriter.Write(record.DateOfBirth.Day);
             this.binaryWriter.Write(record.DateOfBirth.Month);
@@ -748,51 +647,20 @@ namespace FileCabinetApp
             this.binaryWriter.Write(record.Height);
         }
 
-        private void WriteImportToFile(List<FileCabinetRecord> records)
-        {
-            this.binaryWriter.BaseStream.Seek(0, 0);
-            this.currentOffset = 0;
-            foreach (var record in records)
-            {
-                this.currentOffset += SizeOfShort;
-                this.binaryWriter.Seek(this.currentOffset, 0);
-                this.binaryWriter.Write(record.Id);
-                this.currentOffset += SizeOfInt;
-                this.binaryWriter.Write(record.FirstName);
-                this.currentOffset += SizeOfString;
-                this.binaryWriter.Seek(this.currentOffset, 0);
-                this.binaryWriter.Write(record.LastName);
-                this.currentOffset += SizeOfString;
-                this.binaryWriter.Seek(this.currentOffset, 0);
-                this.binaryWriter.Write(record.DateOfBirth.Day);
-                this.currentOffset += SizeOfInt;
-                this.binaryWriter.Write(record.DateOfBirth.Month);
-                this.currentOffset += SizeOfInt;
-                this.binaryWriter.Write(record.DateOfBirth.Year);
-                this.currentOffset += SizeOfInt;
-                this.binaryWriter.Write(record.PatronymicLetter);
-                this.currentOffset += SizeOfChar;
-                this.binaryWriter.Write(record.Income);
-                this.currentOffset += SizeOfDecimal;
-                this.binaryWriter.Write(record.Height);
-                this.currentOffset += SizeOfShort;
-            }
-        }
-
         private FileCabinetRecord GetRecord(int offset)
         {
-            int tempOffset = offset + SizeOfShort;
+            int tempOffset = offset + this.sizeOfShort;
             this.binaryReader.BaseStream.Seek(tempOffset, 0);
             FileCabinetRecord tempRecord = new FileCabinetRecord
             {
                 Id = this.binaryReader.ReadInt32(),
             };
-            tempOffset += SizeOfInt;
+            tempOffset += this.sizeOfInt;
             tempRecord.FirstName = this.binaryReader.ReadString();
-            this.binaryReader.BaseStream.Seek(tempOffset + SizeOfString, 0);
+            this.binaryReader.BaseStream.Seek(tempOffset + this.sizeOfString, 0);
             tempRecord.LastName = this.binaryReader.ReadString();
-            tempOffset += SizeOfString;
-            this.binaryReader.BaseStream.Seek(tempOffset + SizeOfString, 0);
+            tempOffset += this.sizeOfString;
+            this.binaryReader.BaseStream.Seek(tempOffset + this.sizeOfString, 0);
             int day = this.binaryReader.ReadInt32();
             int month = this.binaryReader.ReadInt32();
             int year = this.binaryReader.ReadInt32();
@@ -804,84 +672,6 @@ namespace FileCabinetApp
             tempRecord.Height = this.binaryReader.ReadInt16();
 
             return tempRecord;
-        }
-
-        private void FillDictionaries(RecordParametersTransfer transfer, int id, int offset)
-        {
-            if (this.firstNameDictionary.ContainsKey(transfer.FirstName))
-            {
-                this.firstNameDictionary[transfer.FirstName].Add(offset);
-            }
-            else
-            {
-                this.firstNameDictionary.Add(transfer.FirstName, new List<int>());
-                this.firstNameDictionary[transfer.FirstName].Add(offset);
-            }
-
-            if (this.lastNameDictionary.ContainsKey(transfer.LastName))
-            {
-                this.lastNameDictionary[transfer.LastName].Add(offset);
-            }
-            else
-            {
-                this.lastNameDictionary.Add(transfer.LastName, new List<int>());
-                this.lastNameDictionary[transfer.LastName].Add(offset);
-            }
-
-            if (this.dateOfBirthDictionary.ContainsKey(transfer.DateOfBirth))
-            {
-                this.dateOfBirthDictionary[transfer.DateOfBirth].Add(offset);
-            }
-            else
-            {
-                this.dateOfBirthDictionary.Add(transfer.DateOfBirth, new List<int>());
-                this.dateOfBirthDictionary[transfer.DateOfBirth].Add(offset);
-            }
-
-            this.idDictionary.Add(id, offset);
-        }
-
-        private void FillDictionaries(FileCabinetRecord record, int offset)
-        {
-            if (this.firstNameDictionary.ContainsKey(record.FirstName))
-            {
-                this.firstNameDictionary[record.FirstName].Add(offset);
-            }
-            else
-            {
-                this.firstNameDictionary.Add(record.FirstName, new List<int>());
-                this.firstNameDictionary[record.FirstName].Add(offset);
-            }
-
-            if (this.lastNameDictionary.ContainsKey(record.LastName))
-            {
-                this.lastNameDictionary[record.LastName].Add(offset);
-            }
-            else
-            {
-                this.lastNameDictionary.Add(record.LastName, new List<int>());
-                this.lastNameDictionary[record.LastName].Add(offset);
-            }
-
-            if (this.dateOfBirthDictionary.ContainsKey(record.DateOfBirth))
-            {
-                this.dateOfBirthDictionary[record.DateOfBirth].Add(offset);
-            }
-            else
-            {
-                this.dateOfBirthDictionary.Add(record.DateOfBirth, new List<int>());
-                this.dateOfBirthDictionary[record.DateOfBirth].Add(offset);
-            }
-
-            this.idDictionary.Add(record.Id, offset);
-        }
-
-        private void RemoveFromDictionaries(FileCabinetRecord record)
-        {
-            this.firstNameDictionary[record.FirstName].Remove(this.idDictionary[record.Id]);
-            this.lastNameDictionary[record.LastName].Remove(this.idDictionary[record.Id]);
-            this.dateOfBirthDictionary[record.DateOfBirth].Remove(this.idDictionary[record.Id]);
-            this.idDictionary.Remove(record.Id);
         }
     }
 }
