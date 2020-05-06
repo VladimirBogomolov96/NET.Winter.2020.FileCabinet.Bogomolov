@@ -304,7 +304,7 @@ namespace FileCabinetGenerator
                     LastName = GetRandomString(alphabet, random.Next(minLastNameLength, maxLastNameLength), random),
                     DateOfBirth = GetRandomDate(fromDateOfBirth, toDateOfBirth, random),
                     PatronymicLetter = (char)random.Next((int)minPatronymicLetter, (int)maxPatronymicLetter),
-                    Income = random.Next((int)minIncome, (int)maxIncome),
+                    Income = random.Next((int)minIncome, (int)maxIncome - 1) + (((decimal)random.Next(0, 100)) / 100),
                     Height = (short)random.Next(minHeight, maxHeight),
                 };
             }
