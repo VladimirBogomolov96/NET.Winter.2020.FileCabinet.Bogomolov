@@ -36,7 +36,7 @@ namespace FileCabinetApp.Validators
 
             if (record.Height < this.minHeight || record.Height > this.maxHeight)
             {
-                return new Tuple<bool, string>(false, "Wrong height");
+                return new Tuple<bool, string>(false, $"Invalid height. Height must be form {this.minHeight} to {this.maxHeight}.");
             }
 
             return new Tuple<bool, string>(true, null);

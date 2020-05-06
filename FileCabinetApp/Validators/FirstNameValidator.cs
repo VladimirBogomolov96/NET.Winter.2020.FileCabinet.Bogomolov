@@ -36,7 +36,7 @@ namespace FileCabinetApp.Validators
 
             if (record.FirstName is null || record.FirstName.Length < this.minLength || record.FirstName.Length > this.maxLength || record.FirstName.Trim().Length is 0)
             {
-                return new Tuple<bool, string>(false, "Wrong first name.");
+                return new Tuple<bool, string>(false, $"Invalid first name. First name length must be from {this.minLength} to {this.maxLength}.");
             }
 
             return new Tuple<bool, string>(true, null);

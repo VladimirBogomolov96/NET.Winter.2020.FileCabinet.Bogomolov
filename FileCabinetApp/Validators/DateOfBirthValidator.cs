@@ -36,7 +36,7 @@ namespace FileCabinetApp.Validators
 
             if (record.DateOfBirth < this.from || record.DateOfBirth > this.to)
             {
-                return new Tuple<bool, string>(false, "Wrong date of birth.");
+                return new Tuple<bool, string>(false, $"Invalid date of birth. Date of birth must be from {this.from.Month}/{this.from.Day}/{this.from.Year} to {this.to.Month}/{this.to.Day}/{this.to.Year}.");
             }
 
             return new Tuple<bool, string>(true, null);
