@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Reflection;
+using System.Runtime.CompilerServices;
 using System.Text;
 
 namespace FileCabinetApp.CommandHandlers
@@ -50,7 +52,16 @@ namespace FileCabinetApp.CommandHandlers
                     }
                     else
                     {
-                        string result = this.Select(commandRequest.Parameters);
+                        string result = null;
+                        if (string.IsNullOrEmpty(commandRequest.Parameters.Trim()))
+                        {
+                            result = this.SelectAll();
+                        }
+                        else
+                        {
+                            result = this.Select(commandRequest.Parameters);
+                        }
+
                         memoization[8] = result;
                         this.Service.SaveInCache(memoization);
                         Console.WriteLine(result);
@@ -267,7 +278,17 @@ namespace FileCabinetApp.CommandHandlers
                 maxLength = property.Name.Length;
                 foreach (var record in records)
                 {
-                    if ((newMaxLength = property.GetValue(record).ToString().Length) > maxLength)
+                    var value = property.GetValue(record);
+                    if (value is DateTime temp)
+                    {
+                        newMaxLength = string.Format(CultureInfo.InvariantCulture, "{0}/{1}/{2}", temp.Month, temp.Day, temp.Year).Length;
+                    }
+                    else
+                    {
+                        newMaxLength = value.ToString().Length;
+                    }
+
+                    if (newMaxLength > maxLength)
                     {
                         maxLength = newMaxLength;
                     }
@@ -314,11 +335,19 @@ namespace FileCabinetApp.CommandHandlers
             int[] lengthsArr = lengths.ToArray();
             int counter = 0;
             int diff;
-            string valueStr;
             foreach (var property in propertyInfos)
             {
                 var value = property.GetValue(record);
-                valueStr = value.ToString();
+                string valueStr;
+                if (value is DateTime temp)
+                {
+                    valueStr = string.Format(CultureInfo.InvariantCulture, "{0}/{1}/{2}", temp.Month, temp.Day, temp.Year);
+                }
+                else
+                {
+                    valueStr = value.ToString();
+                }
+
                 if (valueStr.Length == lengthsArr[counter])
                 {
                     result.Append('|' + valueStr + '|');
@@ -483,6 +512,18 @@ namespace FileCabinetApp.CommandHandlers
             return CreateTable(recordsToShow, fieldsToShow);
         }
 
+        private string SelectAll()
+        {
+            IEnumerable<FileCabinetRecord> recordsToShow = this.Service.GetRecords();
+            List<string> fieldsToShow = new List<string>(7);
+            foreach (PropertyInfo info in typeof(FileCabinetRecord).GetProperties())
+            {
+                fieldsToShow.Add(info.Name);
+            }
+
+            return CreateTable(recordsToShow, fieldsToShow);
+        }
+
         private IEnumerable<FileCabinetRecord> SelectAnd(List<int> searchRecordId, List<string> searchRecordFirstName, List<string> searchRecordLastName, List<DateTime> searchRecordDateOfBirth, List<char> searchRecordPatronymicLetter, List<decimal> searchRecordIncome, List<short> searchRecordHeight)
         {
             List<FileCabinetRecord> records = new List<FileCabinetRecord>(this.Service.GetRecords());
@@ -590,6 +631,12 @@ namespace FileCabinetApp.CommandHandlers
         private string[] GetMemoizationKey(string parameters)
         {
             string[] result = new string[9];
+            if (string.IsNullOrEmpty(parameters.Trim()))
+            {
+                result[0] = string.Empty;
+                return result;
+            }
+
             var temp = parameters.Split("where");
             StringBuilder sb = new StringBuilder();
             foreach (string str in temp[0].Split(','))
