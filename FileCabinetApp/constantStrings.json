@@ -22,6 +22,7 @@
 	"WrongValuesAmount": "Wrong amount of values.",
 	"WrongFieldsAmount": "Wrong amount of fields.",
 	"InvalidCommand": "Invalid command.",
+	"InvalidFile": "Invalid file.",
 	"InvalidInput": "Invalid input data. Fix your input.",
 	"2SearchConditions": "Must be at least 2 search conditions.",
 	"OneParamToOneProp": "Set one parameter to find to one property.",

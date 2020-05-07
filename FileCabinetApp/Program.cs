@@ -98,6 +98,22 @@ namespace FileCabinetApp
                 Environment.Exit(-1);
             }
 
+            if (fileCabinetService is FileCabinetFilesystemService)
+            {
+                try
+                {
+                    fileCabinetService.Restore(fileCabinetService.MakeSnapshot());
+                }
+#pragma warning disable CA1031 // Do not catch general exception types
+                catch (Exception)
+#pragma warning restore CA1031 // Do not catch general exception types
+                {
+                    Console.WriteLine(Configurator.GetConstantString("InvalidFile"));
+                    Console.WriteLine(Configurator.GetConstantString("ClosingProgram"));
+                    Environment.Exit(-1);
+                }
+            }
+
             if (options.Logger)
             {
                 SetLogger();
@@ -117,7 +133,7 @@ namespace FileCabinetApp
 
         private static void SetFileService()
         {
-            FileStream fileStream = new FileStream("cabinet-records.db", FileMode.Create, FileAccess.ReadWrite);
+            FileStream fileStream = new FileStream("cabinet-records.db", FileMode.OpenOrCreate, FileAccess.ReadWrite);
             fileCabinetService = new FileCabinetFilesystemService(fileStream);
             Console.WriteLine(Configurator.GetConstantString("UseFile"));
         }
