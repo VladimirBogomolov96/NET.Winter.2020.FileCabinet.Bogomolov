@@ -44,6 +44,7 @@ namespace FileCabinetApp.Validators
                 var result = validator.ValidateParameters(record);
                 if (result.Item1 is false)
                 {
+                    Console.WriteLine(result.Item2);
                     return new Tuple<bool, string>(false, result.Item2);
                 }
             }

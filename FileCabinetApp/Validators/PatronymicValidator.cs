@@ -36,7 +36,7 @@ namespace FileCabinetApp.Validators
 
             if (record.PatronymicLetter < this.from || record.PatronymicLetter > this.to)
             {
-                return new Tuple<bool, string>(false, "Wrong patronymic letter.");
+                return new Tuple<bool, string>(false, $"Invalid patronymic letter. Patronymic letter must be from {this.from} to {this.to}.");
             }
 
             return new Tuple<bool, string>(true, null);

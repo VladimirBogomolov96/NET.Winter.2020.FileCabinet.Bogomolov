@@ -95,9 +95,10 @@ namespace FileCabinetApp
                 throw new ArgumentNullException(nameof(transfer), Configurator.GetConstantString("NullTransfer"));
             }
 
-            if (!this.recordValidator.ValidateParameters(transfer.RecordSimulation()).Item1)
+            var validationResult = this.recordValidator.ValidateParameters(transfer.RecordSimulation());
+            if (!validationResult.Item1)
             {
-                throw new ArgumentException(this.recordValidator.ValidateParameters(transfer.RecordSimulation()).Item2);
+                throw new ArgumentException(validationResult.Item2);
             }
 
             int id;
@@ -150,9 +151,10 @@ namespace FileCabinetApp
                 throw new ArgumentNullException(nameof(record), Configurator.GetConstantString("NullRecord"));
             }
 
-            if (!this.recordValidator.ValidateParameters(record).Item1)
+            var validationResult = this.recordValidator.ValidateParameters(record);
+            if (!validationResult.Item1)
             {
-                throw new ArgumentException(this.recordValidator.ValidateParameters(record).Item2);
+                throw new ArgumentException(validationResult.Item2);
             }
 
             if (this.dictionaryIdOffset.Keys.Contains(record.Id))

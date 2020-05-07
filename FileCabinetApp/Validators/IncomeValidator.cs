@@ -36,7 +36,7 @@ namespace FileCabinetApp.Validators
 
             if (record.Income < this.from || record.Income > this.to)
             {
-                return new Tuple<bool, string>(false, "Wrong income.");
+                return new Tuple<bool, string>(false, $"Invalid income. Income must be from {this.from} to {this.to}.");
             }
 
             return new Tuple<bool, string>(true, null);
