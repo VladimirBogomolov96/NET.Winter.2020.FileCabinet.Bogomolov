@@ -43,7 +43,7 @@ namespace FileCabinetApp
                         FirstName = fields[1],
                         LastName = fields[3],
                         DateOfBirth = DateTime.Parse(fields[4], CultureInfo.InvariantCulture),
-                        PatronymicLetter = char.Parse(fields[2]),
+                        PatronymicLetter = char.Parse(fields[2].ToUpperInvariant()),
                         Income = decimal.Parse(fields[6], CultureInfo.InvariantCulture),
                         Height = short.Parse(fields[5].Split('.')[0], CultureInfo.InvariantCulture),
                     };

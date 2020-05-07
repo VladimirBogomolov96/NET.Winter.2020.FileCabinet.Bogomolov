@@ -69,7 +69,12 @@ namespace FileCabinetApp
         /// <returns>Whether convertion was succesfull, reason of fail and result.</returns>
         public static Tuple<bool, string, char> ConvertStringToChar(string input)
         {
-            bool isConverted = char.TryParse(input, out char patronymicLetter);
+            if (input is null)
+            {
+                return new Tuple<bool, string, char>(false, "Char must be a single Unicode symbol", char.MinValue);
+            }
+
+            bool isConverted = char.TryParse(input.ToUpperInvariant(), out char patronymicLetter);
             if (isConverted)
             {
                 return new Tuple<bool, string, char>(isConverted, string.Empty, patronymicLetter);

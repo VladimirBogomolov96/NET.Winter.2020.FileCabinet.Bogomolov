@@ -48,7 +48,7 @@ namespace FileCabinetApp
                         Id = xmlModel.Id,
                         FirstName = xmlModel.Name.FirstName,
                         LastName = xmlModel.Name.LastName,
-                        PatronymicLetter = xmlModel.PatronymicLetter[0],
+                        PatronymicLetter = xmlModel.PatronymicLetter.ToUpperInvariant()[0],
                         Income = xmlModel.Income,
                         Height = xmlModel.Height,
                         DateOfBirth = DateTime.ParseExact(xmlModel.DateOfBirth, "dd/MM/yyyy", CultureInfo.InvariantCulture),
