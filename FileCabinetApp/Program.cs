@@ -30,17 +30,17 @@ namespace FileCabinetApp
             do
             {
                 Console.Write(Configurator.GetConstantString("CommandStartChar"));
-                var inputs = Console.ReadLine().Split(' ', 2);
+                var inputs = Console.ReadLine().Trim().Split(' ', 2);
                 const int commandIndex = 0;
                 const int argumentIndex = 1;
-                var command = inputs[commandIndex];
+                var command = inputs[commandIndex].Trim();
                 if (string.IsNullOrEmpty(command))
                 {
                     Console.WriteLine(Configurator.GetConstantString("HintMessage"));
                     continue;
                 }
 
-                var parameters = inputs.Length > 1 ? inputs[argumentIndex] : string.Empty;
+                var parameters = inputs.Length > 1 ? inputs[argumentIndex].Trim() : string.Empty;
                 commands.Handle(new AppCommandRequest(command, parameters));
             }
             while (isRunning);
