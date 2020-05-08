@@ -38,7 +38,7 @@ namespace FileCabinetApp.CommandHandlers
                 return;
             }
 
-            if (commandRequest.Command.Equals("delete", StringComparison.InvariantCultureIgnoreCase))
+            if (commandRequest.Command.Equals(Configurator.GetConstantString("CommandDelete"), StringComparison.InvariantCultureIgnoreCase))
             {
                 try
                 {
@@ -79,13 +79,13 @@ namespace FileCabinetApp.CommandHandlers
                 throw new ArgumentNullException(nameof(parameters), Configurator.GetConstantString("NullParameters"));
             }
 
-            var temp = parameters.Split("where");
+            var temp = parameters.Split(Configurator.GetConstantString("Where"));
             if (temp.Length != 2)
             {
                 throw new ArgumentException(Configurator.GetConstantString("InvalidInput"), nameof(parameters));
             }
 
-            var arguments = temp[1].Split('=');
+            var arguments = temp[1].Split(Configurator.GetConstantString("EqualityChar"));
             if (arguments.Length != 2)
             {
                 throw new ArgumentException(Configurator.GetConstantString("InvalidInput"), nameof(parameters));
@@ -99,7 +99,7 @@ namespace FileCabinetApp.CommandHandlers
             const int fieldIndex = 0;
             const int valueIndex = 1;
             List<FileCabinetRecord> result = new List<FileCabinetRecord>();
-            if (arguments[fieldIndex].Equals("id", StringComparison.InvariantCultureIgnoreCase))
+            if (arguments[fieldIndex].Equals(Configurator.GetConstantString("ParameterId"), StringComparison.InvariantCultureIgnoreCase))
             {
                 if (int.TryParse(arguments[valueIndex], out int id))
                 {
@@ -116,7 +116,7 @@ namespace FileCabinetApp.CommandHandlers
                     throw new ArgumentException(Configurator.GetConstantString("CantParseParam"), nameof(parameters));
                 }
             }
-            else if (arguments[fieldIndex].Equals("firstname", StringComparison.InvariantCultureIgnoreCase))
+            else if (arguments[fieldIndex].Equals(Configurator.GetConstantString("ParameterFirstName"), StringComparison.InvariantCultureIgnoreCase))
             {
                 foreach (var record in this.Service.GetRecords())
                 {
@@ -126,7 +126,7 @@ namespace FileCabinetApp.CommandHandlers
                     }
                 }
             }
-            else if (arguments[fieldIndex].Equals("lastname", StringComparison.InvariantCultureIgnoreCase))
+            else if (arguments[fieldIndex].Equals(Configurator.GetConstantString("ParameterLastName"), StringComparison.InvariantCultureIgnoreCase))
             {
                 foreach (var record in this.Service.GetRecords())
                 {
@@ -136,9 +136,9 @@ namespace FileCabinetApp.CommandHandlers
                     }
                 }
             }
-            else if (arguments[fieldIndex].Equals("dateofbirth", StringComparison.InvariantCultureIgnoreCase))
+            else if (arguments[fieldIndex].Equals(Configurator.GetConstantString("ParameterDateOfBirth"), StringComparison.InvariantCultureIgnoreCase))
             {
-                if (DateTime.TryParseExact(arguments[valueIndex], "MM/dd/yyyy", CultureInfo.InvariantCulture, DateTimeStyles.None, out DateTime dateOfBirth))
+                if (DateTime.TryParseExact(arguments[valueIndex], Configurator.GetConstantString("DateFormatMD"), CultureInfo.InvariantCulture, DateTimeStyles.None, out DateTime dateOfBirth))
                 {
                     foreach (var record in this.Service.GetRecords())
                     {
@@ -153,7 +153,7 @@ namespace FileCabinetApp.CommandHandlers
                     throw new ArgumentException(Configurator.GetConstantString("CantParseParam"), nameof(parameters));
                 }
             }
-            else if (arguments[fieldIndex].Equals("height", StringComparison.InvariantCultureIgnoreCase))
+            else if (arguments[fieldIndex].Equals(Configurator.GetConstantString("ParameterHeight"), StringComparison.InvariantCultureIgnoreCase))
             {
                 if (short.TryParse(arguments[valueIndex], out short height))
                 {
@@ -170,7 +170,7 @@ namespace FileCabinetApp.CommandHandlers
                     throw new ArgumentException(Configurator.GetConstantString("CantParseParam"), nameof(parameters));
                 }
             }
-            else if (arguments[fieldIndex].Equals("income", StringComparison.InvariantCultureIgnoreCase))
+            else if (arguments[fieldIndex].Equals(Configurator.GetConstantString("ParameterIncome"), StringComparison.InvariantCultureIgnoreCase))
             {
                 if (decimal.TryParse(arguments[valueIndex], out decimal income))
                 {
@@ -187,7 +187,7 @@ namespace FileCabinetApp.CommandHandlers
                     throw new ArgumentException(Configurator.GetConstantString("CantParseParam"), nameof(parameters));
                 }
             }
-            else if (arguments[fieldIndex].Equals("patronymicletter", StringComparison.InvariantCultureIgnoreCase))
+            else if (arguments[fieldIndex].Equals(Configurator.GetConstantString("ParameterPatronymicLetter"), StringComparison.InvariantCultureIgnoreCase))
             {
                 if (char.TryParse(arguments[valueIndex], out char patronymicLetter))
                 {

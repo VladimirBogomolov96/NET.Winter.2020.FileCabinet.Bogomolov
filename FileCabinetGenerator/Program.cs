@@ -283,8 +283,8 @@ namespace FileCabinetGenerator
             int maxFirstNameLength = int.Parse(validationRules.GetSection("default").GetSection("firstName").GetSection("maxLength").Value, CultureInfo.InvariantCulture);
             int minLastNameLength = int.Parse(validationRules.GetSection("default").GetSection("lastName").GetSection("minLength").Value, CultureInfo.InvariantCulture);
             int maxLastNameLength = int.Parse(validationRules.GetSection("default").GetSection("lastName").GetSection("maxLength").Value, CultureInfo.InvariantCulture);
-            DateTime fromDateOfBirth = DateTime.ParseExact(validationRules.GetSection("default").GetSection("dateOfBirth").GetSection("from").Value, Configurator.GetConstantString("DateFormat"), CultureInfo.InvariantCulture);
-            DateTime toDateOfBirth = DateTime.ParseExact(validationRules.GetSection("default").GetSection("dateOfBirth").GetSection("to").Value, Configurator.GetConstantString("DateFormat"), CultureInfo.InvariantCulture);
+            DateTime fromDateOfBirth = DateTime.ParseExact(validationRules.GetSection("default").GetSection("dateOfBirth").GetSection("from").Value, Configurator.GetConstantString("DateFormatDM"), CultureInfo.InvariantCulture);
+            DateTime toDateOfBirth = DateTime.ParseExact(validationRules.GetSection("default").GetSection("dateOfBirth").GetSection("to").Value, Configurator.GetConstantString("DateFormatDM"), CultureInfo.InvariantCulture);
             char minPatronymicLetter = char.Parse(validationRules.GetSection("default").GetSection("patronymicLetter").GetSection("from").Value);
             char maxPatronymicLetter = char.Parse(validationRules.GetSection("default").GetSection("patronymicLetter").GetSection("to").Value);
             decimal minIncome = decimal.Parse(validationRules.GetSection("default").GetSection("income").GetSection("from").Value, CultureInfo.InvariantCulture);

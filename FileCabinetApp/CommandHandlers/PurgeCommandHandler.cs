@@ -34,7 +34,7 @@ namespace FileCabinetApp.CommandHandlers
                 return;
             }
 
-            if (commandRequest.Command.Equals("purge", StringComparison.InvariantCultureIgnoreCase))
+            if (commandRequest.Command.Equals(Configurator.GetConstantString("CommandPurge"), StringComparison.InvariantCultureIgnoreCase))
             {
                 this.Purge();
             }

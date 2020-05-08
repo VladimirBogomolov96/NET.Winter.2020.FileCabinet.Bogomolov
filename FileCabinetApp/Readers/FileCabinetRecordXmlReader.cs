@@ -51,7 +51,7 @@ namespace FileCabinetApp
                         PatronymicLetter = xmlModel.PatronymicLetter.ToUpperInvariant()[0],
                         Income = xmlModel.Income,
                         Height = xmlModel.Height,
-                        DateOfBirth = DateTime.ParseExact(xmlModel.DateOfBirth, "dd/MM/yyyy", CultureInfo.InvariantCulture),
+                        DateOfBirth = DateTime.ParseExact(xmlModel.DateOfBirth, Configurator.GetConstantString("DateFormatDM"), CultureInfo.InvariantCulture),
                     };
                     list.Add(record);
                 }

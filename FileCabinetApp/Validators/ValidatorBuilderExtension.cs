@@ -38,7 +38,7 @@ namespace FileCabinetApp.Validators
                 var height = configuration.GetSection("height");
                 var result = validatorBuilder.ValidateFirstName(Convert.ToInt32(firstName.GetSection("minLength").Value, CultureInfo.InvariantCulture), Convert.ToInt32(firstName.GetSection("maxLength").Value, CultureInfo.InvariantCulture))
                    .ValidateLastName(Convert.ToInt32(lastName.GetSection("minLength").Value, CultureInfo.InvariantCulture), Convert.ToInt32(lastName.GetSection("maxLength").Value, CultureInfo.InvariantCulture))
-                   .ValidateDateOfBirth(DateTime.ParseExact(date.GetSection("from").Value, "dd/MM/yyyy", CultureInfo.InvariantCulture), DateTime.ParseExact(date.GetSection("to").Value, "dd/MM/yyyy", CultureInfo.InvariantCulture))
+                   .ValidateDateOfBirth(DateTime.ParseExact(date.GetSection("from").Value, Configurator.GetConstantString("DateFormatDM"), CultureInfo.InvariantCulture), DateTime.ParseExact(date.GetSection("to").Value, Configurator.GetConstantString("DateFormatDM"), CultureInfo.InvariantCulture))
                    .ValidatePatronymic(Convert.ToChar(patronymicLetter.GetSection("from").Value, CultureInfo.InvariantCulture), Convert.ToChar(patronymicLetter.GetSection("to").Value, CultureInfo.InvariantCulture))
                    .ValidateIncome(Convert.ToDecimal(income.GetSection("from").Value, CultureInfo.InvariantCulture), Convert.ToDecimal(income.GetSection("to").Value, CultureInfo.InvariantCulture))
                    .ValidateHeight(Convert.ToInt16(height.GetSection("min").Value, CultureInfo.InvariantCulture), Convert.ToInt16(height.GetSection("max").Value, CultureInfo.InvariantCulture))

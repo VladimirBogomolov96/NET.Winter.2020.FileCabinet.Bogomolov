@@ -38,7 +38,7 @@ namespace FileCabinetApp.CommandHandlers
                 return;
             }
 
-            if (commandRequest.Command.Equals("export", StringComparison.InvariantCultureIgnoreCase))
+            if (commandRequest.Command.Equals(Configurator.GetConstantString("CommandExport"), StringComparison.InvariantCultureIgnoreCase))
             {
                 this.Export(commandRequest.Parameters);
             }
@@ -66,7 +66,7 @@ namespace FileCabinetApp.CommandHandlers
             {
                 Console.WriteLine($"File is exist - rewrite {parametersArr[filePathIndex]}? [Y/n]");
                 string answer = Console.ReadLine();
-                if (answer.Equals("y", StringComparison.OrdinalIgnoreCase))
+                if (answer.Equals(Configurator.GetConstantString("PositiveAnswer"), StringComparison.OrdinalIgnoreCase))
                 {
                     File.Delete(parametersArr[filePathIndex]);
                 }
@@ -77,12 +77,12 @@ namespace FileCabinetApp.CommandHandlers
             }
 
             FileCabinetServiceSnapshot snapshot = this.Service.MakeSnapshot();
-            if (parametersArr[exportTypeIndex].Equals("csv", StringComparison.OrdinalIgnoreCase))
+            if (parametersArr[exportTypeIndex].Equals(Configurator.GetConstantString("CsvType"), StringComparison.OrdinalIgnoreCase))
             {
                 try
                 {
                     using StreamWriter streamWriter = new StreamWriter(parametersArr[filePathIndex]);
-                    streamWriter.WriteLine("ID,First Name,Patronymic,Last Name,Date Of Birth,Height,Income");
+                    streamWriter.WriteLine(Configurator.GetConstantString("CsvHeader"));
                     snapshot.SaveToCsv(streamWriter);
                     Console.WriteLine($"All records are exported to file {parametersArr[filePathIndex]}");
                 }
@@ -91,7 +91,7 @@ namespace FileCabinetApp.CommandHandlers
                     Console.WriteLine(Configurator.GetConstantString("DirectoryNotExist"));
                 }
             }
-            else if (parametersArr[exportTypeIndex].Equals("xml", StringComparison.OrdinalIgnoreCase))
+            else if (parametersArr[exportTypeIndex].Equals(Configurator.GetConstantString("XmlType"), StringComparison.OrdinalIgnoreCase))
             {
                 XmlWriterSettings settings = new XmlWriterSettings
                 {

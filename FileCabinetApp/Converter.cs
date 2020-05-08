@@ -15,14 +15,14 @@ namespace FileCabinetApp
         /// <returns>Whether convertion was succesfull, reason of fail and result.</returns>
         public static Tuple<bool, string, DateTime> ConvertStringToDateTime(string input)
         {
-            bool isConverted = DateTime.TryParseExact(input, "MM/dd/yyyy", CultureInfo.InvariantCulture, DateTimeStyles.None, out DateTime dateOfBirth);
+            bool isConverted = DateTime.TryParseExact(input, Configurator.GetConstantString("DateFormatMD"), CultureInfo.InvariantCulture, DateTimeStyles.None, out DateTime dateOfBirth);
             if (isConverted)
             {
                 return new Tuple<bool, string, DateTime>(isConverted, string.Empty, dateOfBirth);
             }
             else
             {
-                return new Tuple<bool, string, DateTime>(isConverted, "DateTime must be in format MM/dd/yyyy", DateTime.MinValue);
+                return new Tuple<bool, string, DateTime>(isConverted, Configurator.GetConstantString("InvalidDate"), DateTime.MinValue);
             }
         }
 
@@ -40,7 +40,7 @@ namespace FileCabinetApp
             }
             else
             {
-                return new Tuple<bool, string, short>(isConverted, "Short must be from -32768 to 32767", short.MinValue);
+                return new Tuple<bool, string, short>(isConverted, Configurator.GetConstantString("InvalidShort"), short.MinValue);
             }
         }
 
@@ -58,7 +58,7 @@ namespace FileCabinetApp
             }
             else
             {
-                return new Tuple<bool, string, decimal>(isConverted, "Decimal must be from (+/-)1.0*10^-28 to (+/-)7.9228*10^28", decimal.MinValue);
+                return new Tuple<bool, string, decimal>(isConverted, Configurator.GetConstantString("InvalidDecimal"), decimal.MinValue);
             }
         }
 
@@ -71,7 +71,7 @@ namespace FileCabinetApp
         {
             if (input is null)
             {
-                return new Tuple<bool, string, char>(false, "Char must be a single Unicode symbol", char.MinValue);
+                return new Tuple<bool, string, char>(false, Configurator.GetConstantString("InvalidChar"), char.MinValue);
             }
 
             bool isConverted = char.TryParse(input.ToUpperInvariant(), out char patronymicLetter);
@@ -81,7 +81,7 @@ namespace FileCabinetApp
             }
             else
             {
-                return new Tuple<bool, string, char>(isConverted, "Char must be a single Unicode symbol", char.MinValue);
+                return new Tuple<bool, string, char>(isConverted, Configurator.GetConstantString("InvalidChar"), char.MinValue);
             }
         }
 
@@ -99,7 +99,7 @@ namespace FileCabinetApp
             }
             else
             {
-                return new Tuple<bool, string, int>(isConverted, "Int must be from -2147483648 to 2147483647.", int.MinValue);
+                return new Tuple<bool, string, int>(isConverted, Configurator.GetConstantString("InvalidInt"), int.MinValue);
             }
         }
 

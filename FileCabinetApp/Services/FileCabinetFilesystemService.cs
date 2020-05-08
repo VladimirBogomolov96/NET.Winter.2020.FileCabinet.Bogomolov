@@ -510,12 +510,12 @@ namespace FileCabinetApp
             {
                 var key = keyValuePair.First();
                 var value = keyValuePair.Last();
-                if (key.Equals("id", StringComparison.InvariantCultureIgnoreCase))
+                if (key.Equals(Configurator.GetConstantString("ParameterId"), StringComparison.InvariantCultureIgnoreCase))
                 {
                     throw new ArgumentException(Configurator.GetConstantString("IdChange"), nameof(fieldsAndValuesToSet));
                 }
 
-                if (key.Equals("firstname", StringComparison.InvariantCultureIgnoreCase))
+                if (key.Equals(Configurator.GetConstantString("ParameterFirstName"), StringComparison.InvariantCultureIgnoreCase))
                 {
                     var legacy = record.FirstName;
                     record.FirstName = value;
@@ -529,7 +529,7 @@ namespace FileCabinetApp
                     continue;
                 }
 
-                if (key.Equals("lastname", StringComparison.InvariantCultureIgnoreCase))
+                if (key.Equals(Configurator.GetConstantString("ParameterLastName"), StringComparison.InvariantCultureIgnoreCase))
                 {
                     var legacy = record.LastName;
                     record.LastName = value;
@@ -543,7 +543,7 @@ namespace FileCabinetApp
                     continue;
                 }
 
-                if (key.Equals("dateofbirth", StringComparison.InvariantCultureIgnoreCase))
+                if (key.Equals(Configurator.GetConstantString("ParameterDateOfBirth"), StringComparison.InvariantCultureIgnoreCase))
                 {
                     var conversionResult = Converter.ConvertStringToDateTime(value);
                     if (!conversionResult.Item1)
@@ -563,7 +563,7 @@ namespace FileCabinetApp
                     continue;
                 }
 
-                if (key.Equals("patronymicletter", StringComparison.InvariantCultureIgnoreCase))
+                if (key.Equals(Configurator.GetConstantString("ParameterPatronymicLetter"), StringComparison.InvariantCultureIgnoreCase))
                 {
                     var conversionResult = Converter.ConvertStringToChar(value);
                     if (!conversionResult.Item1)
@@ -583,7 +583,7 @@ namespace FileCabinetApp
                     continue;
                 }
 
-                if (key.Equals("income", StringComparison.InvariantCultureIgnoreCase))
+                if (key.Equals(Configurator.GetConstantString("ParameterIncome"), StringComparison.InvariantCultureIgnoreCase))
                 {
                     var conversionResult = Converter.ConvertStringToDecimal(value);
                     if (!conversionResult.Item1)
@@ -603,7 +603,7 @@ namespace FileCabinetApp
                     continue;
                 }
 
-                if (key.Equals("height", StringComparison.InvariantCultureIgnoreCase))
+                if (key.Equals(Configurator.GetConstantString("ParameterHeight"), StringComparison.InvariantCultureIgnoreCase))
                 {
                     var conversionResult = Converter.ConvertStringToShort(value);
                     if (!conversionResult.Item1)

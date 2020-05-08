@@ -508,6 +508,11 @@
             Command line options.
             </summary>
         </member>
+        <member name="M:FileCabinetApp.Options.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:FileCabinetApp.Options"/> class.
+            </summary>
+        </member>
         <member name="P:FileCabinetApp.Options.Rule">
             <summary>
             Gets or sets type of validation rules.

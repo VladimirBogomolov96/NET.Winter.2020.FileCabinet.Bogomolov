@@ -40,7 +40,7 @@ namespace FileCabinetApp.CommandHandlers
                 return;
             }
 
-            if (commandRequest.Command.Equals("select", StringComparison.InvariantCultureIgnoreCase))
+            if (commandRequest.Command.Equals(Configurator.GetConstantString("CommandSelect"), StringComparison.InvariantCultureIgnoreCase))
             {
                 try
                 {
@@ -82,7 +82,7 @@ namespace FileCabinetApp.CommandHandlers
 
         private static void SetSearchParametersAnd(List<int> searchRecordId, List<string> searchRecordFirstName, List<string> searchRecordLastName, List<DateTime> searchRecordDateOfBirth, List<char> searchRecordPatronymicLetter, List<decimal> searchRecordIncome, List<short> searchRecordHeight, string key, string value)
         {
-            if (key.Equals("id", StringComparison.InvariantCultureIgnoreCase))
+            if (key.Equals(Configurator.GetConstantString("ParameterId"), StringComparison.InvariantCultureIgnoreCase))
             {
                 if (searchRecordId.Count > 0)
                 {
@@ -99,7 +99,7 @@ namespace FileCabinetApp.CommandHandlers
                 return;
             }
 
-            if (key.Equals("firstname", StringComparison.InvariantCultureIgnoreCase))
+            if (key.Equals(Configurator.GetConstantString("ParameterFirstName"), StringComparison.InvariantCultureIgnoreCase))
             {
                 if (searchRecordFirstName.Count > 0)
                 {
@@ -110,7 +110,7 @@ namespace FileCabinetApp.CommandHandlers
                 return;
             }
 
-            if (key.Equals("lastname", StringComparison.InvariantCultureIgnoreCase))
+            if (key.Equals(Configurator.GetConstantString("ParameterLastName"), StringComparison.InvariantCultureIgnoreCase))
             {
                 if (searchRecordLastName.Count > 0)
                 {
@@ -121,7 +121,7 @@ namespace FileCabinetApp.CommandHandlers
                 return;
             }
 
-            if (key.Equals("dateofbirth", StringComparison.InvariantCultureIgnoreCase))
+            if (key.Equals(Configurator.GetConstantString("ParameterDateOfBirth"), StringComparison.InvariantCultureIgnoreCase))
             {
                 if (searchRecordDateOfBirth.Count > 0)
                 {
@@ -138,7 +138,7 @@ namespace FileCabinetApp.CommandHandlers
                 return;
             }
 
-            if (key.Equals("patronymicletter", StringComparison.InvariantCultureIgnoreCase))
+            if (key.Equals(Configurator.GetConstantString("ParameterPatronymicLetter"), StringComparison.InvariantCultureIgnoreCase))
             {
                 if (searchRecordPatronymicLetter.Count > 0)
                 {
@@ -155,7 +155,7 @@ namespace FileCabinetApp.CommandHandlers
                 return;
             }
 
-            if (key.Equals("income", StringComparison.InvariantCultureIgnoreCase))
+            if (key.Equals(Configurator.GetConstantString("ParameterIncome"), StringComparison.InvariantCultureIgnoreCase))
             {
                 if (searchRecordIncome.Count > 0)
                 {
@@ -172,7 +172,7 @@ namespace FileCabinetApp.CommandHandlers
                 return;
             }
 
-            if (key.Equals("height", StringComparison.InvariantCultureIgnoreCase))
+            if (key.Equals(Configurator.GetConstantString("ParameterHeight"), StringComparison.InvariantCultureIgnoreCase))
             {
                 if (searchRecordHeight.Count > 0)
                 {
@@ -194,7 +194,7 @@ namespace FileCabinetApp.CommandHandlers
 
         private static void SetSearchParametersOr(List<int> searchRecordId, List<string> searchRecordFirstName, List<string> searchRecordLastName, List<DateTime> searchRecordDateOfBirth, List<char> searchRecordPatronymicLetter, List<decimal> searchRecordIncome, List<short> searchRecordHeight, string key, string value)
         {
-            if (key.Equals("id", StringComparison.InvariantCultureIgnoreCase))
+            if (key.Equals(Configurator.GetConstantString("ParameterId"), StringComparison.InvariantCultureIgnoreCase))
             {
                 var conversionResultOfId = Converter.ConvertStringToInt(value);
                 if (!conversionResultOfId.Item1)
@@ -206,19 +206,19 @@ namespace FileCabinetApp.CommandHandlers
                 return;
             }
 
-            if (key.Equals("firstname", StringComparison.InvariantCultureIgnoreCase))
+            if (key.Equals(Configurator.GetConstantString("ParameterFirstName"), StringComparison.InvariantCultureIgnoreCase))
             {
                 searchRecordFirstName.Add(value);
                 return;
             }
 
-            if (key.Equals("lastname", StringComparison.InvariantCultureIgnoreCase))
+            if (key.Equals(Configurator.GetConstantString("ParameterLastName"), StringComparison.InvariantCultureIgnoreCase))
             {
                 searchRecordLastName.Add(value);
                 return;
             }
 
-            if (key.Equals("dateofbirth", StringComparison.InvariantCultureIgnoreCase))
+            if (key.Equals(Configurator.GetConstantString("ParameterDateOfBirth"), StringComparison.InvariantCultureIgnoreCase))
             {
                 var dateOfBirthConversionResult = Converter.ConvertStringToDateTime(value);
                 if (!dateOfBirthConversionResult.Item1)
@@ -230,7 +230,7 @@ namespace FileCabinetApp.CommandHandlers
                 return;
             }
 
-            if (key.Equals("patronymicletter", StringComparison.InvariantCultureIgnoreCase))
+            if (key.Equals(Configurator.GetConstantString("ParameterPatronymicLetter"), StringComparison.InvariantCultureIgnoreCase))
             {
                 var patronymicLetterConversionResult = Converter.ConvertStringToChar(value);
                 if (!patronymicLetterConversionResult.Item1)
@@ -242,7 +242,7 @@ namespace FileCabinetApp.CommandHandlers
                 return;
             }
 
-            if (key.Equals("income", StringComparison.InvariantCultureIgnoreCase))
+            if (key.Equals(Configurator.GetConstantString("ParameterIncome"), StringComparison.InvariantCultureIgnoreCase))
             {
                 var incomeConversionResult = Converter.ConvertStringToDecimal(value);
                 if (!incomeConversionResult.Item1)
@@ -254,7 +254,7 @@ namespace FileCabinetApp.CommandHandlers
                 return;
             }
 
-            if (key.Equals("height", StringComparison.InvariantCultureIgnoreCase))
+            if (key.Equals(Configurator.GetConstantString("ParameterHeight"), StringComparison.InvariantCultureIgnoreCase))
             {
                 var heightConversionResult = Converter.ConvertStringToShort(value);
                 if (!heightConversionResult.Item1)
@@ -389,7 +389,7 @@ namespace FileCabinetApp.CommandHandlers
         {
             if (!records.Any())
             {
-                return "No records with such conditions.";
+                return Configurator.GetConstantString("NoSuchRecords");
             }
 
             if (!fieldsToShow.Any())
@@ -441,7 +441,7 @@ namespace FileCabinetApp.CommandHandlers
                 throw new ArgumentNullException(nameof(parameters), Configurator.GetConstantString("NullParameters"));
             }
 
-            var temp = parameters.Split("where");
+            var temp = parameters.Split(Configurator.GetConstantString("Where"));
             var fieldsToShow = temp[0].Split(',');
             for (int i = 0; i < fieldsToShow.Length; i++)
             {
@@ -461,8 +461,8 @@ namespace FileCabinetApp.CommandHandlers
             }
             else
             {
-                var orSearchParams = temp[1].Split("or");
-                var andSearchParams = temp[1].Split("and");
+                var orSearchParams = temp[1].Split(Configurator.GetConstantString("Or"));
+                var andSearchParams = temp[1].Split(Configurator.GetConstantString("And"));
                 bool isSamePropertiesPossible;
 
                 if (orSearchParams.Length > andSearchParams.Length)
@@ -483,7 +483,7 @@ namespace FileCabinetApp.CommandHandlers
                     throw new ArgumentException(Configurator.GetConstantString("2SearchConditions"), nameof(parameters));
                 }
 
-                IEnumerable<IEnumerable<string>> fieldsAndValuesToFind = searchParams.Select(x => x.Split('=').Select(y => y.Trim()));
+                IEnumerable<IEnumerable<string>> fieldsAndValuesToFind = searchParams.Select(x => x.Split(Configurator.GetConstantString("EqualityChar")).Select(y => y.Trim()));
                 List<int> searchRecordId = new List<int>();
                 List<string> searchRecordFirstName = new List<string>();
                 List<string> searchRecordLastName = new List<string>();
@@ -637,7 +637,7 @@ namespace FileCabinetApp.CommandHandlers
                 return result;
             }
 
-            var temp = parameters.Split("where");
+            var temp = parameters.Split(Configurator.GetConstantString("Where"));
             StringBuilder sb = new StringBuilder();
             foreach (string str in temp[0].Split(','))
             {
@@ -650,59 +650,59 @@ namespace FileCabinetApp.CommandHandlers
                 return result;
             }
 
-            var tempOr = temp[1].Split("or");
-            var tempAnd = temp[1].Split("and");
+            var tempOr = temp[1].Split(Configurator.GetConstantString("Or"));
+            var tempAnd = temp[1].Split(Configurator.GetConstantString("And"));
             string type;
             if (tempOr.Length > tempAnd.Length)
             {
-                type = "or";
+                type = Configurator.GetConstantString("Or");
             }
             else
             {
-                type = "and";
+                type = Configurator.GetConstantString("And");
             }
 
             sb.Append(type);
             result[0] = sb.ToString();
             foreach (string keyValue in temp[1].Split(type))
             {
-                var pair = keyValue.Split('=');
+                var pair = keyValue.Split(Configurator.GetConstantString("EqualityChar"));
                 if (pair.Length != 2)
                 {
                     throw new ArgumentException(Configurator.GetConstantString("InvalidInput"), nameof(parameters));
                 }
 
-                if (pair[0].Trim().Equals("id", StringComparison.InvariantCultureIgnoreCase))
+                if (pair[0].Trim().Equals(Configurator.GetConstantString("ParameterId"), StringComparison.InvariantCultureIgnoreCase))
                 {
                     result[1] = pair[1].Trim();
                     continue;
                 }
-                else if (pair[0].Trim().Equals("firstname", StringComparison.InvariantCultureIgnoreCase))
+                else if (pair[0].Trim().Equals(Configurator.GetConstantString("ParameterFirstName"), StringComparison.InvariantCultureIgnoreCase))
                 {
                     result[2] = pair[1].Trim();
                     continue;
                 }
-                else if (pair[0].Trim().Equals("lastname", StringComparison.InvariantCultureIgnoreCase))
+                else if (pair[0].Trim().Equals(Configurator.GetConstantString("ParameterLastName"), StringComparison.InvariantCultureIgnoreCase))
                 {
                     result[3] = pair[1].Trim();
                     continue;
                 }
-                else if (pair[0].Trim().Equals("dateofbirth", StringComparison.InvariantCultureIgnoreCase))
+                else if (pair[0].Trim().Equals(Configurator.GetConstantString("ParameterDateOfBirth"), StringComparison.InvariantCultureIgnoreCase))
                 {
                     result[4] = pair[1].Trim();
                     continue;
                 }
-                else if (pair[0].Trim().Equals("patronymicletter", StringComparison.InvariantCultureIgnoreCase))
+                else if (pair[0].Trim().Equals(Configurator.GetConstantString("ParameterPatronymicLetter"), StringComparison.InvariantCultureIgnoreCase))
                 {
                     result[5] = pair[1].Trim();
                     continue;
                 }
-                else if (pair[0].Trim().Equals("income", StringComparison.InvariantCultureIgnoreCase))
+                else if (pair[0].Trim().Equals(Configurator.GetConstantString("ParameterIncome"), StringComparison.InvariantCultureIgnoreCase))
                 {
                     result[6] = pair[1].Trim();
                     continue;
                 }
-                else if (pair[0].Trim().Equals("height", StringComparison.InvariantCultureIgnoreCase))
+                else if (pair[0].Trim().Equals(Configurator.GetConstantString("ParameterHeight"), StringComparison.InvariantCultureIgnoreCase))
                 {
                     result[7] = pair[1].Trim();
                 }

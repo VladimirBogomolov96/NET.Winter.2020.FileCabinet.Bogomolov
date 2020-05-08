@@ -11,19 +11,17 @@ namespace FileCabinetApp.CommandHandlers
     {
         private readonly string[] commands = new string[]
         {
-            "help",
-            "exit",
-            "stat",
-            "create",
-            "list",
-            "find",
-            "export",
-            "import",
-            "purge",
-            "insert",
-            "delete",
-            "update",
-            "select",
+            Configurator.GetConstantString("CommandHelp"),
+            Configurator.GetConstantString("CommandExit"),
+            Configurator.GetConstantString("CommandStat"),
+            Configurator.GetConstantString("CommandCreate"),
+            Configurator.GetConstantString("CommandExport"),
+            Configurator.GetConstantString("CommandImport"),
+            Configurator.GetConstantString("CommandPurge"),
+            Configurator.GetConstantString("CommandInsert"),
+            Configurator.GetConstantString("CommandDelete"),
+            Configurator.GetConstantString("CommandUpdate"),
+            Configurator.GetConstantString("CommandSelect"),
         };
 
         private ICommandHandler commandHandler;

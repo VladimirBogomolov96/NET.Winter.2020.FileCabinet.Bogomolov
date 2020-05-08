@@ -50,7 +50,7 @@ namespace FileCabinetApp
                 throw new ArgumentNullException(nameof(record), Configurator.GetConstantString("NullRecord"));
             }
 
-            string writing = $"{record.Id},{record.FirstName},{record.PatronymicLetter},{record.LastName},{record.DateOfBirth.ToString("MM/dd/yyyy", CultureInfo.InvariantCulture)},{record.Height},{record.Income}";
+            string writing = $"{record.Id},{record.FirstName},{record.PatronymicLetter},{record.LastName},{record.DateOfBirth.ToString(Configurator.GetConstantString("DateFormatMD"), CultureInfo.InvariantCulture)},{record.Height},{record.Income}";
             this.writer.WriteLine(writing);
         }
 

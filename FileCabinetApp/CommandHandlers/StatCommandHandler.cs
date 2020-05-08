@@ -36,7 +36,7 @@ namespace FileCabinetApp.CommandHandlers
                 return;
             }
 
-            if (commandRequest.Command.Equals("stat", StringComparison.InvariantCultureIgnoreCase))
+            if (commandRequest.Command.Equals(Configurator.GetConstantString("CommandStat"), StringComparison.InvariantCultureIgnoreCase))
             {
                 this.Stat();
             }

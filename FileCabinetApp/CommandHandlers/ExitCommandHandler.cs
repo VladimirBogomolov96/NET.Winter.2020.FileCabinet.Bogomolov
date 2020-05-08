@@ -38,7 +38,7 @@ namespace FileCabinetApp.CommandHandlers
                 return;
             }
 
-            if (commandRequest.Command.Equals("exit", StringComparison.InvariantCultureIgnoreCase))
+            if (commandRequest.Command.Equals(Configurator.GetConstantString("CommandExit"), StringComparison.InvariantCultureIgnoreCase))
             {
                 this.Exit();
             }
