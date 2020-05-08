@@ -67,12 +67,12 @@ namespace FileCabinetGenerator
         {
             get
             {
-                return this.DateOfBirth.ToString("dd/MM/yyyy", CultureInfo.InvariantCulture);
+                return this.DateOfBirth.ToString(Configurator.GetConstantString("DateFormat"), CultureInfo.InvariantCulture);
             }
 
             set
             {
-                bool isConverted = DateTime.TryParseExact(value, "MM/dd/yyyy", CultureInfo.InvariantCulture, DateTimeStyles.None, out DateTime dateOfBirth);
+                bool isConverted = DateTime.TryParseExact(value, Configurator.GetConstantString("DateFormat"), CultureInfo.InvariantCulture, DateTimeStyles.None, out DateTime dateOfBirth);
                 if (!isConverted)
                 {
                     throw new ArgumentException(Configurator.GetConstantString("FailConversionStringToDate"), nameof(value));

@@ -60,7 +60,7 @@ namespace FileCabinetGenerator
             {
                 Console.WriteLine($"File is exist - rewrite {options.OutputFileName}? [Y/n]");
                 string answer = Console.ReadLine();
-                if (answer.Equals("y", StringComparison.OrdinalIgnoreCase))
+                if (answer.Equals(Configurator.GetConstantString("PositiveAnswer"), StringComparison.OrdinalIgnoreCase))
                 {
                     File.Delete(options.OutputFileName);
                 }
@@ -70,12 +70,12 @@ namespace FileCabinetGenerator
                 }
             }
 
-            if (options.OutputType.Equals("csv", StringComparison.OrdinalIgnoreCase))
+            if (options.OutputType.Equals(Configurator.GetConstantString("Csv"), StringComparison.OrdinalIgnoreCase))
             {
                 try
                 {
                     using StreamWriter streamWriter = new StreamWriter(options.OutputFileName);
-                    streamWriter.WriteLine("ID,First Name,Patronymic,Last Name,Date Of Birth,Height,Income");
+                    streamWriter.WriteLine(Configurator.GetConstantString("CsvHeader"));
                     using FileCabinetRecordCsvWriter csvWriter = new FileCabinetRecordCsvWriter(streamWriter);
                     foreach (FileCabinetRecord record in records)
                     {
@@ -90,7 +90,7 @@ namespace FileCabinetGenerator
                     Console.WriteLine(Configurator.GetConstantString("ClosingProgram"));
                 }
             }
-            else if (options.OutputType.Equals("xml", StringComparison.OrdinalIgnoreCase))
+            else if (options.OutputType.Equals(Configurator.GetConstantString("Xml"), StringComparison.OrdinalIgnoreCase))
             {
                 FileCabinetRecordXml[] xmlRecords = new FileCabinetRecordXml[records.Count()];
                 int counter = 0;
@@ -139,12 +139,12 @@ namespace FileCabinetGenerator
             List<string> doubleParamsValues = new List<string>();
             for (int i = 0; i < args.Length; i++)
             {
-                if (args[i].Substring(0, 2) == "--")
+                if (args[i].Substring(0, 2) == Configurator.GetConstantString("DoubleHyphen"))
                 {
                     singleParams.Add(args[i]);
                     continue;
                 }
-                else if (args[i].Substring(0, 1) == "-")
+                else if (args[i].Substring(0, 1) == Configurator.GetConstantString("Hyphen"))
                 {
                     if (i == (args.Length - 1))
                     {
@@ -170,15 +170,15 @@ namespace FileCabinetGenerator
                 string[] keyValuePair = param.Split('=');
                 if (keyValuePair.Length == 2)
                 {
-                    if (keyValuePair[0] == "--output-type")
+                    if (keyValuePair[0] == Configurator.GetConstantString("OutputTypeCommandLineParameter"))
                     {
                         options.OutputType = keyValuePair[1];
                     }
-                    else if (keyValuePair[0] == "--output")
+                    else if (keyValuePair[0] == Configurator.GetConstantString("OutputPathCommandLineParameter"))
                     {
                         options.OutputFileName = keyValuePair[1];
                     }
-                    else if (keyValuePair[0] == "--records-amount")
+                    else if (keyValuePair[0] == Configurator.GetConstantString("RecordsAmountCommandLineParameter"))
                     {
                         if (!int.TryParse(keyValuePair[1], out int amount))
                         {
@@ -188,7 +188,7 @@ namespace FileCabinetGenerator
 
                         options.RecordsAmount = amount;
                     }
-                    else if (keyValuePair[0] == "--start-id")
+                    else if (keyValuePair[0] == Configurator.GetConstantString("StartIdCommandLineParameter"))
                     {
                         if (!int.TryParse(keyValuePair[1], out int startId))
                         {
@@ -213,15 +213,15 @@ namespace FileCabinetGenerator
 
             for (int i = 0; i < doubleParams.Count; i++)
             {
-                if (doubleParams[i] == "-t")
+                if (doubleParams[i] == Configurator.GetConstantString("ShortOutputTypeCommandLineParameter"))
                 {
                     options.OutputType = doubleParamsValues[i];
                 }
-                else if (doubleParams[i] == "-o")
+                else if (doubleParams[i] == Configurator.GetConstantString("ShortOutputPathCommandLineParameter"))
                 {
                     options.OutputFileName = doubleParamsValues[i];
                 }
-                else if (doubleParams[i] == "-a")
+                else if (doubleParams[i] == Configurator.GetConstantString("ShortRecordsAmountCommandLineParameter"))
                 {
                     if (!int.TryParse(doubleParamsValues[i], out int amount))
                     {
@@ -231,7 +231,7 @@ namespace FileCabinetGenerator
 
                     options.RecordsAmount = amount;
                 }
-                else if (doubleParams[i] == "-i")
+                else if (doubleParams[i] == Configurator.GetConstantString("ShortStartIdCommandLineParameter"))
                 {
                     if (!int.TryParse(doubleParamsValues[i], out int startId))
                     {
@@ -283,8 +283,8 @@ namespace FileCabinetGenerator
             int maxFirstNameLength = int.Parse(validationRules.GetSection("default").GetSection("firstName").GetSection("maxLength").Value, CultureInfo.InvariantCulture);
             int minLastNameLength = int.Parse(validationRules.GetSection("default").GetSection("lastName").GetSection("minLength").Value, CultureInfo.InvariantCulture);
             int maxLastNameLength = int.Parse(validationRules.GetSection("default").GetSection("lastName").GetSection("maxLength").Value, CultureInfo.InvariantCulture);
-            DateTime fromDateOfBirth = DateTime.ParseExact(validationRules.GetSection("default").GetSection("dateOfBirth").GetSection("from").Value, "dd/MM/yyyy", CultureInfo.InvariantCulture);
-            DateTime toDateOfBirth = DateTime.ParseExact(validationRules.GetSection("default").GetSection("dateOfBirth").GetSection("to").Value, "dd/MM/yyyy", CultureInfo.InvariantCulture);
+            DateTime fromDateOfBirth = DateTime.ParseExact(validationRules.GetSection("default").GetSection("dateOfBirth").GetSection("from").Value, Configurator.GetConstantString("DateFormat"), CultureInfo.InvariantCulture);
+            DateTime toDateOfBirth = DateTime.ParseExact(validationRules.GetSection("default").GetSection("dateOfBirth").GetSection("to").Value, Configurator.GetConstantString("DateFormat"), CultureInfo.InvariantCulture);
             char minPatronymicLetter = char.Parse(validationRules.GetSection("default").GetSection("patronymicLetter").GetSection("from").Value);
             char maxPatronymicLetter = char.Parse(validationRules.GetSection("default").GetSection("patronymicLetter").GetSection("to").Value);
             decimal minIncome = decimal.Parse(validationRules.GetSection("default").GetSection("income").GetSection("from").Value, CultureInfo.InvariantCulture);
