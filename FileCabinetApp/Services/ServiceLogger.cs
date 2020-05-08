@@ -22,7 +22,7 @@ namespace FileCabinetApp.Services
         public ServiceLogger(IFileCabinetService service)
         {
             this.service = service;
-            this.writer = new StreamWriter("LogFile.log")
+            this.writer = new StreamWriter(Configurator.GetConstantString("DefaultLogFileName"))
             {
                 AutoFlush = true,
             };

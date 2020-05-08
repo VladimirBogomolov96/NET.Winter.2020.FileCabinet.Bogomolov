@@ -50,22 +50,22 @@ namespace FileCabinetApp
                 throw new ArgumentNullException(nameof(record), Configurator.GetConstantString("NullRecord"));
             }
 
-            this.writer.WriteStartElement("record");
-            this.writer.WriteAttributeString("id", record.Id.ToString(CultureInfo.InvariantCulture));
-            this.writer.WriteStartElement("name");
-            this.writer.WriteAttributeString("first", record.FirstName);
-            this.writer.WriteAttributeString("last", record.LastName);
+            this.writer.WriteStartElement(Configurator.GetConstantString("XmlElementRecord"));
+            this.writer.WriteAttributeString(Configurator.GetConstantString("XmlElementId"), record.Id.ToString(CultureInfo.InvariantCulture));
+            this.writer.WriteStartElement(Configurator.GetConstantString("XmlElementName"));
+            this.writer.WriteAttributeString(Configurator.GetConstantString("XmlElementFirst"), record.FirstName);
+            this.writer.WriteAttributeString(Configurator.GetConstantString("XmlElementLast"), record.LastName);
             this.writer.WriteEndElement();
-            this.writer.WriteStartElement("dateOfBirth");
-            this.writer.WriteString(record.DateOfBirth.ToString("dd/MM/yyyy", CultureInfo.InvariantCulture));
+            this.writer.WriteStartElement(Configurator.GetConstantString("XmlElementDateOfBirth"));
+            this.writer.WriteString(record.DateOfBirth.ToString(Configurator.GetConstantString("DateFormatDM"), CultureInfo.InvariantCulture));
             this.writer.WriteEndElement();
-            this.writer.WriteStartElement("height");
+            this.writer.WriteStartElement(Configurator.GetConstantString("XmlElementHeight"));
             this.writer.WriteString(record.Height.ToString(CultureInfo.InvariantCulture));
             this.writer.WriteEndElement();
-            this.writer.WriteStartElement("income");
+            this.writer.WriteStartElement(Configurator.GetConstantString("XmlElementIncome"));
             this.writer.WriteString(record.Income.ToString(CultureInfo.InvariantCulture));
             this.writer.WriteEndElement();
-            this.writer.WriteStartElement("patronymicLetter");
+            this.writer.WriteStartElement(Configurator.GetConstantString("XmlElementPatronymicLetter"));
             this.writer.WriteString(record.PatronymicLetter.ToString(CultureInfo.InvariantCulture));
             this.writer.WriteEndElement();
             this.writer.WriteEndElement();

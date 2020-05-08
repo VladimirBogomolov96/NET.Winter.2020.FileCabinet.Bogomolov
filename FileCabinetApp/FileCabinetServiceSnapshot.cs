@@ -72,7 +72,7 @@ namespace FileCabinetApp
                 throw new ArgumentNullException(nameof(writer), Configurator.GetConstantString("NullStream"));
             }
 
-            writer.WriteStartElement("records");
+            writer.WriteStartElement(Configurator.GetConstantString("XmlElementRecords"));
             using FileCabinetRecordXmlWriter xmlWriter = new FileCabinetRecordXmlWriter(writer);
             foreach (var record in this.records)
             {

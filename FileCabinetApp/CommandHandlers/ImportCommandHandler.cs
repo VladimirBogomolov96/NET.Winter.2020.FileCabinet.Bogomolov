@@ -37,7 +37,7 @@ namespace FileCabinetApp.CommandHandlers
                 return;
             }
 
-            if (commandRequest.Command.Equals("import", StringComparison.InvariantCultureIgnoreCase))
+            if (commandRequest.Command.Equals(Configurator.GetConstantString("CommandImport"), StringComparison.InvariantCultureIgnoreCase))
             {
                 this.Import(commandRequest.Parameters);
                 this.Service.ClearCache();
@@ -69,14 +69,14 @@ namespace FileCabinetApp.CommandHandlers
             }
 
             FileCabinetServiceSnapshot snapshot = new FileCabinetServiceSnapshot();
-            if (parametersArr[importTypeIndex].Equals("csv", StringComparison.OrdinalIgnoreCase))
+            if (parametersArr[importTypeIndex].Equals(Configurator.GetConstantString("CsvType"), StringComparison.OrdinalIgnoreCase))
             {
                 using StreamReader fileStream = new StreamReader(parametersArr[filePathIndex]);
                 snapshot.LoadFromCsv(fileStream);
                 int numberOfImported = this.Service.Restore(snapshot);
                 Console.WriteLine(string.Format(CultureInfo.InvariantCulture, "{0} records were imported from {1}", numberOfImported, parametersArr[filePathIndex]));
             }
-            else if (parametersArr[importTypeIndex].Equals("xml", StringComparison.OrdinalIgnoreCase))
+            else if (parametersArr[importTypeIndex].Equals(Configurator.GetConstantString("XmlType"), StringComparison.OrdinalIgnoreCase))
             {
                 using StreamReader fileStream = new StreamReader(parametersArr[filePathIndex]);
                 using XmlReader xmlReader = XmlReader.Create(fileStream);

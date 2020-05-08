@@ -30,17 +30,17 @@ namespace FileCabinetApp
             do
             {
                 Console.Write(Configurator.GetConstantString("CommandStartChar"));
-                var inputs = Console.ReadLine().Split(' ', 2);
+                var inputs = Console.ReadLine().Trim().Split(' ', 2);
                 const int commandIndex = 0;
                 const int argumentIndex = 1;
-                var command = inputs[commandIndex];
+                var command = inputs[commandIndex].Trim();
                 if (string.IsNullOrEmpty(command))
                 {
                     Console.WriteLine(Configurator.GetConstantString("HintMessage"));
                     continue;
                 }
 
-                var parameters = inputs.Length > 1 ? inputs[argumentIndex] : string.Empty;
+                var parameters = inputs.Length > 1 ? inputs[argumentIndex].Trim() : string.Empty;
                 commands.Handle(new AppCommandRequest(command, parameters));
             }
             while (isRunning);
@@ -70,11 +70,11 @@ namespace FileCabinetApp
             }
 
             Options options = GetCommandLineArguments(args);
-            if (options.Storage.Equals("file", StringComparison.InvariantCultureIgnoreCase))
+            if (options.Storage.Equals(Configurator.GetConstantString("FileStorage"), StringComparison.InvariantCultureIgnoreCase))
             {
                 SetFileService();
             }
-            else if (options.Storage.Equals("memory", StringComparison.InvariantCultureIgnoreCase))
+            else if (options.Storage.Equals(Configurator.GetConstantString("MemoryStorage"), StringComparison.InvariantCultureIgnoreCase))
             {
                 SetMemoryService();
             }
@@ -84,11 +84,11 @@ namespace FileCabinetApp
                 Environment.Exit(-1);
             }
 
-            if (options.Rule.Equals("custom", StringComparison.InvariantCultureIgnoreCase))
+            if (options.Rule.Equals(Configurator.GetConstantString("CustomRule"), StringComparison.InvariantCultureIgnoreCase))
             {
                 SetCustomService(validationRules);
             }
-            else if (options.Rule.Equals("default", StringComparison.InvariantCultureIgnoreCase))
+            else if (options.Rule.Equals(Configurator.GetConstantString("DefaultRule"), StringComparison.InvariantCultureIgnoreCase))
             {
                 SetDefaultService(validationRules);
             }
@@ -133,7 +133,7 @@ namespace FileCabinetApp
 
         private static void SetFileService()
         {
-            FileStream fileStream = new FileStream("cabinet-records.db", FileMode.OpenOrCreate, FileAccess.ReadWrite);
+            FileStream fileStream = new FileStream(Configurator.GetConstantString("DefaultFilesystemFileName"), FileMode.OpenOrCreate, FileAccess.ReadWrite);
             fileCabinetService = new FileCabinetFilesystemService(fileStream);
             Console.WriteLine(Configurator.GetConstantString("UseFile"));
         }
@@ -200,12 +200,12 @@ namespace FileCabinetApp
             List<string> doubleParamsValues = new List<string>();
             for (int i = 0; i < args.Length; i++)
             {
-                if (args[i].Substring(0, 2) == "--")
+                if (args[i].Substring(0, 2) == Configurator.GetConstantString("DoubleHyphen"))
                 {
                     singleParams.Add(args[i]);
                     continue;
                 }
-                else if (args[i].Substring(0, 1) == "-")
+                else if (args[i].Substring(0, 1) == Configurator.GetConstantString("Hyphen"))
                 {
                     if (i == (args.Length - 1))
                     {
@@ -231,11 +231,11 @@ namespace FileCabinetApp
                 string[] keyValuePair = param.Split('=');
                 if (keyValuePair.Length == 1)
                 {
-                    if (keyValuePair[0] == "--use-stopwatch")
+                    if (keyValuePair[0] == Configurator.GetConstantString("StopwatchCommandLineParameter"))
                     {
                         options.Stopwatch = true;
                     }
-                    else if (keyValuePair[0] == "--use-logger")
+                    else if (keyValuePair[0] == Configurator.GetConstantString("LoggerCommandLineParameter"))
                     {
                         options.Logger = true;
                     }
@@ -247,7 +247,7 @@ namespace FileCabinetApp
                 }
                 else if (keyValuePair.Length == 2)
                 {
-                    if (keyValuePair[0] == "--validation-rules")
+                    if (keyValuePair[0] == Configurator.GetConstantString("ValidationRuleCommandLineParameter"))
                     {
                         options.Rule = keyValuePair[1];
                     }
@@ -270,11 +270,11 @@ namespace FileCabinetApp
 
             for (int i = 0; i < doubleParams.Count; i++)
             {
-                if (doubleParams[i] == "-v")
+                if (doubleParams[i] == Configurator.GetConstantString("ShortValidationRuleCommandLineParameter"))
                 {
                     options.Rule = doubleParamsValues[i];
                 }
-                else if (doubleParams[i] == "-s")
+                else if (doubleParams[i] == Configurator.GetConstantString("ShortStorageCommandLineParameter"))
                 {
                     options.Storage = doubleParamsValues[i];
                 }

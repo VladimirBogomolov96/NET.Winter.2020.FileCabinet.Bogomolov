@@ -35,7 +35,7 @@ namespace FileCabinetApp.CommandHandlers
                 return;
             }
 
-            if (commandRequest.Command.Equals("insert", StringComparison.InvariantCultureIgnoreCase))
+            if (commandRequest.Command.Equals(Configurator.GetConstantString("CommandInsert"), StringComparison.InvariantCultureIgnoreCase))
             {
                 try
                 {
@@ -66,7 +66,7 @@ namespace FileCabinetApp.CommandHandlers
                 throw new ArgumentNullException(nameof(parameters), Configurator.GetConstantString("NullParameters"));
             }
 
-            var arguments = parameters.Split("values");
+            var arguments = parameters.Split(Configurator.GetConstantString("Values"));
             if (arguments.Length != 2)
             {
                 throw new ArgumentException(Configurator.GetConstantString("InvalidInput"), nameof(parameters));
@@ -98,33 +98,33 @@ namespace FileCabinetApp.CommandHandlers
                     throw new ArgumentException(Configurator.GetConstantString("WrongValuesAmount"), nameof(parameters));
                 }
 
-                var conversionResultOfId = Converter.ConvertStringToInt(values[fields.FindIndex(x => x.Equals("id", StringComparison.InvariantCultureIgnoreCase))]);
+                var conversionResultOfId = Converter.ConvertStringToInt(values[fields.FindIndex(x => x.Equals(Configurator.GetConstantString("ParameterId"), StringComparison.InvariantCultureIgnoreCase))]);
                 if (!conversionResultOfId.Item1)
                 {
                     throw new ArgumentException(conversionResultOfId.Item2, nameof(parameters));
                 }
 
-                string firstName = values[fields.FindIndex(x => x.Equals("firstname", StringComparison.InvariantCultureIgnoreCase))];
-                string lastName = values[fields.FindIndex(x => x.Equals("lastname", StringComparison.InvariantCultureIgnoreCase))];
-                var dateOfBirthConversionResult = Converter.ConvertStringToDateTime(values[fields.FindIndex(x => x.Equals("dateOfBirth", StringComparison.InvariantCultureIgnoreCase))]);
+                string firstName = values[fields.FindIndex(x => x.Equals(Configurator.GetConstantString("ParameterFirstName"), StringComparison.InvariantCultureIgnoreCase))];
+                string lastName = values[fields.FindIndex(x => x.Equals(Configurator.GetConstantString("ParameterLastName"), StringComparison.InvariantCultureIgnoreCase))];
+                var dateOfBirthConversionResult = Converter.ConvertStringToDateTime(values[fields.FindIndex(x => x.Equals(Configurator.GetConstantString("ParameterDateOfBirth"), StringComparison.InvariantCultureIgnoreCase))]);
                 if (!dateOfBirthConversionResult.Item1)
                 {
                     throw new ArgumentException(dateOfBirthConversionResult.Item2, nameof(parameters));
                 }
 
-                var heightConversionResult = Converter.ConvertStringToShort(values[fields.FindIndex(x => x.Equals("height", StringComparison.InvariantCultureIgnoreCase))]);
+                var heightConversionResult = Converter.ConvertStringToShort(values[fields.FindIndex(x => x.Equals(Configurator.GetConstantString("ParameterHeight"), StringComparison.InvariantCultureIgnoreCase))]);
                 if (!heightConversionResult.Item1)
                 {
                     throw new ArgumentException(heightConversionResult.Item2, nameof(parameters));
                 }
 
-                var incomeConversionResult = Converter.ConvertStringToDecimal(values[fields.FindIndex(x => x.Equals("income", StringComparison.InvariantCultureIgnoreCase))]);
+                var incomeConversionResult = Converter.ConvertStringToDecimal(values[fields.FindIndex(x => x.Equals(Configurator.GetConstantString("ParameterIncome"), StringComparison.InvariantCultureIgnoreCase))]);
                 if (!incomeConversionResult.Item1)
                 {
                     throw new ArgumentException(incomeConversionResult.Item2, nameof(parameters));
                 }
 
-                var patronymicLetterConversionResult = Converter.ConvertStringToChar(values[fields.FindIndex(x => x.Equals("patronymicLetter", StringComparison.InvariantCultureIgnoreCase))]);
+                var patronymicLetterConversionResult = Converter.ConvertStringToChar(values[fields.FindIndex(x => x.Equals(Configurator.GetConstantString("ParameterPatronymicLetter"), StringComparison.InvariantCultureIgnoreCase))]);
                 if (!patronymicLetterConversionResult.Item1)
                 {
                     throw new ArgumentException(patronymicLetterConversionResult.Item2, nameof(parameters));

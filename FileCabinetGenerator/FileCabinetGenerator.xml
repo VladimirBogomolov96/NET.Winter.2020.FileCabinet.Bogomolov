@@ -125,6 +125,11 @@
             Command line options.
             </summary>
         </member>
+        <member name="M:FileCabinetGenerator.Options.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:FileCabinetGenerator.Options"/> class.
+            </summary>
+        </member>
         <member name="P:FileCabinetGenerator.Options.OutputType">
             <summary>
             Gets or sets type of output file.

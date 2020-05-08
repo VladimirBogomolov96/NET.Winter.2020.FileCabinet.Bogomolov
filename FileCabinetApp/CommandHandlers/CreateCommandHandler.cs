@@ -34,7 +34,7 @@ namespace FileCabinetApp.CommandHandlers
                 return;
             }
 
-            if (commandRequest.Command.Equals("create", StringComparison.InvariantCultureIgnoreCase))
+            if (commandRequest.Command.Equals(Configurator.GetConstantString("CommandCreate"), StringComparison.InvariantCultureIgnoreCase))
             {
                 this.Create();
                 this.Service.ClearCache();
