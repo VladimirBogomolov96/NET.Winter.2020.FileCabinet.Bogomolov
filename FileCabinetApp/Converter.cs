@@ -51,7 +51,7 @@ namespace FileCabinetApp
         /// <returns>Whether convertion was succesfull, reason of fail and result.</returns>
         public static Tuple<bool, string, decimal> ConvertStringToDecimal(string input)
         {
-            bool isConverted = decimal.TryParse(input, out decimal income);
+            bool isConverted = decimal.TryParse(input, NumberStyles.Number, CultureInfo.InvariantCulture, out decimal income);
             if (isConverted)
             {
                 return new Tuple<bool, string, decimal>(isConverted, string.Empty, income);
